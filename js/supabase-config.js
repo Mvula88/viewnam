@@ -10,12 +10,12 @@
 //
 // ===========================
 
-const SUPABASE_URL = 'https://kjirzqtnwellolcdkpnk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqaXJ6cXRud2VsbG9sY2RrcG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzQ2NDYsImV4cCI6MjA5MDY1MDY0Nn0.381k1q0TifxvxJq9qi5uVGjUcXYw5qXF83oeF3EQIeQ';
-// Initialize Supabase client
-const supabase = window.supabase
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
+var SUPABASE_URL = 'https://kjirzqtnwellolcdkpnk.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqaXJ6cXRud2VsbG9sY2RrcG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNzQ2NDYsImV4cCI6MjA5MDY1MDY0Nn0.381k1q0TifxvxJq9qi5uVGjUcXYw5qXF83oeF3EQIeQ';
+
+// Initialize Supabase client (use var to avoid redeclaration errors across pages)
+var _supabaseLib = window.supabase;
+var supabase = _supabaseLib ? _supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 if (!supabase) {
     console.warn('Supabase not loaded. Make sure the Supabase CDN script is included before this file.');
