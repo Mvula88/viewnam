@@ -849,4 +849,24 @@
     loadSavedList();
     progressPill.style.display = 'none';
 
+    // --- Auto-fill from URL params (when opened from inspector dashboard) ---
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('ref')) {
+        // Pre-fill and go straight to booking screen
+        state.booking = {
+            refNumber: urlParams.get('ref') || '',
+            vMake: urlParams.get('make') || '',
+            vModel: urlParams.get('model') || '',
+            vYear: urlParams.get('year') || '',
+        };
+        state.startedAt = new Date().toISOString();
+
+        $('refNumber').value = state.booking.refNumber;
+        $('vMake').value = state.booking.vMake;
+        $('vModel').value = state.booking.vModel;
+        $('vYear').value = state.booking.vYear;
+
+        showScreen('screenBooking');
+    }
+
 })();

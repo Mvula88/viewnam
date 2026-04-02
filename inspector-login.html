@@ -195,20 +195,42 @@ async function loadJobs() {
                 ${j.notes ? `<strong>Client notes:</strong> ${j.notes}` : ''}
             </div>
             <div class="job-actions">
-                ${j.status === 'assigned' ? `<button class="job-btn job-btn-primary" onclick="updateJobStatus('${j.id}','in-progress')">Start Inspection</button>` : ''}
-                ${j.status === 'in-progress' ? `<button class="job-btn job-btn-complete" onclick="updateJobStatus('${j.id}','completed')">Mark Completed</button>` : ''}
+                ${j.status === 'assigned' ? `<button class="job-btn job-btn-primary" onclick="startInspection('${j.id}', this)" data-job='${JSON.stringify({ref:j.reference,make:j.vehicle_make,model:j.vehicle_model,year:j.vehicle_year,location:j.seller_location,seller:j.seller_contact,services:j.services}).replace(/'/g,"&#39;")}'>Start Inspection</button>` : ''}
+                ${j.status === 'in-progress' ? `<button class="job-btn job-btn-complete" onclick="completeInspection('${j.id}')">Mark Completed</button>` : ''}
+                ${j.status === 'in-progress' ? `<a class="job-btn job-btn-primary" href="inspector-app/index.html?ref=${j.reference}&make=${encodeURIComponent(j.vehicle_make||'')}&model=${encodeURIComponent(j.vehicle_model||'')}&year=${j.vehicle_year||''}" target="_blank">Open Checklist</a>` : ''}
                 ${sellerPhone ? `<a class="job-btn job-btn-wa" href="https://wa.me/${sellerPhone}" target="_blank">Call Seller</a>` : ''}
-                <a class="job-btn job-btn-primary" href="inspector-app/index.html" target="_blank">Open Checklist</a>
             </div>
         </div>`;
     }).join('');
 }
 
-async function updateJobStatus(id, status) {
-    const updates = { status };
-    if (status === 'completed') updates.completed_at = new Date().toISOString();
+async function startInspection(id, btn) {
+    // Update status to in-progress
+    const { error } = await supabase.from('bookings').update({ status: 'in-progress' }).eq('id', id);
+    if (error) { alert('Error: ' + error.message); return; }
 
-    const { error } = await supabase.from('bookings').update(updates).eq('id', id);
+    // Get job data from button
+    const job = JSON.parse(btn.dataset.job);
+
+    // Open checklist app with job details pre-filled
+    const params = new URLSearchParams({
+        ref: job.ref || '',
+        make: job.make || '',
+        model: job.model || '',
+        year: job.year || '',
+    });
+    window.open('inspector-app/index.html?' + params.toString(), '_blank');
+
+    // Reload jobs to show updated status
+    loadJobs();
+}
+
+async function completeInspection(id) {
+    if (!confirm('Mark this inspection as completed? Make sure your report is ready.')) return;
+    const { error } = await supabase.from('bookings').update({
+        status: 'completed',
+        completed_at: new Date().toISOString()
+    }).eq('id', id);
     if (error) alert('Error: ' + error.message);
     else loadJobs();
 }
