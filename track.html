@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViewNam — Track Your Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B3D2E;--secondary:#D4A843;--good:#27AE60;--fair:#F39C12;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{background:var(--primary);padding:16px 24px}
+.topnav a{color:#fff;text-decoration:none;font-weight:800;font-size:1.2rem}
+.lv{color:#fff}.ln{color:var(--secondary)}
+
+.container{max-width:520px;margin:0 auto;padding:40px 16px 80px}
+.track-header{text-align:center;margin-bottom:32px}
+.track-header .logo{font-size:2rem;font-weight:800;margin-bottom:8px}
+.track-header h1{font-size:1.3rem;margin-bottom:4px}
+.track-header p{color:var(--text-light);font-size:0.9rem}
+
+.search-box{display:flex;gap:10px;margin-bottom:24px}
+.search-box input{flex:1;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit}
+.search-box input:focus{outline:none;border-color:var(--primary)}
+.search-box button{padding:14px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+
+.result{display:none}
+
+.status-card{background:var(--card);border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px}
+.status-card h2{font-size:1.1rem;margin-bottom:16px}
+
+.status-timeline{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.timeline-step{display:flex;align-items:flex-start;gap:12px;padding:10px 0}
+.timeline-dot{width:28px;height:28px;border-radius:50%;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff}
+.timeline-dot.active{border-color:var(--primary);background:var(--primary)}
+.timeline-dot.active svg{display:block}
+.timeline-dot.current{border-color:var(--secondary);background:var(--secondary);animation:pulse 2s infinite}
+.timeline-dot svg{display:none;width:14px;height:14px;color:#fff}
+.timeline-dot.active svg,.timeline-dot.current svg{display:block}
+.timeline-line{width:3px;height:20px;background:var(--border);margin-left:12px}
+.timeline-line.active{background:var(--primary)}
+.timeline-label{font-size:0.9rem;font-weight:600;margin-top:3px}
+.timeline-sublabel{font-size:0.8rem;color:var(--text-light)}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,168,67,0.4)}50%{box-shadow:0 0 0 8px rgba(212,168,67,0)}}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:16px}
+.detail-grid dt{font-size:0.8rem;color:var(--text-light)}
+.detail-grid dd{font-size:0.9rem;font-weight:500;margin-bottom:6px}
+
+.not-found{text-align:center;padding:32px;background:var(--card);border-radius:16px;display:none}
+.not-found h2{margin-bottom:8px;font-size:1.1rem}
+.not-found p{color:var(--text-light);font-size:0.9rem}
+
+.back-link{display:inline-block;margin-bottom:20px;color:var(--primary);font-weight:600;font-size:0.9rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="topnav"><a href="index.html"><span class="lv">View</span><span class="ln">Nam</span></a></div>
+
+<div class="container">
+    <a href="index.html" class="back-link">&larr; Back to ViewNam</a>
+
+    <div class="track-header">
+        <div class="logo"><span class="lv">View</span><span class="ln">Nam</span></div>
+        <h1>Track Your Booking</h1>
+        <p>Enter your booking reference to check the status</p>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="refInput" placeholder="e.g. VN-ABC123" autofocus>
+        <button onclick="trackBooking()">Track</button>
+    </div>
+
+    <!-- Result -->
+    <div class="result" id="result">
+        <div class="status-card">
+            <h2 id="vehicleTitle"></h2>
+
+            <div class="status-timeline" id="timeline"></div>
+
+            <dl class="detail-grid">
+                <dt>Reference</dt><dd id="dRef"></dd>
+                <dt>Submitted</dt><dd id="dDate"></dd>
+                <dt>Vehicle</dt><dd id="dVehicle"></dd>
+                <dt>Vehicle Location</dt><dd id="dLocation"></dd>
+                <dt>Services</dt><dd id="dServices"></dd>
+                <dt>Status</dt><dd id="dStatus"></dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="not-found" id="notFound">
+        <h2>Booking not found</h2>
+        <p>Check the reference number and try again. It starts with "VN-".</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+const serviceLabels = {
+    'full-package':'Full Package','visual-inspection':'Visual Inspection',
+    'mechanical-diagnostics':'Mechanical + Diagnostics','test-drive':'Test Drive',
+};
+
+const statusSteps = [
+    { key: 'new', label: 'Booking Received', sub: 'We got your request' },
+    { key: 'confirmed', label: 'Confirmed & Paid', sub: 'Payment received, inspection scheduled' },
+    { key: 'assigned', label: 'Inspector Assigned', sub: 'A local expert has been assigned' },
+    { key: 'in-progress', label: 'Inspection Underway', sub: 'Your vehicle is being inspected' },
+    { key: 'completed', label: 'Report Ready', sub: 'Your inspection report is complete' },
+];
+
+const statusOrder = statusSteps.map(s => s.key);
+
+document.getElementById('refInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') trackBooking();
+});
+
+async function trackBooking() {
+    const ref = document.getElementById('refInput').value.trim().toUpperCase();
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('notFound').style.display = 'none';
+
+    if (!ref || !supabase) return;
+
+    const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('reference', ref)
+        .single();
+
+    if (error || !data) {
+        document.getElementById('notFound').style.display = 'block';
+        return;
+    }
+
+    const b = data;
+    document.getElementById('vehicleTitle').textContent =
+        `${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}`.trim() || 'Your Booking';
+    document.getElementById('dRef').textContent = b.reference;
+    document.getElementById('dDate').textContent = b.created_at ? new Date(b.created_at).toLocaleDateString() : 'N/A';
+    document.getElementById('dVehicle').textContent = `${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}`;
+    document.getElementById('dLocation').textContent = b.seller_location || 'N/A';
+    document.getElementById('dServices').textContent = (b.services || []).map(s => serviceLabels[s] || s).join(', ') || 'N/A';
+
+    const cancelled = b.status === 'cancelled';
+    document.getElementById('dStatus').textContent = cancelled ? 'Cancelled' : b.status;
+
+    // Build timeline
+    const currentIdx = statusOrder.indexOf(b.status);
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+
+    statusSteps.forEach((step, i) => {
+        const isPast = i < currentIdx;
+        const isCurrent = i === currentIdx && !cancelled;
+        const checkSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+
+        timeline.innerHTML += `
+            <div class="timeline-step">
+                <div class="timeline-dot ${isPast ? 'active' : ''} ${isCurrent ? 'current' : ''}">${checkSvg}</div>
+                <div>
+                    <div class="timeline-label" style="${isPast || isCurrent ? '' : 'color:var(--text-light)'}">${step.label}</div>
+                    <div class="timeline-sublabel">${step.sub}</div>
+                </div>
+            </div>
+            ${i < statusSteps.length - 1 ? `<div class="timeline-line ${isPast ? 'active' : ''}" style="margin-left:12px"></div>` : ''}
+        `;
+    });
+
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+</body>
+</html>

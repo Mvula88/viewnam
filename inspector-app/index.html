@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ViewNam Inspector</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0B3D2E">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <!-- App Shell -->
+    <div class="app" id="app">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="back-btn" id="backBtn" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <span class="topbar-logo"><span class="tv">View</span><span class="tn">Nam</span></span>
+            </div>
+            <div class="topbar-right">
+                <div class="progress-pill" id="progressPill">
+                    <span id="progressCount">0</span>/<span id="progressTotal">0</span>
+                </div>
+                <button class="save-btn" id="saveBtn" title="Save progress">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Screen: Start / Booking Info -->
+        <div class="screen active" id="screenStart">
+            <div class="screen-content">
+                <div class="start-hero">
+                    <div class="start-logo"><span class="tv">View</span><span class="tn">Nam</span></div>
+                    <h1>Vehicle Inspection</h1>
+                    <p>Digital checklist for field inspectors</p>
+                </div>
+
+                <!-- Saved Inspections -->
+                <div class="saved-list" id="savedList" style="display:none;">
+                    <h3>Continue Inspection</h3>
+                    <div id="savedItems"></div>
+                </div>
+
+                <button class="btn-primary btn-full" id="newInspectionBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+                    New Inspection
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen: Booking Details -->
+        <div class="screen" id="screenBooking">
+            <div class="screen-content">
+                <h2 class="screen-title">Booking Details</h2>
+                <p class="screen-desc">Fill in vehicle and client information</p>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Inspection Info</h3>
+                    <div class="field">
+                        <label>Reference Number</label>
+                        <input type="text" id="refNumber" placeholder="e.g. VN-ABC123">
+                    </div>
+                    <div class="field">
+                        <label>Inspector Name</label>
+                        <input type="text" id="inspectorName" placeholder="Your name">
+                    </div>
+                    <div class="field">
+                        <label>Region / Town</label>
+                        <input type="text" id="inspectorRegion" placeholder="e.g. Windhoek">
+                    </div>
+                    <div class="field">
+                        <label>Services</label>
+                        <div class="chip-group">
+                            <label class="chip"><input type="checkbox" name="svc" value="full"> Full Package</label>
+                            <label class="chip"><input type="checkbox" name="svc" value="visual"> Visual</label>
+                            <label class="chip"><input type="checkbox" name="svc" value="mechanical"> Mechanical + Diag</label>
+                            <label class="chip"><input type="checkbox" name="svc" value="testdrive"> Test Drive</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Client</h3>
+                    <div class="field">
+                        <label>Client Name</label>
+                        <input type="text" id="clientName" placeholder="Client's full name">
+                    </div>
+                    <div class="field">
+                        <label>Client WhatsApp</label>
+                        <input type="tel" id="clientPhone" placeholder="+264 81 ...">
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Vehicle</h3>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Make</label>
+                            <input type="text" id="vMake" placeholder="e.g. Toyota">
+                        </div>
+                        <div class="field">
+                            <label>Model</label>
+                            <input type="text" id="vModel" placeholder="e.g. Hilux">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Year</label>
+                            <input type="number" id="vYear" placeholder="e.g. 2019">
+                        </div>
+                        <div class="field">
+                            <label>Colour</label>
+                            <input type="text" id="vColour" placeholder="e.g. White">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Registration</label>
+                            <input type="text" id="vReg" placeholder="e.g. N 12345 W">
+                        </div>
+                        <div class="field">
+                            <label>Odometer (km)</label>
+                            <input type="number" id="vOdo" placeholder="e.g. 85000">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>VIN / Chassis Number</label>
+                        <input type="text" id="vVin" placeholder="17-character VIN">
+                    </div>
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Fuel Type</label>
+                            <select id="vFuel">
+                                <option value="">Select</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Transmission</label>
+                            <select id="vTrans">
+                                <option value="">Select</option>
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Seller</h3>
+                    <div class="field">
+                        <label>Seller Name</label>
+                        <input type="text" id="sellerName" placeholder="Seller's name">
+                    </div>
+                    <div class="field">
+                        <label>Seller Contact</label>
+                        <input type="tel" id="sellerPhone" placeholder="+264 81 ...">
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-full" id="startChecklistBtn">
+                    Start Inspection
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen: Checklist -->
+        <div class="screen" id="screenChecklist">
+            <div class="screen-content">
+                <!-- Section Tabs -->
+                <div class="section-tabs" id="sectionTabs"></div>
+
+                <!-- Checklist Items Container -->
+                <div id="checklistContainer"></div>
+
+                <!-- Section Notes -->
+                <div class="section-notes">
+                    <label>Section Notes</label>
+                    <textarea id="sectionNotes" placeholder="Additional observations for this section..."></textarea>
+                </div>
+
+                <!-- Section Photo -->
+                <div class="section-photo-btn">
+                    <label class="photo-capture-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+                        Add Section Photo
+                        <input type="file" accept="image/*" capture="environment" class="section-photo-input" style="display:none;">
+                    </label>
+                </div>
+                <div class="section-photos-grid" id="sectionPhotos"></div>
+
+                <!-- Navigation -->
+                <div class="checklist-nav">
+                    <button class="btn-secondary" id="prevSectionBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                        Previous
+                    </button>
+                    <button class="btn-primary" id="nextSectionBtn">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen: Summary -->
+        <div class="screen" id="screenSummary">
+            <div class="screen-content">
+                <h2 class="screen-title">Inspection Summary</h2>
+
+                <!-- Score -->
+                <div class="summary-score-card">
+                    <label>Overall Vehicle Score</label>
+                    <div class="score-slider-wrap">
+                        <input type="range" min="1" max="10" value="5" id="overallScore" class="score-slider">
+                        <div class="score-display" id="scoreDisplay">5</div>
+                        <div class="score-labels">
+                            <span>Poor</span>
+                            <span>Fair</span>
+                            <span>Good</span>
+                            <span>Excellent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendation -->
+                <div class="recommendation-cards">
+                    <label class="rec-card rec-buy">
+                        <input type="radio" name="recommendation" value="recommended">
+                        <div class="rec-inner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <strong>Recommended</strong>
+                            <span>Good buy — minor issues only</span>
+                        </div>
+                    </label>
+                    <label class="rec-card rec-caution">
+                        <input type="radio" name="recommendation" value="caution">
+                        <div class="rec-inner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <strong>Caution</strong>
+                            <span>Fair — negotiate on price</span>
+                        </div>
+                    </label>
+                    <label class="rec-card rec-avoid">
+                        <input type="radio" name="recommendation" value="not-recommended">
+                        <div class="rec-inner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <strong>Not Recommended</strong>
+                            <span>Walk away</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Stats -->
+                <div class="summary-stats" id="summaryStats"></div>
+
+                <!-- Key Issues -->
+                <div class="form-card">
+                    <h3 class="form-card-title">Key Issues Found</h3>
+                    <textarea id="keyIssues" rows="4" placeholder="List the top 3-5 concerns..."></textarea>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Estimated Repair Costs</h3>
+                    <textarea id="repairCosts" rows="3" placeholder="e.g. Brake pads: ~N$800, CV boot: ~N$500..."></textarea>
+                </div>
+
+                <div class="form-card">
+                    <h3 class="form-card-title">Comments & Advice to Buyer</h3>
+                    <textarea id="buyerAdvice" rows="4" placeholder="Your overall assessment and advice..."></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="summary-actions">
+                    <button class="btn-primary btn-full" id="generateReportBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Generate Report
+                    </button>
+                    <button class="btn-whatsapp btn-full" id="shareWhatsAppBtn">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Share via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="js/checklist-data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

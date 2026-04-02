@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.viewnam.com/sitemap.xml
+
+Disallow: /admin.html
+Disallow: /inspector-app/

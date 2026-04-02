@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViewNam — Inspector Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B3D2E;--secondary:#D4A843;--good:#27AE60;--fair:#F39C12;--poor:#E74C3C;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.topbar{background:var(--primary);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:1.1rem;font-weight:700}
+.lv{color:#fff}.ln{color:var(--secondary)}
+.logout-btn{background:none;border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;cursor:pointer;font-family:inherit}
+
+.container{max-width:600px;margin:0 auto;padding:24px 16px}
+
+/* Login */
+.login-screen{max-width:380px;margin:80px auto;text-align:center}
+.login-screen .logo{font-size:2.2rem;font-weight:800;margin-bottom:8px}
+.login-screen h2{font-size:1.1rem;margin-bottom:24px;color:var(--text-light);font-weight:400}
+.login-card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:left}
+.login-card label{display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text)}
+.login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:16px;background:var(--bg)}
+.login-card input:focus{outline:none;border-color:var(--primary);background:#fff}
+.login-card .btn{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+.login-card .btn:active{background:#062A1F}
+.login-error{color:var(--poor);font-size:0.85rem;margin-top:8px;display:none}
+
+/* Dashboard */
+.dashboard{display:none}
+.welcome{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.welcome h2{font-size:1.1rem;margin-bottom:4px}
+.welcome p{font-size:0.9rem;color:var(--text-light)}
+
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat-box{background:var(--card);border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.stat-num{font-size:1.8rem;font-weight:800}
+.stat-num.new{color:var(--secondary)}.stat-num.prog{color:var(--fair)}.stat-num.done{color:var(--good)}
+.stat-label{font-size:0.7rem;text-transform:uppercase;color:var(--text-light);letter-spacing:0.5px;margin-top:2px}
+
+.job-card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--secondary)}
+.job-card.status-in-progress{border-left-color:var(--fair)}
+.job-card.status-completed{border-left-color:var(--good);opacity:0.7}
+.job-card h3{font-size:1rem;margin-bottom:2px}
+.job-card .ref{font-size:0.8rem;color:var(--text-light)}
+.job-card .details{margin-top:10px;font-size:0.85rem;color:var(--text-light);line-height:1.6}
+.job-card .details strong{color:var(--text)}
+.job-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.job-btn{padding:8px 16px;border-radius:8px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;font-family:inherit}
+.job-btn-primary{background:var(--primary);color:#fff}
+.job-btn-wa{background:#25D366;color:#fff}
+.job-btn-complete{background:var(--good);color:#fff}
+
+.empty{text-align:center;padding:40px 20px;color:var(--text-light)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1><span class="lv">View</span><span class="ln">Nam</span> Inspector</h1>
+    <button class="logout-btn" id="logoutBtn" style="display:none" onclick="logout()">Log out</button>
+</div>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+    <div class="logo"><span class="lv">View</span><span class="ln">Nam</span></div>
+    <h2>Inspector Login</h2>
+    <div class="login-card">
+        <label>WhatsApp Number</label>
+        <input type="tel" id="loginPhone" placeholder="+264 81 ...">
+        <label>PIN</label>
+        <input type="password" id="loginPin" placeholder="4-digit PIN" maxlength="6">
+        <button class="btn" onclick="login()">Log In</button>
+        <p class="login-error" id="loginError">Invalid phone number or PIN.</p>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+    <div class="container">
+        <div class="welcome">
+            <h2 id="welcomeName">Welcome back</h2>
+            <p id="welcomeRegion"></p>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat-box"><div class="stat-num new" id="statAssigned">0</div><div class="stat-label">Assigned</div></div>
+            <div class="stat-box"><div class="stat-num prog" id="statProgress">0</div><div class="stat-label">In Progress</div></div>
+            <div class="stat-box"><div class="stat-num done" id="statCompleted">0</div><div class="stat-label">Completed</div></div>
+        </div>
+
+        <h3 style="margin-bottom:12px">Your Jobs</h3>
+        <div id="jobsList"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+let currentInspector = null;
+
+async function login() {
+    const phone = document.getElementById('loginPhone').value.replace(/\s/g, '');
+    const pin = document.getElementById('loginPin').value;
+    const errorEl = document.getElementById('loginError');
+    errorEl.style.display = 'none';
+
+    if (!phone || !pin || !supabase) {
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    // Find inspector by phone and PIN
+    const { data, error } = await supabase
+        .from('inspectors')
+        .select('*')
+        .eq('phone', phone)
+        .eq('pin', pin)
+        .in('status', ['active', 'approved'])
+        .single();
+
+    if (error || !data) {
+        errorEl.textContent = 'Invalid phone number or PIN. Contact ViewNam if you need help.';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    currentInspector = data;
+    sessionStorage.setItem('viewnam_inspector', JSON.stringify(data));
+    showDashboard();
+}
+
+function showDashboard() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = '';
+    document.getElementById('welcomeName').textContent = `Welcome, ${currentInspector.name}`;
+    document.getElementById('welcomeRegion').textContent = `${currentInspector.town}, ${currentInspector.region}`;
+    loadJobs();
+}
+
+function logout() {
+    currentInspector = null;
+    sessionStorage.removeItem('viewnam_inspector');
+    document.getElementById('loginScreen').style.display = '';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'none';
+}
+
+async function loadJobs() {
+    const list = document.getElementById('jobsList');
+    list.innerHTML = '<div class="empty">Loading jobs...</div>';
+
+    const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('assigned_inspector', currentInspector.id)
+        .in('status', ['assigned', 'in-progress', 'completed'])
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        list.innerHTML = `<div class="empty">Error loading jobs: ${error.message}</div>`;
+        return;
+    }
+
+    const jobs = data || [];
+
+    // Stats
+    document.getElementById('statAssigned').textContent = jobs.filter(j => j.status === 'assigned').length;
+    document.getElementById('statProgress').textContent = jobs.filter(j => j.status === 'in-progress').length;
+    document.getElementById('statCompleted').textContent = jobs.filter(j => j.status === 'completed').length;
+
+    if (!jobs.length) {
+        list.innerHTML = '<div class="empty"><p>No jobs assigned yet. Check back soon.</p></div>';
+        return;
+    }
+
+    list.innerHTML = jobs.map(j => {
+        const date = j.created_at ? new Date(j.created_at).toLocaleDateString() : '';
+        const sellerPhone = (j.seller_contact || '').replace(/[^0-9]/g, '');
+        const svcs = (j.services || []).join(', ');
+
+        return `
+        <div class="job-card status-${j.status}">
+            <h3>${j.vehicle_year || ''} ${j.vehicle_make || ''} ${j.vehicle_model || ''}</h3>
+            <div class="ref">${j.reference} &middot; ${date} &middot; ${j.status.toUpperCase()}</div>
+            <div class="details">
+                <strong>Vehicle location:</strong> ${j.seller_location || 'N/A'}<br>
+                <strong>Seller:</strong> ${j.seller_contact || 'N/A'}<br>
+                <strong>Services:</strong> ${svcs || 'N/A'}<br>
+                <strong>Asking price:</strong> N$${j.asking_price || 'N/A'}<br>
+                ${j.notes ? `<strong>Client notes:</strong> ${j.notes}` : ''}
+            </div>
+            <div class="job-actions">
+                ${j.status === 'assigned' ? `<button class="job-btn job-btn-primary" onclick="updateJobStatus('${j.id}','in-progress')">Start Inspection</button>` : ''}
+                ${j.status === 'in-progress' ? `<button class="job-btn job-btn-complete" onclick="updateJobStatus('${j.id}','completed')">Mark Completed</button>` : ''}
+                ${sellerPhone ? `<a class="job-btn job-btn-wa" href="https://wa.me/${sellerPhone}" target="_blank">Call Seller</a>` : ''}
+                <a class="job-btn job-btn-primary" href="inspector-app/index.html" target="_blank">Open Checklist</a>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function updateJobStatus(id, status) {
+    const updates = { status };
+    if (status === 'completed') updates.completed_at = new Date().toISOString();
+
+    const { error } = await supabase.from('bookings').update(updates).eq('id', id);
+    if (error) alert('Error: ' + error.message);
+    else loadJobs();
+}
+
+// Auto-login from session
+const saved = sessionStorage.getItem('viewnam_inspector');
+if (saved) {
+    try {
+        currentInspector = JSON.parse(saved);
+        showDashboard();
+    } catch {}
+}
+</script>
+</body>
+</html>

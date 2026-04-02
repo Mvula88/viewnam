@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViewNam — Sample Inspection Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --primary:#0B3D2E; --secondary:#D4A843; --good:#27AE60; --fair:#F39C12; --poor:#E74C3C; --bg:#F8F9FA; --text:#1A1A2E; --text-light:#5A5A6E; --border:#E2E8F0; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:800px;margin:0 auto;padding:20px 16px}
+
+.report-banner{background:var(--primary);color:#fff;padding:24px;text-align:center;border-radius:12px;margin-bottom:24px}
+.report-banner .logo{font-size:2rem;font-weight:800;margin-bottom:4px}.lv{color:#fff}.ln{color:var(--secondary)}
+.report-banner h1{font-size:1.2rem;font-weight:400;opacity:0.85;margin-bottom:4px}
+.report-banner .sample-badge{display:inline-block;background:var(--secondary);color:var(--primary);padding:4px 16px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:8px}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-weight:600;font-size:0.9rem;text-decoration:none;margin-bottom:16px}
+.back-link:hover{text-decoration:underline}
+
+.info-card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.info-card h2{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--primary);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.info-grid dt{font-size:0.8rem;color:var(--text-light)}
+.info-grid dd{font-size:0.9rem;font-weight:500;margin-bottom:4px}
+
+.score-card{background:#fff;border-radius:12px;padding:28px;margin-bottom:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:2px solid var(--good)}
+.score-num{font-size:3.5rem;font-weight:800;color:var(--primary)}
+.score-label{font-size:0.85rem;color:var(--text-light);margin-bottom:12px}
+.rec-badge{display:inline-block;padding:8px 24px;border-radius:8px;font-weight:700;font-size:1rem}
+.rec-badge.good{background:#E8F8EF;color:var(--good);border:2px solid var(--good)}
+.rec-badge.caution{background:#FEF5E7;color:var(--fair);border:2px solid var(--fair)}
+
+.section-title{font-size:1rem;font-weight:700;color:var(--primary);margin:24px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--primary)}
+
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:16px}
+th{background:var(--bg);padding:8px 12px;text-align:left;font-size:0.7rem;text-transform:uppercase;color:var(--text-light);letter-spacing:0.5px}
+td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:0.85rem}
+tr:last-child td{border-bottom:none}
+.g{color:var(--good);font-weight:700} .f{color:var(--fair);font-weight:700} .p{color:var(--poor);font-weight:700} .n{color:#95A5A6}
+
+.notes-box{background:#fff;border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.notes-box h3{font-size:0.8rem;color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.notes-box p{font-size:0.9rem;color:var(--text-light)}
+
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.photo-placeholder{aspect-ratio:4/3;background:linear-gradient(135deg,#E8F5E9,#FDF3D7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--text-light);text-align:center;padding:8px;border:1px dashed var(--border)}
+
+.disclaimer{background:#fff;border-radius:10px;padding:16px;margin:24px 0;font-size:0.8rem;color:var(--text-light);box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.disclaimer strong{color:var(--text)}
+
+.cta-box{background:var(--primary);color:#fff;border-radius:12px;padding:32px;text-align:center;margin:24px 0}
+.cta-box h2{font-size:1.3rem;margin-bottom:8px}
+.cta-box p{opacity:0.8;margin-bottom:16px;font-size:0.95rem}
+.cta-btn{display:inline-block;padding:12px 32px;background:var(--secondary);color:var(--primary);border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem}
+.cta-btn:hover{background:#E5B94E}
+
+@media(max-width:600px){.info-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(2,1fr)}}
+@media print{.cta-box,.back-link,.sample-badge{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="index.html" class="back-link">&larr; Back to ViewNam</a>
+
+<div class="report-banner">
+    <div class="logo"><span class="lv">View</span><span class="ln">Nam</span></div>
+    <h1>Vehicle Inspection Report</h1>
+    <div class="sample-badge">Sample Report</div>
+</div>
+
+<div class="info-card">
+    <h2>Vehicle Details</h2>
+    <dl class="info-grid">
+        <dt>Make / Model</dt><dd>Toyota Hilux 2.4 GD-6 SRX</dd>
+        <dt>Year</dt><dd>2019</dd>
+        <dt>Colour</dt><dd>White</dd>
+        <dt>Registration</dt><dd>N 42781 W</dd>
+        <dt>VIN</dt><dd>AHTFZ29G5K0XXXXXX</dd>
+        <dt>Odometer</dt><dd>87,432 km</dd>
+        <dt>Fuel</dt><dd>Diesel</dd>
+        <dt>Transmission</dt><dd>Automatic</dd>
+    </dl>
+</div>
+
+<div class="info-card">
+    <h2>Inspection Details</h2>
+    <dl class="info-grid">
+        <dt>Reference</dt><dd>VN-SAMPLE001</dd>
+        <dt>Date</dt><dd>28 March 2026</dd>
+        <dt>Inspector</dt><dd>David Shikongo</dd>
+        <dt>Region</dt><dd>Windhoek, Khomas</dd>
+        <dt>Service</dt><dd>Full Package</dd>
+        <dt>Client</dt><dd>Johannes M. (Oshakati)</dd>
+    </dl>
+</div>
+
+<!-- Overall Score -->
+<div class="score-card">
+    <div class="score-num">7.5 / 10</div>
+    <div class="score-label">Overall Vehicle Score</div>
+    <div class="rec-badge good">RECOMMENDED — Good buy with minor negotiation</div>
+</div>
+
+<!-- Key Issues -->
+<div class="notes-box">
+    <h3>Key Issues Found</h3>
+    <p>1. Front brake pads worn to ~30% — will need replacement within 10,000 km (~N$1,200)<br>
+    2. Small stone chip on windscreen (driver side, 15mm) — can be repaired (~N$350)<br>
+    3. Minor parking dent on rear right quarter panel — cosmetic only<br>
+    4. Air conditioning blows cool but not ice cold — may need re-gas (~N$600)</p>
+</div>
+
+<div class="notes-box">
+    <h3>Inspector's Advice</h3>
+    <p>This is a solid vehicle overall. The 2.4 GD-6 engine is running well with no fault codes and good oil condition. Transmission shifts smoothly. Body is in good condition with only minor cosmetic marks expected for a 2019 model with 87k km. The brake pads and AC re-gas are the main items — use these to negotiate N$2,000-3,000 off the asking price. At N$280,000 after negotiation, this would be a fair buy.</p>
+</div>
+
+<!-- Exterior -->
+<h2 class="section-title">Exterior Inspection</h2>
+<table>
+<tr><th>Item</th><th>Rating</th><th>Notes</th></tr>
+<tr><td>Front bumper</td><td class="g">Good</td><td>Minor stone chips, normal wear</td></tr>
+<tr><td>Bonnet</td><td class="g">Good</td><td>No dents, paint consistent</td></tr>
+<tr><td>Front fenders (L & R)</td><td class="g">Good</td><td>Clean, no rust</td></tr>
+<tr><td>Front doors (L & R)</td><td class="g">Good</td><td>Seals intact, no play in hinges</td></tr>
+<tr><td>Rear doors (L & R)</td><td class="g">Good</td><td>Clean</td></tr>
+<tr><td>Rear quarters</td><td class="f">Fair</td><td>Small dent on rear right — cosmetic</td></tr>
+<tr><td>Roof</td><td class="g">Good</td><td>No damage</td></tr>
+<tr><td>Boot / tailgate</td><td class="g">Good</td><td>Latch works well</td></tr>
+<tr><td>Rear bumper</td><td class="g">Good</td><td>Tow bar fitted, good condition</td></tr>
+<tr><td>Paint consistency</td><td class="g">Good</td><td>No evidence of respray</td></tr>
+<tr><td>Rust / corrosion</td><td class="g">Good</td><td>None found</td></tr>
+<tr><td>Windscreen</td><td class="f">Fair</td><td>15mm stone chip, repairable</td></tr>
+<tr><td>Headlights</td><td class="g">Good</td><td>Clear, both working</td></tr>
+<tr><td>Tail lights</td><td class="g">Good</td><td>All functions working</td></tr>
+<tr><td>Tyres (all 4)</td><td class="g">Good</td><td>Bridgestone Dueler, ~60% tread remaining</td></tr>
+<tr><td>Spare tyre</td><td class="g">Good</td><td>Present with jack and spanner</td></tr>
+</table>
+
+<!-- Interior -->
+<h2 class="section-title">Interior Inspection</h2>
+<table>
+<tr><th>Item</th><th>Rating</th><th>Notes</th></tr>
+<tr><td>Driver seat</td><td class="g">Good</td><td>Leather, minor bolster wear — normal</td></tr>
+<tr><td>Passenger seat</td><td class="g">Good</td><td>Clean</td></tr>
+<tr><td>Rear seats</td><td class="g">Good</td><td>Minimal wear</td></tr>
+<tr><td>Dashboard</td><td class="g">Good</td><td>No cracks or warping</td></tr>
+<tr><td>Steering wheel</td><td class="g">Good</td><td>Controls all working</td></tr>
+<tr><td>Air conditioning</td><td class="f">Fair</td><td>Blows cool but not cold — likely needs re-gas</td></tr>
+<tr><td>Infotainment</td><td class="g">Good</td><td>Bluetooth, USB, and touchscreen all working</td></tr>
+<tr><td>Electric windows</td><td class="g">Good</td><td>All 4 operate smoothly</td></tr>
+<tr><td>Odometer vs wear</td><td class="g">Good</td><td>Wear consistent with 87k km</td></tr>
+<tr><td>Service book</td><td class="g">Good</td><td>Stamped up to 80,000 km at Toyota Windhoek</td></tr>
+<tr><td>Keys</td><td class="g">Good</td><td>2 keys provided</td></tr>
+</table>
+
+<!-- Mechanical -->
+<h2 class="section-title">Mechanical Inspection + Diagnostics</h2>
+<table>
+<tr><th>Item</th><th>Rating</th><th>Notes</th></tr>
+<tr><td>Engine oil</td><td class="g">Good</td><td>Clean, correct level</td></tr>
+<tr><td>Coolant</td><td class="g">Good</td><td>Correct level, no contamination</td></tr>
+<tr><td>Brake fluid</td><td class="g">Good</td><td>Correct level</td></tr>
+<tr><td>Battery</td><td class="g">Good</td><td>2024 Willard, terminals clean</td></tr>
+<tr><td>Belts & hoses</td><td class="g">Good</td><td>No cracks or fraying</td></tr>
+<tr><td>Oil leaks</td><td class="g">Good</td><td>None found</td></tr>
+<tr><td>Cold start</td><td class="g">Good</td><td>Started immediately, no smoke</td></tr>
+<tr><td>Idle quality</td><td class="g">Good</td><td>Smooth, steady RPM</td></tr>
+<tr><td>Exhaust smoke</td><td class="g">Good</td><td>Clean under acceleration</td></tr>
+<tr><td>Brake pads (front)</td><td class="p">Poor</td><td>~30% remaining, replacement needed soon</td></tr>
+<tr><td>Brake pads (rear)</td><td class="f">Fair</td><td>~50% remaining</td></tr>
+<tr><td>Brake discs</td><td class="g">Good</td><td>No scoring or warping</td></tr>
+<tr><td>Shock absorbers</td><td class="g">Good</td><td>No leaks, bounce test passed</td></tr>
+<tr><td>OBD-II scan</td><td class="g">Good</td><td>No active or pending fault codes</td></tr>
+<tr><td>ABS system</td><td class="g">Good</td><td>No faults</td></tr>
+<tr><td>Airbag system</td><td class="g">Good</td><td>No faults</td></tr>
+</table>
+
+<!-- Test Drive -->
+<h2 class="section-title">Test Drive Assessment</h2>
+<table>
+<tr><th>Item</th><th>Rating</th><th>Notes</th></tr>
+<tr><td>Acceleration</td><td class="g">Good</td><td>Smooth power delivery, turbo responsive</td></tr>
+<tr><td>Gear changes (auto)</td><td class="g">Good</td><td>Shifts are smooth, no jerking</td></tr>
+<tr><td>Steering response</td><td class="g">Good</td><td>Sharp, no play</td></tr>
+<tr><td>Vehicle pulls L/R</td><td class="g">Good</td><td>Tracks straight</td></tr>
+<tr><td>Braking</td><td class="g">Good</td><td>Stops straight, firm pedal</td></tr>
+<tr><td>Suspension</td><td class="g">Good</td><td>Comfortable, no clunks over bumps</td></tr>
+<tr><td>Road noise</td><td class="g">Good</td><td>Normal levels</td></tr>
+<tr><td>4x4 system</td><td class="g">Good</td><td>Engages and disengages cleanly</td></tr>
+</table>
+
+<!-- Photo Placeholders -->
+<h2 class="section-title">Photo Documentation (60+ photos)</h2>
+<div class="photo-grid">
+    <div class="photo-placeholder">Front view</div>
+    <div class="photo-placeholder">Rear view</div>
+    <div class="photo-placeholder">Driver side</div>
+    <div class="photo-placeholder">Passenger side</div>
+    <div class="photo-placeholder">Dashboard / Odo</div>
+    <div class="photo-placeholder">Engine bay</div>
+    <div class="photo-placeholder">Tyres close-up</div>
+    <div class="photo-placeholder">Windscreen chip</div>
+    <div class="photo-placeholder">Rear dent</div>
+    <div class="photo-placeholder">OBD scan result</div>
+    <div class="photo-placeholder">Service book</div>
+    <div class="photo-placeholder">Boot / Spare</div>
+</div>
+
+<!-- Estimated Repairs -->
+<div class="notes-box">
+    <h3>Estimated Repair Costs</h3>
+    <p>Front brake pads: ~N$1,200<br>
+    Windscreen chip repair: ~N$350<br>
+    AC re-gas: ~N$600<br>
+    <strong>Total estimated: ~N$2,150</strong></p>
+</div>
+
+<!-- Disclaimer -->
+<div class="disclaimer">
+    <strong>Disclaimer:</strong> This report is an advisory assessment based on examination at the time of inspection. It does not constitute a warranty or guarantee of vehicle condition. Some defects may not be detectable during a single inspection. The purchase decision remains solely with the buyer. ViewNam accepts no liability for issues not identified during inspection.
+</div>
+
+<!-- CTA -->
+<div class="cta-box">
+    <h2>Want a report like this?</h2>
+    <p>Book your inspection today — from N$650</p>
+    <a href="index.html#booking" class="cta-btn">Book an Inspection</a>
+</div>
+
+<p style="text-align:center;color:#95A5A6;font-size:0.8rem;padding:16px 0;">&copy; 2026 ViewNam. Confidential Inspection Report.</p>
+
+</div>
+</body>
+</html>

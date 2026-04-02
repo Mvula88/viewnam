@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNam — Vehicle Inspection Checklist</title>
+    <style>
+        :root {
+            --primary: #0B3D2E;
+            --secondary: #D4A843;
+            --good: #27AE60;
+            --fair: #F39C12;
+            --poor: #E74C3C;
+            --na: #95A5A6;
+            --border: #DEE2E6;
+            --bg: #F8F9FA;
+            --text: #1A1A2E;
+            --text-light: #5A5A6E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            background: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .doc-header {
+            text-align: center;
+            padding: 32px 0;
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 32px;
+        }
+
+        .doc-header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .doc-header .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .doc-header .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .logo-view { color: var(--primary); }
+        .logo-nam { color: var(--secondary); }
+
+        .doc-header .version {
+            font-size: 0.8rem;
+            color: var(--na);
+            margin-top: 8px;
+        }
+
+        /* Booking Info */
+        .booking-info {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .booking-info h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-field label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-field .field-line {
+            border-bottom: 1px solid var(--border);
+            min-height: 28px;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Service Tags */
+        .service-selector {
+            margin-bottom: 32px;
+            padding: 20px 24px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .service-selector h3 {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .service-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .service-tag input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        /* Rating Legend */
+        .rating-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.good { background: var(--good); }
+        .legend-dot.fair { background: var(--fair); }
+        .legend-dot.poor { background: var(--poor); }
+        .legend-dot.na { background: var(--na); }
+
+        /* Sections */
+        .checklist-section {
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .section-header .service-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-desc {
+            padding: 12px 20px;
+            background: var(--bg);
+            font-size: 0.8rem;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border);
+            font-style: italic;
+        }
+
+        /* Checklist Table */
+        .check-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .check-table th {
+            background: var(--bg);
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .check-table th:first-child {
+            text-align: left;
+            width: 40%;
+        }
+
+        .check-table th.rating-col {
+            width: 60px;
+        }
+
+        .check-table th.photo-col {
+            width: 50px;
+        }
+
+        .check-table th.notes-col {
+            width: 30%;
+        }
+
+        .check-table td {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .check-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check-table .item-name {
+            font-weight: 500;
+        }
+
+        .check-table .item-desc {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .check-table td:not(:first-child) {
+            text-align: center;
+        }
+
+        .check-table .notes-col td,
+        .check-table td:last-child {
+            text-align: left;
+        }
+
+        .rating-cell {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .sub-header td {
+            background: var(--bg);
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--primary);
+            padding: 8px 12px !important;
+        }
+
+        /* Notes Area */
+        .notes-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .notes-area label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .notes-lines {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            min-height: 80px;
+            padding: 8px 12px;
+        }
+
+        /* Photo Log */
+        .photo-section {
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .photo-grid-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+        }
+
+        .photo-grid-header h2 {
+            font-size: 1rem;
+        }
+
+        .photo-requirements {
+            padding: 16px 20px;
+        }
+
+        .photo-requirements h3 {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .photo-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 24px;
+        }
+
+        .photo-list li {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            padding: 4px 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .photo-list li::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .photo-divider {
+            border-top: 1px solid var(--border);
+        }
+
+        /* Summary / Recommendation */
+        .summary-section {
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .summary-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+        }
+
+        .summary-header h2 {
+            font-size: 1rem;
+        }
+
+        .summary-body {
+            padding: 24px 20px;
+        }
+
+        .overall-score {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .score-circle span {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .recommendation-box {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .rec-option {
+            flex: 1;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .rec-option.buy { border-color: var(--good); color: var(--good); }
+        .rec-option.caution { border-color: var(--fair); color: var(--fair); }
+        .rec-option.avoid { border-color: var(--poor); color: var(--poor); }
+
+        .rec-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .summary-notes label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .summary-notes .notes-lines {
+            min-height: 100px;
+        }
+
+        /* Sign-off */
+        .signoff {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .signoff h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .signoff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .sig-box label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 40px;
+        }
+
+        .sig-line {
+            border-bottom: 1px solid var(--text);
+            margin-bottom: 4px;
+        }
+
+        .sig-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Print Styles */
+        @media print {
+            body { font-size: 11px; }
+            .container { padding: 0; max-width: 100%; }
+            .checklist-section { break-inside: avoid; }
+            .no-print { display: none; }
+            .doc-header { padding: 16px 0; margin-bottom: 16px; }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .photo-list { grid-template-columns: 1fr; }
+            .recommendation-box { flex-direction: column; }
+            .signoff-grid { grid-template-columns: 1fr; }
+            .service-tags { flex-direction: column; }
+            .check-table th.notes-col { width: 25%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="doc-header">
+            <div class="logo"><span class="logo-view">View</span><span class="logo-nam">Nam</span></div>
+            <h1>Vehicle Inspection Checklist</h1>
+            <p class="subtitle">Standardised Inspection Report — For Inspector Use</p>
+            <p class="version">Version 1.0 — March 2026</p>
+        </div>
+
+        <!-- Booking Information -->
+        <div class="booking-info">
+            <h2>Booking & Vehicle Information</h2>
+            <div class="info-grid">
+                <div class="info-field">
+                    <label>Reference Number</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Inspection Date</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Inspector Name</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Inspector Region / Town</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Client Name</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Client WhatsApp</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Vehicle Make & Model</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Year</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Registration Number</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>VIN / Chassis Number</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Odometer (km)</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Colour</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Fuel Type</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Transmission (Auto / Manual)</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Seller Name</label>
+                    <div class="field-line"></div>
+                </div>
+                <div class="info-field">
+                    <label>Seller Contact</label>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Being Performed -->
+        <div class="service-selector">
+            <h3>Services Being Performed (tick applicable)</h3>
+            <div class="service-tags">
+                <label class="service-tag"><input type="checkbox"> Full Package</label>
+                <label class="service-tag"><input type="checkbox"> Visual Inspection</label>
+                <label class="service-tag"><input type="checkbox"> Mechanical + Diagnostics</label>
+                <label class="service-tag"><input type="checkbox"> Test Drive</label>
+            </div>
+        </div>
+
+        <!-- Rating Legend -->
+        <div class="rating-legend">
+            <strong>Rating Key:</strong>
+            <div class="legend-item"><div class="legend-dot good"></div> G = Good</div>
+            <div class="legend-item"><div class="legend-dot fair"></div> F = Fair (minor issue)</div>
+            <div class="legend-item"><div class="legend-dot poor"></div> P = Poor (major issue)</div>
+            <div class="legend-item"><div class="legend-dot na"></div> N/A = Not Applicable</div>
+        </div>
+
+        <!-- ========================================
+             SECTION 1: EXTERIOR VISUAL INSPECTION
+             ======================================== -->
+        <div class="checklist-section">
+            <div class="section-header">
+                <h2>1. Exterior Visual Inspection</h2>
+                <span class="service-badge">Visual / Full Package</span>
+            </div>
+            <p class="section-desc">Walk around the vehicle in good light. Check every panel systematically. Photograph all defects.</p>
+            <table class="check-table">
+                <thead>
+                    <tr>
+                        <th>Inspection Point</th>
+                        <th class="rating-col">G</th>
+                        <th class="rating-col">F</th>
+                        <th class="rating-col">P</th>
+                        <th class="rating-col">N/A</th>
+                        <th class="photo-col">Photo</th>
+                        <th class="notes-col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sub-header"><td colspan="7">Body Panels & Paintwork</td></tr>
+                    <tr>
+                        <td><div class="item-name">Front bumper</div><div class="item-desc">Cracks, scratches, alignment</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Bonnet / Hood</div><div class="item-desc">Dents, paint condition, alignment with fenders</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Front fenders (L & R)</div><div class="item-desc">Dents, rust, colour match, panel gaps</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Front doors (L & R)</div><div class="item-desc">Dents, hinges, panel gaps, seal condition</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear doors (L & R)</div><div class="item-desc">Dents, hinges, panel gaps, seal condition</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear fenders / quarters (L & R)</div><div class="item-desc">Dents, rust, accident repair signs</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Roof</div><div class="item-desc">Hail damage, dents, rust, repaint signs</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Boot lid / Tailgate</div><div class="item-desc">Alignment, dents, latch operation</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear bumper</div><div class="item-desc">Cracks, scratches, alignment, tow bar damage</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Paint consistency</div><div class="item-desc">Colour match between panels, overspray signs, orange peel</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rust / Corrosion</div><div class="item-desc">Wheel arches, sills, underbody visible areas, door bottoms</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Glass & Lights</td></tr>
+                    <tr>
+                        <td><div class="item-name">Windscreen</div><div class="item-desc">Chips, cracks, visibility, wiper scratches</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Side windows</div><div class="item-desc">Scratches, tint condition, operation</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear windscreen</div><div class="item-desc">Cracks, defroster lines intact</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Headlights (L & R)</div><div class="item-desc">Clarity, cracks, moisture, operation (low/high beam)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Tail lights (L & R)</div><div class="item-desc">Cracks, moisture, operation (brake, reverse, indicator)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Fog lights & indicators</div><div class="item-desc">Operation, condition</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Side mirrors</div><div class="item-desc">Condition, electric adjustment, folding</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Wheels & Tyres</td></tr>
+                    <tr>
+                        <td><div class="item-name">Front left tyre</div><div class="item-desc">Brand, tread depth (mm), sidewall condition, age</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Front right tyre</div><div class="item-desc">Brand, tread depth (mm), sidewall condition, age</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear left tyre</div><div class="item-desc">Brand, tread depth (mm), sidewall condition, age</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear right tyre</div><div class="item-desc">Brand, tread depth (mm), sidewall condition, age</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Spare tyre</div><div class="item-desc">Present, condition, tools (jack, spanner)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rims / Mag wheels</div><div class="item-desc">Kerb damage, cracks, matching set</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Uneven tyre wear</div><div class="item-desc">Indicates alignment / suspension issues</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>Exterior Notes & Observations</label>
+                <div class="notes-lines"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             SECTION 2: INTERIOR INSPECTION
+             ======================================== -->
+        <div class="checklist-section">
+            <div class="section-header">
+                <h2>2. Interior Inspection</h2>
+                <span class="service-badge">Visual / Full Package</span>
+            </div>
+            <table class="check-table">
+                <thead>
+                    <tr>
+                        <th>Inspection Point</th>
+                        <th class="rating-col">G</th>
+                        <th class="rating-col">F</th>
+                        <th class="rating-col">P</th>
+                        <th class="rating-col">N/A</th>
+                        <th class="photo-col">Photo</th>
+                        <th class="notes-col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sub-header"><td colspan="7">Seats & Upholstery</td></tr>
+                    <tr>
+                        <td><div class="item-name">Driver seat</div><div class="item-desc">Wear, tears, stains, bolster condition, adjustment</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Passenger seat</div><div class="item-desc">Wear, tears, stains, adjustment</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Rear seats</div><div class="item-desc">Condition, folding mechanism, child seat anchors</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Seat belts (all)</div><div class="item-desc">Retraction, buckle operation, fraying</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Carpet & floor mats</div><div class="item-desc">Wear, stains, dampness (water leak sign)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Headliner (roof lining)</div><div class="item-desc">Sagging, stains, tears</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Dashboard & Controls</td></tr>
+                    <tr>
+                        <td><div class="item-name">Dashboard condition</div><div class="item-desc">Cracks, warping, sun damage</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Steering wheel</div><div class="item-desc">Wear, controls, play/looseness</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Instrument cluster</div><div class="item-desc">All gauges working, warning lights at ignition</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Infotainment / Radio</div><div class="item-desc">Operation, Bluetooth, USB, speakers</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Air conditioning</div><div class="item-desc">Blows cold, all fan speeds, no unusual smells</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Heater</div><div class="item-desc">Blows warm, demister works</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Electric windows</div><div class="item-desc">All four operate smoothly, auto up/down</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Central locking & key fob</div><div class="item-desc">All doors, boot, remote operation</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Wipers & washers</div><div class="item-desc">Front and rear operation, washer fluid</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Horn</div><div class="item-desc">Operational</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Interior lights</div><div class="item-desc">Map lights, dome light, boot light</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Boot / Cargo Area</td></tr>
+                    <tr>
+                        <td><div class="item-name">Boot condition</div><div class="item-desc">Carpet, lining, dampness, smell</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Boot floor / spare well</div><div class="item-desc">Rust, water damage, structural integrity</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Odometer & Documents</td></tr>
+                    <tr>
+                        <td><div class="item-name">Odometer reading</div><div class="item-desc">Record exact km, check if consistent with wear</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Pedal wear vs odometer</div><div class="item-desc">Heavily worn pedals on "low-km" car = red flag</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Number of keys provided</div><div class="item-desc">Record how many keys the seller has</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Service book present</div><div class="item-desc">Photograph all stamped pages if available</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>Interior Notes & Observations</label>
+                <div class="notes-lines"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             SECTION 3: MECHANICAL INSPECTION
+             ======================================== -->
+        <div class="checklist-section">
+            <div class="section-header">
+                <h2>3. Mechanical Inspection</h2>
+                <span class="service-badge">Mechanical + Diagnostics / Full Package</span>
+            </div>
+            <p class="section-desc">Inspect with engine cold first, then after warm-up. Note any unusual smells, sounds, or visible leaks.</p>
+            <table class="check-table">
+                <thead>
+                    <tr>
+                        <th>Inspection Point</th>
+                        <th class="rating-col">G</th>
+                        <th class="rating-col">F</th>
+                        <th class="rating-col">P</th>
+                        <th class="rating-col">N/A</th>
+                        <th class="photo-col">Photo</th>
+                        <th class="notes-col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sub-header"><td colspan="7">Engine Bay (Cold Start)</td></tr>
+                    <tr>
+                        <td><div class="item-name">Engine oil level & condition</div><div class="item-desc">Dipstick check — colour, consistency, milky = head gasket</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Coolant level & condition</div><div class="item-desc">Reservoir level, colour, oil contamination</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Brake fluid level</div><div class="item-desc">Reservoir level, colour (dark = old)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Power steering fluid</div><div class="item-desc">Level, leaks (if hydraulic system)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Transmission fluid</div><div class="item-desc">Level, colour, smell (burnt = problem)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Battery</div><div class="item-desc">Age, terminal corrosion, secure mounting, voltage</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Belts & hoses</div><div class="item-desc">Cracking, fraying, tension, leaking hoses</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Air filter</div><div class="item-desc">Clean, dirty, or needs replacement</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Visible oil leaks</div><div class="item-desc">Engine block, sump, rocker cover, turbo lines</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Coolant leaks</div><div class="item-desc">Radiator, hoses, water pump, heater core</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Engine Running</td></tr>
+                    <tr>
+                        <td><div class="item-name">Cold start behaviour</div><div class="item-desc">Starts easily, cranking time, smoke on start</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Idle quality</div><div class="item-desc">Smooth, rough, hunting/surging RPM</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Exhaust smoke</div><div class="item-desc">Blue = oil, White = coolant, Black = fuel. Note colour</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Unusual engine noises</div><div class="item-desc">Knocking, ticking, whining, rattling</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Temperature gauge</div><div class="item-desc">Reaches normal and holds steady, no overheating</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Radiator fans</div><div class="item-desc">Engage when engine reaches temperature</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Undercarriage (visual from below)</td></tr>
+                    <tr>
+                        <td><div class="item-name">Exhaust system</div><div class="item-desc">Rust, holes, leaks, loose mountings, catalytic converter</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Sump / oil pan</div><div class="item-desc">Leaks, damage, drain plug condition</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">CV boots / drive shafts</div><div class="item-desc">Torn boots, grease leaks</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Chassis / subframe</div><div class="item-desc">Rust, cracks, accident damage, welding repairs</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Brakes & Suspension</td></tr>
+                    <tr>
+                        <td><div class="item-name">Brake pads (front)</div><div class="item-desc">Thickness estimate, wear indicator</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Brake discs (front)</div><div class="item-desc">Scoring, lip, warping</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Brake pads & discs (rear)</div><div class="item-desc">Condition assessment</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Handbrake</div><div class="item-desc">Holds on incline, travel, adjustment</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Shock absorbers</div><div class="item-desc">Bounce test, visible leaks, worn bushings</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Springs</div><div class="item-desc">Sagging, broken coils, vehicle sitting level</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Bushings & ball joints</div><div class="item-desc">Play, cracking, clunking</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>Mechanical Notes & Observations</label>
+                <div class="notes-lines"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             SECTION 4: OBD-II DIAGNOSTICS
+             ======================================== -->
+        <div class="checklist-section">
+            <div class="section-header">
+                <h2>4. OBD-II Diagnostics Scan</h2>
+                <span class="service-badge">Mechanical + Diagnostics / Full Package</span>
+            </div>
+            <p class="section-desc">Connect OBD-II scanner. Record all fault codes (active and pending). Photograph the scanner screen.</p>
+            <table class="check-table">
+                <thead>
+                    <tr>
+                        <th>Inspection Point</th>
+                        <th class="rating-col">G</th>
+                        <th class="rating-col">F</th>
+                        <th class="rating-col">P</th>
+                        <th class="rating-col">N/A</th>
+                        <th class="photo-col">Photo</th>
+                        <th class="notes-col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><div class="item-name">Check Engine Light (CEL)</div><div class="item-desc">On, off, or cleared recently</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Active fault codes</div><div class="item-desc">List all current DTCs</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Pending fault codes</div><div class="item-desc">Codes not yet triggering CEL</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">ABS system</div><div class="item-desc">Fault codes, warning light status</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Airbag (SRS) system</div><div class="item-desc">Fault codes, warning light status</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Transmission codes</div><div class="item-desc">Any gearbox or TCU faults</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Readiness monitors</div><div class="item-desc">All complete, or recently cleared (red flag)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>Fault Code Details (list all codes with descriptions)</label>
+                <div class="notes-lines" style="min-height: 120px;"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             SECTION 5: TEST DRIVE
+             ======================================== -->
+        <div class="checklist-section">
+            <div class="section-header">
+                <h2>5. Test Drive Assessment</h2>
+                <span class="service-badge">Test Drive / Full Package</span>
+            </div>
+            <p class="section-desc">Drive at least 10-15 km covering urban and highway conditions where possible. Test all gears and braking scenarios.</p>
+            <table class="check-table">
+                <thead>
+                    <tr>
+                        <th>Inspection Point</th>
+                        <th class="rating-col">G</th>
+                        <th class="rating-col">F</th>
+                        <th class="rating-col">P</th>
+                        <th class="rating-col">N/A</th>
+                        <th class="photo-col">Photo</th>
+                        <th class="notes-col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sub-header"><td colspan="7">Engine & Power</td></tr>
+                    <tr>
+                        <td><div class="item-name">Acceleration</div><div class="item-desc">Smooth power delivery, no hesitation or misfires</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Turbo (if applicable)</div><div class="item-desc">Boost response, lag, wastegate sounds</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Engine noise under load</div><div class="item-desc">Knocking, tapping, whining at higher RPM</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Exhaust smoke under acceleration</div><div class="item-desc">Smoke colour and amount when pushing throttle</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Transmission</td></tr>
+                    <tr>
+                        <td><div class="item-name">Gear changes (auto)</div><div class="item-desc">Smooth shifts, no jerking, no slipping, no delay</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Clutch (manual)</div><div class="item-desc">Bite point, slipping under load, judder</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Gear selection (manual)</div><div class="item-desc">All gears engage smoothly, no crunching</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Reverse gear</div><div class="item-desc">Engages cleanly, no grinding</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">4x4 system (if applicable)</div><div class="item-desc">Engages and disengages, diff lock, low range</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">Steering, Suspension & Brakes</td></tr>
+                    <tr>
+                        <td><div class="item-name">Steering response</div><div class="item-desc">Sharp, not vague, no excessive play</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Vehicle pulls left/right</div><div class="item-desc">Hands-off straight-line test (safe conditions)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Steering wheel vibration</div><div class="item-desc">At speed — wheel balance. Under braking — warped discs</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Suspension over bumps</div><div class="item-desc">Clunking, excessive bouncing, bottoming out</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Braking performance</div><div class="item-desc">Stops straight, no grinding, pedal feel firm</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">ABS activation</div><div class="item-desc">Pedal pulsation on hard braking (normal)</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="sub-header"><td colspan="7">General Driving Impressions</td></tr>
+                    <tr>
+                        <td><div class="item-name">Road noise</div><div class="item-desc">Excessive wind or tyre noise, wheel bearing hum</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Unusual rattles or squeaks</div><div class="item-desc">Dashboard, doors, undercarriage</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Cruise control (if fitted)</div><div class="item-desc">Engages, holds speed, disengages properly</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><div class="item-name">Warning lights during drive</div><div class="item-desc">Any dashboard warnings that appear while driving</div></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td><span class="rating-cell"></span></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notes-area">
+                <label>Test Drive Notes & Observations</label>
+                <div class="notes-lines"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             PHOTO LOG
+             ======================================== -->
+        <div class="photo-section">
+            <div class="photo-grid-header">
+                <h2>6. Required Photo Checklist</h2>
+            </div>
+            <div class="photo-requirements">
+                <h3>Exterior — Minimum Required</h3>
+                <ul class="photo-list">
+                    <li>Front view (straight on)</li>
+                    <li>Rear view (straight on)</li>
+                    <li>Driver side (full length)</li>
+                    <li>Passenger side (full length)</li>
+                    <li>Front 3/4 angle (driver side)</li>
+                    <li>Rear 3/4 angle (passenger side)</li>
+                    <li>Roof (from above or angled)</li>
+                    <li>Each wheel/tyre close-up (x4)</li>
+                    <li>Windscreen condition</li>
+                    <li>Headlights close-up (both)</li>
+                    <li>Tail lights close-up (both)</li>
+                    <li>All body damage / defects found</li>
+                </ul>
+            </div>
+            <div class="photo-requirements photo-divider">
+                <h3>Interior — Minimum Required</h3>
+                <ul class="photo-list">
+                    <li>Dashboard (full view)</li>
+                    <li>Instrument cluster / odometer</li>
+                    <li>Driver seat</li>
+                    <li>Rear seats</li>
+                    <li>Steering wheel</li>
+                    <li>Infotainment / radio</li>
+                    <li>Boot / cargo area</li>
+                    <li>Spare wheel well</li>
+                    <li>Pedals (wear check)</li>
+                    <li>Service book pages (if available)</li>
+                    <li>Keys (how many)</li>
+                    <li>All interior defects found</li>
+                </ul>
+            </div>
+            <div class="photo-requirements photo-divider">
+                <h3>Mechanical — Minimum Required</h3>
+                <ul class="photo-list">
+                    <li>Engine bay (full view)</li>
+                    <li>Oil dipstick close-up</li>
+                    <li>Coolant reservoir</li>
+                    <li>Battery</li>
+                    <li>Belts & hoses</li>
+                    <li>Undercarriage (from front)</li>
+                    <li>Exhaust system</li>
+                    <li>Any leaks or damage found</li>
+                    <li>VIN plate</li>
+                    <li>OBD scanner screen (all codes)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========================================
+             OVERALL SUMMARY & RECOMMENDATION
+             ======================================== -->
+        <div class="summary-section">
+            <div class="summary-header">
+                <h2>7. Overall Summary & Recommendation</h2>
+            </div>
+            <div class="summary-body">
+                <div class="overall-score">
+                    <div class="score-circle">
+                        <span>_ /10</span>
+                    </div>
+                    <div>
+                        <strong>Overall Vehicle Score</strong>
+                        <p class="score-label">Based on all inspected areas. 10 = excellent condition, 1 = major concerns throughout.</p>
+                    </div>
+                </div>
+
+                <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; display: block; margin-bottom: 12px;">Inspector's Recommendation</label>
+                <div class="recommendation-box">
+                    <div class="rec-option buy">
+                        <div class="rec-checkbox"></div><br>
+                        RECOMMENDED<br>
+                        <span style="font-size: 0.75rem; font-weight: 400;">Good buy — minor issues only</span>
+                    </div>
+                    <div class="rec-option caution">
+                        <div class="rec-checkbox"></div><br>
+                        PROCEED WITH CAUTION<br>
+                        <span style="font-size: 0.75rem; font-weight: 400;">Fair condition — negotiate price</span>
+                    </div>
+                    <div class="rec-option avoid">
+                        <div class="rec-checkbox"></div><br>
+                        NOT RECOMMENDED<br>
+                        <span style="font-size: 0.75rem; font-weight: 400;">Significant issues — walk away</span>
+                    </div>
+                </div>
+
+                <div class="summary-notes">
+                    <label>Key Issues Found (top 3–5 concerns)</label>
+                    <div class="notes-lines"></div>
+                </div>
+
+                <br>
+
+                <div class="summary-notes">
+                    <label>Estimated Repair Costs (if applicable)</label>
+                    <div class="notes-lines"></div>
+                </div>
+
+                <br>
+
+                <div class="summary-notes">
+                    <label>Overall Inspector Comments & Advice to Buyer</label>
+                    <div class="notes-lines" style="min-height: 120px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sign-off -->
+        <div class="signoff">
+            <h2>Inspector Sign-Off</h2>
+            <div class="signoff-grid">
+                <div class="sig-box">
+                    <label>Inspector Name</label>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Print name</div>
+                </div>
+                <div class="sig-box">
+                    <label>Signature</label>
+                    <div class="sig-line"></div>
+                    <div class="sig-label">Sign here</div>
+                </div>
+                <div class="sig-box">
+                    <label>Date</label>
+                    <div class="sig-line"></div>
+                </div>
+                <div class="sig-box">
+                    <label>Time Completed</label>
+                    <div class="sig-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div style="padding: 20px; background: var(--bg); border-radius: 8px; margin-bottom: 32px; border: 1px solid var(--border);">
+            <p style="font-size: 0.8rem; color: var(--text-light); line-height: 1.6;">
+                <strong>Disclaimer:</strong> This inspection report is an advisory assessment based on a visual and/or mechanical examination at the time of inspection. It does not constitute a warranty or guarantee of the vehicle's condition. Some defects may not be detectable during a single inspection (e.g., intermittent electrical faults, hidden structural damage). The final purchase decision remains solely with the buyer. ViewNam and its inspectors accept no liability for issues not identified during the inspection. This report is confidential and prepared solely for the named client.
+            </p>
+        </div>
+
+        <div style="text-align: center; padding: 20px; color: var(--na); font-size: 0.8rem;">
+            <div class="logo" style="margin-bottom: 4px;"><span class="logo-view">View</span><span class="logo-nam">Nam</span></div>
+            &copy; 2026 ViewNam. Confidential Inspection Report.
+        </div>
+
+    </div>
+</body>
+</html>
