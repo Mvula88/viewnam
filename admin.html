@@ -70,7 +70,22 @@
         .panel{display:none}
         .panel.active{display:block}
 
-        @media(max-width:768px){.booking-card,.inspector-card{grid-template-columns:1fr}}
+        /* Modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;display:none}
+        .modal-overlay.open{display:flex}
+        .modal{background:#fff;border-radius:16px;padding:28px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+        .modal h2{font-size:1.1rem;color:var(--primary);margin-bottom:16px}
+        .modal .field{margin-bottom:12px}
+        .modal .field label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-light);margin-bottom:4px}
+        .modal .field input,.modal .field select,.modal .field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit}
+        .modal .field input:focus,.modal .field select:focus,.modal .field textarea:focus{outline:none;border-color:var(--primary)}
+        .modal .field textarea{min-height:70px;resize:vertical}
+        .modal .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .modal-actions{display:flex;gap:10px;margin-top:16px}
+        .modal-actions .btn{flex:1}
+        .btn-cancel{background:var(--bg);color:var(--text);border:1.5px solid var(--border);padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+
+        @media(max-width:768px){.booking-card,.inspector-card{grid-template-columns:1fr}.modal .field-row{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -123,8 +138,90 @@
             </select>
             <input type="text" id="filterInspectorSearch" placeholder="Search name, town...">
             <button class="btn btn-primary" onclick="loadInspectors()">Refresh</button>
+            <button class="btn btn-primary" onclick="openAddInspector()">+ Add Inspector</button>
         </div>
         <div id="inspectorsList"><div class="loading">Loading inspectors...</div></div>
+    </div>
+</div>
+
+<!-- Add Inspector Modal -->
+<div class="modal-overlay" id="addInspectorModal">
+    <div class="modal">
+        <h2>Add Inspector</h2>
+        <form id="addInspectorForm">
+            <div class="field-row">
+                <div class="field">
+                    <label>Full Name *</label>
+                    <input type="text" id="ai_name" required placeholder="Inspector's full name">
+                </div>
+                <div class="field">
+                    <label>Phone (WhatsApp) *</label>
+                    <input type="tel" id="ai_phone" required placeholder="+264 81 ...">
+                </div>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" id="ai_email" placeholder="email@example.com">
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Town *</label>
+                    <input type="text" id="ai_town" required placeholder="e.g. Windhoek">
+                </div>
+                <div class="field">
+                    <label>Region *</label>
+                    <select id="ai_region" required>
+                        <option value="">Select</option>
+                        <option>Khomas</option><option>Erongo</option><option>Oshana</option>
+                        <option>Oshikoto</option><option>Ohangwena</option><option>Omusati</option>
+                        <option>Kavango East</option><option>Kavango West</option><option>Zambezi</option>
+                        <option>Kunene</option><option>Otjozondjupa</option><option>Omaheke</option>
+                        <option>Hardap</option><option>//Karas</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Experience</label>
+                <textarea id="ai_experience" placeholder="Mechanic, spare parts, auction buyer, etc."></textarea>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>OBD Scanner?</label>
+                    <select id="ai_obd">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                        <option value="willing">Willing to get one</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Own Transport?</label>
+                    <select id="ai_transport">
+                        <option value="">Select</option>
+                        <option value="yes-car">Yes, own car</option>
+                        <option value="yes-bike">Yes, motorbike</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Status</label>
+                    <select id="ai_status">
+                        <option value="active">Active</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Login PIN (4 digits)</label>
+                    <input type="text" id="ai_pin" placeholder="e.g. 1234" maxlength="6">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeAddInspector()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Inspector</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -399,6 +496,46 @@ document.getElementById('filterStatus').addEventListener('change', renderBooking
 document.getElementById('filterSearch').addEventListener('input', renderBookings);
 document.getElementById('filterInspectorStatus').addEventListener('change', renderInspectors);
 document.getElementById('filterInspectorSearch').addEventListener('input', renderInspectors);
+
+// --- Add Inspector Modal ---
+function openAddInspector() {
+    document.getElementById('addInspectorModal').classList.add('open');
+}
+
+function closeAddInspector() {
+    document.getElementById('addInspectorModal').classList.remove('open');
+    document.getElementById('addInspectorForm').reset();
+}
+
+document.getElementById('addInspectorModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('addInspectorModal')) closeAddInspector();
+});
+
+document.getElementById('addInspectorForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+        name: document.getElementById('ai_name').value,
+        phone: document.getElementById('ai_phone').value,
+        email: document.getElementById('ai_email').value || null,
+        town: document.getElementById('ai_town').value,
+        region: document.getElementById('ai_region').value,
+        experience: document.getElementById('ai_experience').value || null,
+        has_obd: document.getElementById('ai_obd').value,
+        has_transport: document.getElementById('ai_transport').value || null,
+        status: document.getElementById('ai_status').value,
+        pin: document.getElementById('ai_pin').value || null,
+    };
+
+    const { error } = await supabase.from('inspectors').insert(data);
+    if (error) {
+        alert('Error: ' + error.message);
+        return;
+    }
+
+    closeAddInspector();
+    loadInspectors();
+    alert('Inspector added successfully.');
+});
 
 // --- Init ---
 loadInspectors().then(() => loadBookings());
