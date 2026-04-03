@@ -243,18 +243,17 @@ h3 { font-size: 1.25rem; }
 
 .hero-image {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding: 60px 0;
+    padding: 0;
+    align-self: end;
 }
 
 .hero-image img {
     width: 100%;
-    max-width: 480px;
-    border-radius: 16px;
-    object-fit: cover;
-    aspect-ratio: 4/5;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    max-width: 520px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
 }
 
 .hero-badge {
@@ -1521,12 +1520,12 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero-image {
-        padding: 0 0 40px;
+        padding: 0 0 20px;
+        justify-content: center;
     }
 
     .hero-image img {
-        aspect-ratio: 16/10;
-        max-width: 100%;
+        max-width: 320px;
     }
 
     .hero-stats {
