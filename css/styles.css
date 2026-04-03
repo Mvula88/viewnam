@@ -803,30 +803,32 @@ h3 { font-size: 1.25rem; }
     background: var(--bg-light);
 }
 
-.testimonial-list {
-    max-width: 700px;
-    margin: 0 auto;
+.testimonial-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-.testimonial-item {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
+.testimonial-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px;
     margin: 0;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.testimonial-item:last-child {
-    border-bottom: none;
-}
-
-.testimonial-item p {
-    font-size: 1.05rem;
+.testimonial-card p {
+    font-size: 0.95rem;
     line-height: 1.7;
     color: var(--text);
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     font-style: italic;
 }
 
-.testimonial-item cite {
+.testimonial-card cite {
     font-style: normal;
     font-size: 0.85rem;
     color: var(--text-muted);
@@ -1447,6 +1449,10 @@ h3 { font-size: 1.25rem; }
         grid-template-columns: 1fr;
         max-width: 400px;
         margin: 0 auto;
+    }
+
+    .testimonial-row {
+        grid-template-columns: 1fr;
     }
 
     .form-row {
