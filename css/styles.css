@@ -358,35 +358,26 @@ h3 { font-size: 1.25rem; }
     border-bottom: 1px solid var(--border);
 }
 
-.problem-list {
+.problem-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    max-width: 900px;
-    margin: 0 auto;
+    gap: 20px;
 }
 
-.problem-item {
-    padding: 0 28px;
-    border-right: 1px solid var(--border);
+.problem-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px;
+    border: 1px solid var(--border);
 }
 
-.problem-item:first-child {
-    padding-left: 0;
-}
-
-.problem-item:last-child {
-    border-right: none;
-    padding-right: 0;
-}
-
-.problem-item h3 {
+.problem-card h3 {
     margin-bottom: 8px;
     font-size: 1.05rem;
     color: var(--primary);
 }
 
-.problem-item p {
+.problem-card p {
     color: var(--text-light);
     font-size: 0.9rem;
     line-height: 1.65;
@@ -447,38 +438,34 @@ h3 { font-size: 1.25rem; }
     background: var(--bg-light);
 }
 
-.steps-grid {
+.steps-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    max-width: 900px;
-    margin: 0 auto;
+    gap: 20px;
 }
 
-.step-item {
-    padding: 32px 28px;
-    border-right: 1px solid var(--border);
-}
-
-.step-item:last-child {
-    border-right: none;
+.step-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px;
+    border: 1px solid var(--border);
 }
 
 .step-num {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     font-weight: 800;
     color: var(--secondary);
     line-height: 1;
-    margin-bottom: 16px;
-    opacity: 0.7;
+    margin-bottom: 14px;
+    opacity: 0.6;
 }
 
-.step-text h3 {
+.step-card h3 {
     margin-bottom: 8px;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
-.step-text p {
+.step-card p {
     color: var(--text-light);
     font-size: 0.9rem;
     line-height: 1.65;
@@ -487,38 +474,25 @@ h3 { font-size: 1.25rem; }
 /* ===========================
    Services
    =========================== */
-.services-list {
+.services-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    max-width: 800px;
-    margin: 0 auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-.service-row {
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border);
+.service-card {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 28px;
+    border: 1px solid var(--border);
 }
 
-.service-row:nth-child(odd) {
-    padding-right: 32px;
-    border-right: 1px solid var(--border);
-}
-
-.service-row:nth-child(even) {
-    padding-left: 32px;
-}
-
-.service-row:nth-last-child(-n+2) {
-    border-bottom: none;
-}
-
-.service-row h3 {
+.service-card h3 {
     margin-bottom: 6px;
     font-size: 1rem;
 }
 
-.service-row p {
+.service-card p {
     color: var(--text-light);
     font-size: 0.9rem;
     line-height: 1.6;
@@ -1392,52 +1366,16 @@ h3 { font-size: 1.25rem; }
         margin-top: 32px;
     }
 
-    .problem-list {
+    .problem-row {
         grid-template-columns: 1fr;
     }
 
-    .problem-item {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 20px 0;
-    }
-
-    .problem-item:first-child { padding-left: 0; }
-    .problem-item:last-child { border-bottom: none; }
-
-    .steps-grid {
+    .steps-row {
         grid-template-columns: 1fr;
     }
 
-    .step-item {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 24px 0;
-    }
-
-    .step-item:last-child {
-        border-bottom: none;
-    }
-
-    .services-list {
+    .services-grid {
         grid-template-columns: 1fr;
-    }
-
-    .service-row:nth-child(odd) {
-        padding-right: 0;
-        border-right: none;
-    }
-
-    .service-row:nth-child(even) {
-        padding-left: 0;
-    }
-
-    .service-row:nth-last-child(-n+2) {
-        border-bottom: 1px solid var(--border);
-    }
-
-    .service-row:last-child {
-        border-bottom: none;
     }
 
     #namibiaMap {
