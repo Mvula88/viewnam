@@ -259,7 +259,7 @@ h3 { font-size: 1.25rem; }
     width: 100%;
     max-width: 460px;
     object-fit: contain;
-    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.25));
+    mix-blend-mode: screen;
 }
 
 .hero-badge {
@@ -1379,6 +1379,10 @@ h3 { font-size: 1.25rem; }
     }
 
     /* Hero */
+    .hero .container {
+        padding: 0 24px;
+    }
+
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
@@ -1412,12 +1416,13 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero-image {
-        padding: 0 0 20px;
+        padding: 0;
         justify-content: center;
     }
 
     .hero-image img {
-        max-width: 280px;
+        max-width: 260px;
+        mix-blend-mode: screen;
     }
 
     /* Problem */
@@ -1575,7 +1580,11 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero-image img {
-        max-width: 220px;
+        max-width: 200px;
+    }
+
+    .hero .container {
+        padding: 0 20px;
     }
 
     h2 {
