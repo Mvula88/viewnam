@@ -1387,7 +1387,7 @@ h3 { font-size: 1.25rem; }
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 48px 0 32px;
+        padding: 64px 0 32px;
         gap: 24px;
     }
 
