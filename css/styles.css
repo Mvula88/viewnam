@@ -1332,7 +1332,7 @@ h3 { font-size: 1.25rem; }
 
     /* Global */
     .container {
-        padding: 0 16px;
+        padding: 0 20px;
     }
 
     .section {
@@ -1382,7 +1382,8 @@ h3 { font-size: 1.25rem; }
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 100px 0 32px;
+        padding: 96px 0 32px;
+        gap: 24px;
     }
 
     .hero-content {
@@ -1390,11 +1391,24 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero h1 {
-        font-size: 2.2rem;
+        font-size: 2rem;
+    }
+
+    .hero-badge {
+        font-size: 0.7rem;
     }
 
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        text-align: center;
     }
 
     .hero-image {
@@ -1403,7 +1417,7 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero-image img {
-        max-width: 300px;
+        max-width: 280px;
     }
 
     /* Problem */
@@ -1552,32 +1566,16 @@ h3 { font-size: 1.25rem; }
 @media (max-width: 480px) {
 
     .hero-grid {
-        padding: 88px 0 24px;
+        padding: 84px 0 20px;
+        gap: 16px;
     }
 
     .hero h1 {
-        font-size: 1.8rem;
-    }
-
-    .hero-badge {
-        font-size: 0.7rem;
-    }
-
-    .hero-subtitle {
-        font-size: 0.9rem;
-    }
-
-    .hero-actions {
-        flex-direction: column;
-    }
-
-    .hero-actions .btn {
-        width: 100%;
-        text-align: center;
+        font-size: 1.7rem;
     }
 
     .hero-image img {
-        max-width: 240px;
+        max-width: 220px;
     }
 
     h2 {
