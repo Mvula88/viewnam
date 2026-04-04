@@ -232,8 +232,7 @@ h3 { font-size: 1.25rem; }
     position: relative;
     background: var(--primary-dark);
     overflow: hidden;
-    padding-top: 100px; /* offset for fixed navbar + breathing room */
-    padding-bottom: 60px;
+    padding-top: 72px; /* offset for fixed navbar */
 }
 
 .hero-grid {
@@ -242,7 +241,7 @@ h3 { font-size: 1.25rem; }
     gap: 40px;
     align-items: center;
     min-height: calc(100vh - 132px);
-    padding: 80px 0 0;
+    padding: 20px 0;
 }
 
 .hero-content {
