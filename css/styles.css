@@ -232,7 +232,7 @@ h3 { font-size: 1.25rem; }
     position: relative;
     background: var(--primary-dark);
     overflow: hidden;
-    padding-top: 72px; /* offset for fixed navbar */
+    padding-top: 100px; /* offset for fixed navbar + breathing room */
     padding-bottom: 60px;
 }
 
@@ -255,13 +255,6 @@ h3 { font-size: 1.25rem; }
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.hero-image img {
-    width: 100%;
-    max-width: 460px;
-    object-fit: contain;
-    mix-blend-mode: screen;
 }
 
 .hero-badge {
@@ -1426,9 +1419,8 @@ h3 { font-size: 1.25rem; }
         justify-content: center;
     }
 
-    .hero-image img {
-        max-width: 260px;
-        mix-blend-mode: screen;
+    .hero-image dotlottie-player {
+        max-width: 300px !important;
     }
 
     /* Problem */
@@ -1585,8 +1577,8 @@ h3 { font-size: 1.25rem; }
         font-size: 1.7rem;
     }
 
-    .hero-image img {
-        max-width: 200px;
+    .hero-image dotlottie-player {
+        max-width: 240px !important;
     }
 
     .hero .container {
