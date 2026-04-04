@@ -269,22 +269,26 @@ h3 { font-size: 1.25rem; }
 
 .hero h1 {
     color: white;
-    margin-bottom: 20px;
-    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-    line-height: 1.15;
-    letter-spacing: -1px;
+    margin-bottom: 24px;
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
 }
 
 .hero .highlight {
     color: var(--secondary);
 }
 
+.hero-badge {
+    margin-bottom: 28px;
+}
+
 .hero-subtitle {
-    font-size: 1.05rem;
-    line-height: 1.7;
+    font-size: 1.15rem;
+    line-height: 1.75;
     color: rgba(255,255,255,0.65);
-    margin-bottom: 32px;
-    max-width: 480px;
+    margin-bottom: 36px;
+    max-width: 500px;
     font-weight: 400;
 }
 
@@ -299,7 +303,8 @@ h3 { font-size: 1.25rem; }
     background: var(--secondary);
     border-color: var(--secondary);
     color: var(--primary-dark);
-    padding: 14px 28px;
+    padding: 16px 36px;
+    font-size: 1.05rem;
 }
 
 .hero .btn-primary:hover {
@@ -310,7 +315,8 @@ h3 { font-size: 1.25rem; }
 .hero .btn-outline {
     color: rgba(255,255,255,0.7);
     border-color: rgba(255,255,255,0.2);
-    padding: 14px 28px;
+    padding: 16px 36px;
+    font-size: 1.05rem;
 }
 
 .hero .btn-outline:hover {
