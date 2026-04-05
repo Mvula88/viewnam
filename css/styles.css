@@ -418,6 +418,14 @@ h3 { font-size: 1.25rem; }
     line-height: 1.65;
 }
 
+.problem-tagline {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
 /* ===========================
    Sections (general)
    =========================== */
@@ -1502,7 +1510,7 @@ h3 { font-size: 1.25rem; }
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 32px 0 40px;
+        padding: 48px 0 40px;
         gap: 24px;
     }
 
@@ -1709,7 +1717,7 @@ h3 { font-size: 1.25rem; }
 @media (max-width: 480px) {
 
     .hero-grid {
-        padding: 24px 0 16px;
+        padding: 36px 0 16px;
         gap: 16px;
     }
 
