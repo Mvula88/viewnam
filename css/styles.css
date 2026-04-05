@@ -291,6 +291,33 @@ h3 { font-size: 1.25rem; }
     font-weight: 400;
 }
 
+.hero-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-bottom: 32px;
+}
+
+.hero-checks span {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+}
+
+.hero-checks span::before {
+    content: '\2713';
+    color: var(--secondary);
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.hero-warning {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+}
+
 .hero-actions {
     display: flex;
     gap: 12px;
