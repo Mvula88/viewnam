@@ -437,23 +437,28 @@
     <!-- About -->
     <section class="section about" id="about">
         <div class="container">
-            <div class="about-content-full">
-                <span class="section-tag">About ViewNam</span>
-                <h2>Namibia's First Dedicated Vehicle Inspection Platform</h2>
-                <div class="about-text">
-                    <p>ViewNam was born from a simple frustration: buying a second-hand car in Namibia shouldn't feel like gambling. With towns separated by hundreds of kilometres, buyers often have to trust sellers blindly — or spend thousands on travel just to view a vehicle.</p>
-                    <p>We connect you with <strong>vetted, experienced car experts</strong> in towns across Namibia. These aren't random mechanics — they're people who live and breathe cars. They buy at auctions, repair vehicles, deal in parts, and know exactly what to look for. When they inspect a car for you, they see what others miss.</p>
+            <div class="about-grid">
+                <div class="about-content-full">
+                    <span class="section-tag">About ViewNam</span>
+                    <h2>Namibia's First Dedicated Vehicle Inspection Platform</h2>
+                    <div class="about-text">
+                        <p>ViewNam was born from a simple frustration: buying a second-hand car in Namibia shouldn't feel like gambling. With towns separated by hundreds of kilometres, buyers often have to trust sellers blindly — or spend thousands on travel just to view a vehicle.</p>
+                        <p>We connect you with <strong>vetted, experienced car experts</strong> in towns across Namibia. These aren't random mechanics — they're people who live and breathe cars. They buy at auctions, repair vehicles, deal in parts, and know exactly what to look for. When they inspect a car for you, they see what others miss.</p>
+                    </div>
+                    <div class="about-points">
+                        <div class="about-point">
+                            <strong>Vetted Inspectors</strong> — Every inspector is personally vetted and tested before joining our network.
+                        </div>
+                        <div class="about-point">
+                            <strong>Honest Reports</strong> — No sugarcoating. You get the truth about the vehicle's condition.
+                        </div>
+                        <div class="about-point">
+                            <strong>Local Expertise</strong> — Our inspectors know the local market, common issues, and fair pricing.
+                        </div>
+                    </div>
                 </div>
-                <div class="about-points">
-                    <div class="about-point">
-                        <strong>Vetted Inspectors</strong> — Every inspector is personally vetted and tested before joining our network.
-                    </div>
-                    <div class="about-point">
-                        <strong>Honest Reports</strong> — No sugarcoating. You get the truth about the vehicle's condition.
-                    </div>
-                    <div class="about-point">
-                        <strong>Local Expertise</strong> — Our inspectors know the local market, common issues, and fair pricing.
-                    </div>
+                <div class="about-image">
+                    <img src="images/about-viewnam.jpg" alt="ViewNam - Namibia's vehicle inspection platform">
                 </div>
             </div>
         </div>
@@ -468,8 +473,17 @@
                 <p>Fill in the details below and we'll get back to you within 2 hours</p>
             </div>
             <div class="booking-wrapper">
+                <!-- Step Indicators -->
+                <div class="step-indicators" id="stepIndicators">
+                    <div class="step-ind active" data-step="1"><span>1</span> Your Details</div>
+                    <div class="step-ind" data-step="2"><span>2</span> Vehicle</div>
+                    <div class="step-ind" data-step="3"><span>3</span> Location</div>
+                    <div class="step-ind" data-step="4"><span>4</span> Service & Notes</div>
+                </div>
+
                 <form class="booking-form" id="bookingForm">
-                    <div class="form-section">
+                    <!-- Step 1: Your Details -->
+                    <div class="form-step active" data-step="1">
                         <h3>Your Details</h3>
                         <div class="form-row">
                             <div class="form-group">
@@ -507,9 +521,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-nav">
+                            <div></div>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Vehicle Details</button>
+                        </div>
                     </div>
 
-                    <div class="form-section">
+                    <!-- Step 2: Vehicle Details -->
+                    <div class="form-step" data-step="2">
                         <h3>Vehicle Details</h3>
                         <div class="form-row">
                             <div class="form-group">
@@ -535,9 +554,14 @@
                             <label for="vehicleLink">Link to Listing (if available)</label>
                             <input type="url" id="vehicleLink" name="vehicleLink" placeholder="e.g. Facebook Marketplace or AutoTrader link">
                         </div>
+                        <div class="form-nav">
+                            <button type="button" class="btn btn-outline form-prev-btn" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Location</button>
+                        </div>
                     </div>
 
-                    <div class="form-section">
+                    <!-- Step 3: Seller & Location -->
+                    <div class="form-step" data-step="3">
                         <h3>Seller & Inspection Location</h3>
                         <div class="form-row">
                             <div class="form-group">
@@ -565,9 +589,14 @@
                                 <input type="tel" id="sellerContact" name="sellerContact" placeholder="e.g. +264 81 987 6543">
                             </div>
                         </div>
+                        <div class="form-nav">
+                            <button type="button" class="btn btn-outline form-prev-btn" onclick="prevStep()">Back</button>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Select Service</button>
+                        </div>
                     </div>
 
-                    <div class="form-section">
+                    <!-- Step 4: Service & Notes -->
+                    <div class="form-step" data-step="4">
                         <h3>Select Service(s) *</h3>
                         <div class="package-options">
                             <label class="package-option">
@@ -599,23 +628,23 @@
                                 </div>
                             </label>
                         </div>
-                    </div>
 
-                    <div class="form-section">
-                        <div class="form-group">
+                        <div class="form-group" style="margin-top:20px;">
                             <label for="notes">Additional Notes</label>
                             <textarea id="notes" name="notes" rows="3" placeholder="Any specific concerns or areas you'd like us to focus on?"></textarea>
                         </div>
-                    </div>
 
-                    <div class="form-disclaimer">
-                        <p>By submitting this form, you agree that the inspection is advisory and does not constitute a guarantee of vehicle condition. <a href="disclaimer.html" target="_blank">Full disclaimer</a></p>
-                    </div>
+                        <div class="form-disclaimer">
+                            <p>By submitting this form, you agree that the inspection is advisory and does not constitute a guarantee of vehicle condition. <a href="disclaimer.html" target="_blank">Full disclaimer</a></p>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Submit Booking Request
-                    </button>
+                        <div class="form-nav">
+                            <button type="button" class="btn btn-outline form-prev-btn" onclick="prevStep()">Back</button>
+                            <button type="submit" class="btn btn-primary btn-lg form-next-btn">
+                                Submit Booking Request
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

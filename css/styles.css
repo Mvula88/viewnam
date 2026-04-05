@@ -820,6 +820,19 @@ h3 { font-size: 1.25rem; }
 /* ===========================
    About
    =========================== */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
+}
+
 .about-content-full {
     max-width: 700px;
 }
@@ -867,11 +880,87 @@ h3 { font-size: 1.25rem; }
     margin: 0 auto;
 }
 
+/* Step Indicators */
+.step-indicators {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 4px;
+}
+
+.step-ind {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 3px solid var(--border);
+    transition: all 0.2s;
+}
+
+.step-ind span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-right: 6px;
+}
+
+.step-ind.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.step-ind.active span {
+    background: var(--primary);
+    color: white;
+}
+
+.step-ind.done {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    opacity: 0.6;
+}
+
+.step-ind.done span {
+    background: var(--primary);
+    color: white;
+}
+
 .booking-form {
     background: white;
     padding: 40px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
+}
+
+/* Multi-step form */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.form-step h3 {
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.form-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
 }
 
 .form-section {
@@ -1383,15 +1472,25 @@ h3 { font-size: 1.25rem; }
         padding: 0 24px;
     }
 
-    .hero {
-        padding-bottom: 40px;
-    }
-
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 48px 0 0;
+        padding: 32px 0 40px;
         gap: 24px;
+    }
+
+    .step-indicators {
+        flex-wrap: wrap;
+    }
+
+    .step-ind {
+        font-size: 0;
+        padding: 10px 4px;
+    }
+
+    .step-ind span {
+        margin-right: 0;
+        font-size: 0.75rem;
     }
 
     .hero-content {
@@ -1495,6 +1594,15 @@ h3 { font-size: 1.25rem; }
     .testimonial-row {
         grid-template-columns: 1fr;
         gap: 12px;
+    }
+
+    /* About */
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-image {
+        order: -1;
     }
 
     /* Booking */

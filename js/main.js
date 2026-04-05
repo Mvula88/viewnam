@@ -78,6 +78,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =============================================
+    // MULTI-STEP FORM
+    // =============================================
+    let currentFormStep = 1;
+    const totalFormSteps = 4;
+
+    window.nextStep = function() {
+        if (currentFormStep >= totalFormSteps) return;
+        currentFormStep++;
+        updateFormStep();
+    };
+
+    window.prevStep = function() {
+        if (currentFormStep <= 1) return;
+        currentFormStep--;
+        updateFormStep();
+    };
+
+    function updateFormStep() {
+        // Update steps
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        const activeStep = document.querySelector(`.form-step[data-step="${currentFormStep}"]`);
+        if (activeStep) activeStep.classList.add('active');
+
+        // Update indicators
+        document.querySelectorAll('.step-ind').forEach(ind => {
+            const step = parseInt(ind.dataset.step);
+            ind.classList.remove('active', 'done');
+            if (step === currentFormStep) ind.classList.add('active');
+            else if (step < currentFormStep) ind.classList.add('done');
+        });
+
+        // Scroll to form top
+        document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // =============================================
     // BOOKING FORM SUBMISSION
     // =============================================
     const bookingForm = document.getElementById('bookingForm');
