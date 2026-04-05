@@ -807,6 +807,48 @@ h3 { font-size: 1.25rem; }
     text-decoration-thickness: 2px;
 }
 
+.pricing-save {
+    font-size: 0.85rem;
+    color: var(--secondary);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.pricing-trust {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pricing-trust span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.pricing-trust span::before {
+    content: '\2713';
+    color: var(--primary);
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.testimonial-tagline {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+.about-tagline {
+    margin-top: 24px;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
 .pricing-card.featured .btn-primary {
     background: var(--primary);
     border-color: var(--primary);
