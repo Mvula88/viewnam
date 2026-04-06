@@ -214,6 +214,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .login-box .error{color:var(--poor);font-size:0.85rem;margin-top:8px;display:none}
 .login-box .error.show{display:block}
 
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:14px 22px;border-radius:8px;font-size:0.9rem;font-weight:500;box-shadow:0 6px 24px rgba(0,0,0,0.2);z-index:1000;display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform 0.3s ease;max-width:360px}
+.toast.show{transform:translateX(0)}
+.toast.success{background:var(--good)}
+.toast.error{background:var(--poor)}
+.toast svg{width:18px;height:18px;flex-shrink:0}
+
 @media(max-width:768px){
     .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;width:260px}
     .sidebar.open{transform:translateX(0);box-shadow:2px 0 20px rgba(0,0,0,0.15)}
@@ -553,6 +560,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     </main>
 </div>
 
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
 <!-- Add Inspector Modal -->
 <div class="modal-overlay" id="addInspectorModal">
     <div class="modal">
@@ -645,16 +655,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script>
-// --- Login gate ---
-const ADMIN_PIN = '1953';
-function checkAdminPwd() {
+// --- Login gate (PIN hashed with SHA-256, hash stored in Supabase) ---
+async function sha256Hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkAdminPwd() {
     const pwd = document.getElementById('adminPwd').value.trim();
-    if (pwd === ADMIN_PIN) {
-        sessionStorage.setItem('viewnam_admin', '1');
-        document.getElementById('loginGate').style.display = 'none';
-    } else {
-        document.getElementById('loginErr').classList.add('show');
+    const errorEl = document.getElementById('loginErr');
+    errorEl.classList.remove('show');
+    if (!pwd || !supabase) return;
+
+    try {
+        const hash = await sha256Hex(pwd);
+        const { data } = await supabase.from('settings').select('value').eq('key', 'admin_pin_hash').single();
+        if (data && data.value === hash) {
+            sessionStorage.setItem('viewnam_admin', '1');
+            document.getElementById('loginGate').style.display = 'none';
+        } else {
+            errorEl.classList.add('show');
+        }
+    } catch (e) {
+        errorEl.textContent = 'Login error. Try again.';
+        errorEl.classList.add('show');
     }
 }
 document.getElementById('adminPwd').addEventListener('keydown', (e) => {
@@ -669,8 +696,6 @@ function logoutAdmin() {
 }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
 <script>
 const serviceLabels = {
     'full-package':'Full Package','visual-inspection':'Visual Inspection',
@@ -702,6 +727,20 @@ function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
 }
 
+// Toast notification
+let toastTimer = null;
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    const icon = type === 'success'
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+    toast.innerHTML = icon + '<span>' + message + '</span>';
+    toast.className = 'toast ' + type + ' show';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
 // =====================
 // SETTINGS
 // =====================
@@ -716,7 +755,7 @@ async function loadSettings() {
 async function saveDefaultCommission() {
     const val = parseFloat(document.getElementById('defaultCommission').value);
     if (isNaN(val) || val < 0 || val > 100) {
-        alert('Enter a valid percentage between 0 and 100');
+        showToast('Enter a valid percentage between 0 and 100', 'error');
         return;
     }
     const { error } = await supabase.from('settings')
@@ -1087,7 +1126,9 @@ async function updateBookingStatus(id, status) {
     if (status === 'confirmed') updates.confirmed_at = new Date().toISOString();
     if (status === 'completed') updates.completed_at = new Date().toISOString();
     const { error } = await supabase.from('bookings').update(updates).eq('id', id);
-    if (error) { alert('Error: ' + error.message); return; }
+    if (error) { showToast(error.message, 'error'); return; }
+
+    showToast('Status updated to ' + status);
 
     const booking = allBookings.find(b => b.id === id);
     if (booking) {
@@ -1114,7 +1155,9 @@ async function assignInspector(bookingId, inspectorId) {
     }
 
     const { error } = await supabase.from('bookings').update(updates).eq('id', bookingId);
-    if (error) { alert('Error: ' + error.message); return; }
+    if (error) { showToast(error.message, 'error'); return; }
+
+    showToast('Inspector assigned');
 
     // Offer to notify the inspector
     const inspector = allInspectors.find(i => i.id === inspectorId);
@@ -1173,8 +1216,8 @@ function offerClientNotification(booking) {
 async function deleteBooking(id) {
     if (!confirm('Delete this booking?')) return;
     const { error } = await supabase.from('bookings').delete().eq('id', id);
-    if (error) alert('Error: ' + error.message);
-    else loadBookings();
+    if (error) showToast(error.message, 'error');
+    else { showToast('Booking deleted'); loadBookings(); }
 }
 
 // --- Price modal ---
@@ -1212,7 +1255,7 @@ document.getElementById('pm_price').addEventListener('input', updatePricePreview
 async function savePrice() {
     const bookingId = document.getElementById('pm_bookingId').value;
     const price = parseFloat(document.getElementById('pm_price').value);
-    if (!price || isNaN(price)) { alert('Enter a valid price'); return; }
+    if (!price || isNaN(price)) { showToast('Enter a valid price', 'error'); return; }
 
     const booking = allBookings.find(b => b.id === bookingId);
     const rate = getInspectorRate(booking ? booking.assigned_inspector : null);
@@ -1225,12 +1268,12 @@ async function savePrice() {
         inspector_payout: fees.inspector_payout
     }).eq('id', bookingId);
 
-    if (error) alert('Error: ' + error.message);
-    else { closePriceModal(); loadBookings(); }
+    if (error) showToast(error.message, 'error');
+    else { closePriceModal(); showToast('Price saved'); loadBookings(); }
 }
 
 function exportCSV() {
-    if (!allBookings.length) return alert('No bookings to export.');
+    if (!allBookings.length) { showToast('No bookings to export', 'error'); return; }
     const headers = ['Reference','Status','Name','Phone','Email','Vehicle','Year','Price','Commission Rate','Platform Fee','Inspector Payout','Inspector','Created'];
     const rows = allBookings.map(b => [
         b.reference, b.status, b.client_name, b.client_phone, b.client_email,
@@ -1305,7 +1348,7 @@ function renderInspectors() {
                     ${phone ? `<p style="margin-top:6px"><a class="wa-link" href="https://wa.me/${phone}" target="_blank">Open WhatsApp</a></p>` : ''}
                     <h4 style="margin-top:14px">Commission Rate</h4>
                     <p><span class="commission-tag">${commissionDisplay}</span></p>
-                    ${i.pin ? `<p class="muted" style="margin-top:6px">PIN: ${i.pin}</p>` : ''}
+                    ${i.pin_hash ? `<p class="muted" style="margin-top:6px">🔒 PIN set</p>` : '<p class="muted" style="margin-top:6px;color:var(--poor)">⚠ No PIN set</p>'}
                 </div>
                 <div class="ic-col">
                     <h4>Performance</h4>
@@ -1347,15 +1390,15 @@ function renderInspectors() {
 
 async function updateInspectorStatus(id, status) {
     const { error } = await supabase.from('inspectors').update({ status }).eq('id', id);
-    if (error) alert('Error: ' + error.message);
+    if (error) showToast(error.message, 'error');
     else loadInspectors();
 }
 
 async function deleteInspector(id) {
     if (!confirm('Delete this inspector?')) return;
     const { error } = await supabase.from('inspectors').delete().eq('id', id);
-    if (error) alert('Error: ' + error.message);
-    else loadInspectors();
+    if (error) showToast(error.message, 'error');
+    else { showToast('Inspector deleted'); loadInspectors(); }
 }
 
 // --- Add/Edit Inspector Modal ---
@@ -1379,7 +1422,8 @@ function editInspector(id) {
     document.getElementById('ai_experience').value = i.experience || '';
     document.getElementById('ai_commission').value = i.commission_rate != null ? i.commission_rate : '';
     document.getElementById('ai_status').value = i.status || 'active';
-    document.getElementById('ai_pin').value = i.pin || '';
+    document.getElementById('ai_pin').value = '';
+    document.getElementById('ai_pin').placeholder = i.pin_hash ? 'PIN already set — leave blank to keep' : 'Set a 4-6 digit PIN';
     document.getElementById('addInspectorModal').classList.add('open');
 }
 
@@ -1395,6 +1439,8 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
     e.preventDefault();
     const id = document.getElementById('ai_id').value;
     const commissionVal = document.getElementById('ai_commission').value;
+    const pinValue = document.getElementById('ai_pin').value;
+
     const data = {
         name: document.getElementById('ai_name').value,
         phone: document.getElementById('ai_phone').value,
@@ -1404,8 +1450,12 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         experience: document.getElementById('ai_experience').value || null,
         commission_rate: commissionVal !== '' ? parseFloat(commissionVal) : null,
         status: document.getElementById('ai_status').value,
-        pin: document.getElementById('ai_pin').value || null,
     };
+
+    // Only update PIN if user entered a new one (hash it)
+    if (pinValue) {
+        data.pin_hash = await sha256Hex(pinValue);
+    }
 
     let error;
     if (id) {
@@ -1414,8 +1464,9 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         ({ error } = await supabase.from('inspectors').insert(data));
     }
 
-    if (error) { alert('Error: ' + error.message); return; }
+    if (error) { showToast(error.message, 'error'); return; }
     closeAddInspector();
+    showToast(id ? 'Inspector updated' : 'Inspector added');
     loadInspectors();
 });
 
@@ -1488,14 +1539,14 @@ async function markPaid(bookingId) {
         paid_to_inspector: true,
         paid_to_inspector_at: new Date().toISOString()
     }).eq('id', bookingId);
-    if (error) alert('Error: ' + error.message);
-    else loadBookings();
+    if (error) showToast(error.message, 'error');
+    else { showToast('Inspector marked as paid'); loadBookings(); }
 }
 
 function copyReviewLink(ref) {
     const url = `${location.origin}/review.html?ref=${ref}`;
     navigator.clipboard.writeText(url).then(() => {
-        alert('Review link copied:\n' + url + '\n\nSend this to the client via WhatsApp.');
+        showToast('Review link copied to clipboard');
     }).catch(() => {
         prompt('Copy this review link:', url);
     });
@@ -1507,8 +1558,8 @@ async function markClientPaid(bookingId) {
         payment_status: 'paid',
         paid_at: new Date().toISOString()
     }).eq('id', bookingId);
-    if (error) alert('Error: ' + error.message);
-    else loadBookings();
+    if (error) showToast(error.message, 'error');
+    else { showToast('Client payment confirmed'); loadBookings(); }
 }
 
 // =====================

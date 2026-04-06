@@ -72,7 +72,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
     <div class="search-box">
         <input type="text" id="refInput" placeholder="e.g. VN-ABC123" autofocus>
-        <button onclick="trackBooking()">Track</button>
+        <button id="trackBtn" onclick="trackBooking()">Track</button>
     </div>
 
     <!-- Result -->
@@ -123,16 +123,37 @@ document.getElementById('refInput').addEventListener('keydown', (e) => {
 
 async function trackBooking() {
     const ref = document.getElementById('refInput').value.trim().toUpperCase();
+    const btn = document.getElementById('trackBtn');
     document.getElementById('result').style.display = 'none';
     document.getElementById('notFound').style.display = 'none';
 
     if (!ref || !supabase) return;
 
-    const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('reference', ref)
-        .single();
+    // Loading state
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Searching...';
+    btn.style.opacity = '0.7';
+    btn.style.cursor = 'wait';
+
+    let data, error;
+    try {
+        const result = await supabase
+            .from('bookings')
+            .select('*')
+            .eq('reference', ref)
+            .single();
+        data = result.data;
+        error = result.error;
+    } catch (e) {
+        error = e;
+    } finally {
+        // Re-enable button
+        btn.disabled = false;
+        btn.textContent = originalText;
+        btn.style.opacity = '';
+        btn.style.cursor = '';
+    }
 
     if (error || !data) {
         document.getElementById('notFound').style.display = 'block';

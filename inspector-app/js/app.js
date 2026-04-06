@@ -816,6 +816,24 @@
         showToast('Progress saved');
     });
 
+    // Periodic auto-save every 30 seconds as a safety net
+    setInterval(() => {
+        if (state.startedAt) {
+            saveSectionNotes();
+            saveSummary();
+            autoSave();
+        }
+    }, 30000);
+
+    // Save before user leaves the page
+    window.addEventListener('beforeunload', () => {
+        if (state.startedAt) {
+            saveSectionNotes();
+            saveSummary();
+            autoSave();
+        }
+    });
+
     function loadInspection(data) {
         state = {
             currentScreen: 'screenBooking',

@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const successModal = document.getElementById('successModal');
     const bookingRef = document.getElementById('bookingRef');
 
-    bookingForm.addEventListener('submit', (e) => {
+    bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // Validate at least one service is selected
@@ -163,6 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedServices.length === 0) {
             alert('Please select at least one service.');
             return;
+        }
+
+        // Find submit button and disable it with loading state
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting...';
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.cursor = 'wait';
         }
 
         // Generate reference number
@@ -187,13 +197,31 @@ document.addEventListener('DOMContentLoaded', () => {
         data.status = 'new';
 
         // Save to Supabase + localStorage backup
-        saveBooking(data);
+        const result = await saveBooking(data);
+
+        // Re-enable button
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.style.opacity = '';
+            submitBtn.style.cursor = '';
+        }
+
+        if (!result.success) {
+            alert('Could not submit your booking: ' + result.error + '\n\nYour details have been saved locally. Please try again or contact us on WhatsApp.');
+            return;
+        }
 
         // Show success modal
         successModal.classList.add('active');
 
         // Reset form
         bookingForm.reset();
+        // Reset to step 1
+        if (typeof currentFormStep !== 'undefined') {
+            currentFormStep = 1;
+            updateFormStep();
+        }
     });
 
     // --- Save booking to Supabase + localStorage fallback ---
@@ -227,11 +255,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     services: data.services || [],
                     notes: data.notes || null,
                 });
-                if (error) console.error('Supabase insert error:', error);
+                if (error) {
+                    console.error('Supabase insert error:', error);
+                    return { success: false, error: error.message };
+                }
+                return { success: true };
             } catch (e) {
                 console.error('Supabase save failed:', e);
+                return { success: false, error: e.message || 'Network error' };
             }
         }
+        return { success: false, error: 'Database not available' };
     }
 
     // --- Close modal ---

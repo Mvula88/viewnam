@@ -307,6 +307,11 @@ function fmt(n) {
     return new Intl.NumberFormat('en-NA', { maximumFractionDigits: 0 }).format(n);
 }
 
+async function sha256Hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function login() {
     const phone = document.getElementById('loginPhone').value.replace(/\s/g, '');
     const pin = document.getElementById('loginPin').value;
@@ -318,23 +323,29 @@ async function login() {
         return;
     }
 
-    const { data, error } = await supabase
-        .from('inspectors')
-        .select('*')
-        .eq('phone', phone)
-        .eq('pin', pin)
-        .in('status', ['active', 'approved'])
-        .single();
+    try {
+        const pinHash = await sha256Hex(pin);
+        const { data, error } = await supabase
+            .from('inspectors')
+            .select('*')
+            .eq('phone', phone)
+            .eq('pin_hash', pinHash)
+            .in('status', ['active', 'approved'])
+            .single();
 
-    if (error || !data) {
-        errorEl.textContent = 'Invalid phone number or PIN. Contact ViewNam if you need help.';
+        if (error || !data) {
+            errorEl.textContent = 'Invalid phone number or PIN. Contact ViewNam if you need help.';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        currentInspector = data;
+        sessionStorage.setItem('viewnam_inspector', JSON.stringify(data));
+        showDashboard();
+    } catch (e) {
+        errorEl.textContent = 'Login error. Try again.';
         errorEl.classList.add('show');
-        return;
     }
-
-    currentInspector = data;
-    sessionStorage.setItem('viewnam_inspector', JSON.stringify(data));
-    showDashboard();
 }
 
 document.getElementById('loginPin').addEventListener('keydown', (e) => {

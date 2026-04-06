@@ -92,7 +92,7 @@ tr:last-child td{border-bottom:none}
     <h2>Inspection Details</h2>
     <dl class="info-grid">
         <dt>Reference</dt><dd>VN-SAMPLE001</dd>
-        <dt>Date</dt><dd>28 March 2026</dd>
+        <dt>Date</dt><dd id="sampleDate">—</dd>
         <dt>Inspector</dt><dd>David Shikongo</dd>
         <dt>Region</dt><dd>Windhoek, Khomas</dd>
         <dt>Service</dt><dd>Full Package</dd>
@@ -234,7 +234,15 @@ tr:last-child td{border-bottom:none}
     <a href="index.html#booking" class="cta-btn">Book an Inspection</a>
 </div>
 
-<p style="text-align:center;color:#95A5A6;font-size:0.8rem;padding:16px 0;">&copy; 2026 ViewNam. Confidential Inspection Report.</p>
+<p style="text-align:center;color:#95A5A6;font-size:0.8rem;padding:16px 0;">&copy; <span id="sampleYear">2026</span> ViewNam. Confidential Inspection Report.</p>
+
+<script>
+// Set relative date — last week from today
+const d = new Date();
+d.setDate(d.getDate() - 7);
+document.getElementById('sampleDate').textContent = d.toLocaleDateString('en-NA', { day: 'numeric', month: 'long', year: 'numeric' });
+document.getElementById('sampleYear').textContent = new Date().getFullYear();
+</script>
 
 </div>
 </body>
