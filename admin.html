@@ -91,33 +91,52 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .top-list-row .val{font-weight:600;color:var(--primary)}
 
 /* Booking card */
-.booking-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:10px;display:grid;grid-template-columns:1.2fr 1fr 0.6fr auto;gap:16px;align-items:start;position:relative}
-.booking-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--text-muted);border-radius:8px 0 0 8px}
-.booking-card.status-new::before{background:var(--secondary)}
-.booking-card.status-confirmed::before{background:var(--primary)}
-.booking-card.status-assigned::before{background:var(--fair)}
-.booking-card.status-in-progress::before{background:var(--fair)}
-.booking-card.status-completed::before{background:var(--good)}
-.booking-card.status-cancelled::before{background:var(--poor)}
-.booking-card.status-cancelled{opacity:0.6}
+/* Booking card — clean horizontal layout */
+.booking-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color 0.15s}
+.booking-card:hover{border-color:var(--text-muted)}
+.booking-card.status-cancelled{opacity:0.55}
 
-.bc-section h3{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);margin-bottom:6px}
-.bc-section p{font-size:0.88rem;margin-bottom:3px}
-.bc-section .ref{font-weight:700;color:var(--primary);font-size:0.95rem}
-.bc-section .date{font-size:0.78rem;color:var(--text-light)}
-.bc-services{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-.bc-svc-tag{padding:2px 8px;background:var(--bg);border-radius:10px;font-size:0.72rem;font-weight:500;color:var(--text-light)}
+/* Top header row with reference and status */
+.bc-header{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--bg)}
+.bc-header-left{display:flex;align-items:center;gap:12px}
+.bc-ref{font-size:0.85rem;font-weight:700;color:var(--primary);font-family:'Courier New',monospace}
+.bc-date{font-size:0.78rem;color:var(--text-muted)}
+.bc-status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.bc-status-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.bc-status-badge.new{background:#FEF5E7;color:#A77512}
+.bc-status-badge.confirmed{background:#E8F5E9;color:#0B3D2E}
+.bc-status-badge.assigned{background:#FEF5E7;color:#A77512}
+.bc-status-badge.in-progress{background:#FEF5E7;color:#A77512}
+.bc-status-badge.completed{background:#E8F8EF;color:#1e8449}
+.bc-status-badge.cancelled{background:#FDEDEC;color:#A93226}
 
-.bc-money{background:var(--bg);border-radius:8px;padding:12px;font-size:0.82rem}
-.bc-money-row{display:flex;justify-content:space-between;margin-bottom:4px}
-.bc-money-row.total{font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:4px}
-.bc-money-row .lbl{color:var(--text-light)}
+/* Body content grid */
+.bc-body{display:grid;grid-template-columns:1.2fr 1fr 240px;gap:24px;padding:20px 22px}
+.bc-col h4{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;margin-bottom:8px}
+.bc-col p{font-size:0.88rem;margin-bottom:4px;color:var(--text)}
+.bc-col p.muted{color:var(--text-light);font-size:0.82rem}
+.bc-col strong{font-weight:600}
+.bc-services{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.bc-svc-tag{padding:3px 10px;background:var(--bg);border:1px solid var(--border);border-radius:12px;font-size:0.72rem;font-weight:500;color:var(--text-light)}
+
+/* Money column */
+.bc-money{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:0.85rem}
+.bc-money-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.bc-money-row.total{font-weight:700;font-size:0.95rem;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:6px}
+.bc-money-row .lbl{color:var(--text-light);font-size:0.78rem}
 .bc-money-row .val{color:var(--text);font-weight:600}
 .bc-money-row.fee .val{color:var(--primary)}
-.bc-money-row.payout .val{color:var(--secondary);font-weight:700}
+.bc-money-row.payout .val{color:#B8830A}
+.bc-money-status{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:0.78rem;display:flex;flex-direction:column;gap:4px}
+.bc-money-status .pay-yes{color:var(--good);font-weight:600}
+.bc-money-status .pay-no{color:#A77512;font-weight:600}
 
-.bc-actions{display:flex;flex-direction:column;gap:6px}
-.status-select,.inspector-select{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.78rem;font-family:inherit}
+/* Footer with actions */
+.bc-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:var(--bg);border-top:1px solid var(--border);gap:12px;flex-wrap:wrap}
+.bc-footer-left{display:flex;gap:10px;align-items:center;flex:1;flex-wrap:wrap}
+.bc-footer-actions{display:flex;gap:8px;flex-wrap:wrap}
+.status-select,.inspector-select{padding:7px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:0.8rem;font-family:inherit;background:#fff;min-width:140px}
+.status-select:focus,.inspector-select:focus{outline:none;border-color:var(--primary)}
 
 .wa-link{display:inline-flex;align-items:center;gap:4px;color:#25D366;font-weight:600;font-size:0.8rem;text-decoration:none}
 .wa-link:hover{text-decoration:underline}
@@ -126,14 +145,36 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .empty h2{margin-bottom:8px}
 .loading{text-align:center;padding:40px;color:var(--text-light)}
 
-/* Inspector card */
-.inspector-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr auto;gap:16px;position:relative}
-.inspector-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--text-muted);border-radius:8px 0 0 8px}
-.inspector-card.status-active::before{background:var(--good)}
-.inspector-card.status-approved::before{background:var(--primary)}
-.inspector-card.status-pending::before{background:var(--secondary)}
-.inspector-card.status-suspended::before{background:var(--poor)}
-.commission-tag{display:inline-block;background:var(--secondary);color:var(--primary-dark);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;margin-left:6px}
+/* Inspector card — clean horizontal layout */
+.inspector-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0;margin-bottom:12px;overflow:hidden;transition:border-color 0.15s}
+.inspector-card:hover{border-color:var(--text-muted)}
+
+.ic-header{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--bg)}
+.ic-header-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ic-avatar{width:42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+.ic-name{font-size:1rem;font-weight:700;color:var(--text)}
+.ic-meta{font-size:0.78rem;color:var(--text-light);margin-top:2px}
+
+.ic-status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.ic-status-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.ic-status-badge.active{background:#E8F8EF;color:#1e8449}
+.ic-status-badge.approved{background:#E8F5E9;color:#0B3D2E}
+.ic-status-badge.pending{background:#FEF5E7;color:#A77512}
+.ic-status-badge.suspended{background:#FDEDEC;color:#A93226}
+
+.ic-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;padding:20px 22px}
+.ic-col h4{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;margin-bottom:8px}
+.ic-col p{font-size:0.88rem;margin-bottom:4px;color:var(--text)}
+.ic-col p.muted{color:var(--text-light);font-size:0.82rem}
+.ic-col .stat-num{font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;line-height:1}
+.ic-col .stat-num.gold{color:#B8830A}
+.ic-col .stat-label{font-size:0.78rem;color:var(--text-light);margin-top:4px}
+
+.ic-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:var(--bg);border-top:1px solid var(--border);gap:12px;flex-wrap:wrap}
+.ic-footer-left{display:flex;gap:10px;align-items:center}
+.ic-footer-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.commission-tag{display:inline-flex;align-items:center;background:#FEF5E7;color:#A77512;padding:3px 10px;border-radius:12px;font-size:0.7rem;font-weight:600}
 
 /* Settings */
 .settings-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;max-width:560px}
@@ -181,9 +222,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     .container{padding:64px 16px 24px}
     .stat-grid{grid-template-columns:repeat(2,1fr)}
     .status-row{grid-template-columns:repeat(3,1fr)}
-    .booking-card,.inspector-card{grid-template-columns:1fr}
+    .bc-body{grid-template-columns:1fr}
+    .ic-body{grid-template-columns:1fr}
     .modal .field-row{grid-template-columns:1fr}
     .chart-grid{grid-template-columns:1fr}
+    .bc-header,.ic-header,.bc-footer,.ic-footer{flex-wrap:wrap;gap:10px}
+    .status-select,.inspector-select{width:100%;min-width:0}
 }
 </style>
 </head>
@@ -952,70 +996,87 @@ function renderBookings() {
     const activeInspectors = allInspectors.filter(i => i.status === 'active' || i.status === 'approved');
     const inspectorOpts = activeInspectors.map(i => `<option value="${i.id}">${i.name} (${i.town})</option>`).join('');
 
+    const statusLabelMap = {new:'New',confirmed:'Confirmed',assigned:'Assigned','in-progress':'In Progress',completed:'Completed',cancelled:'Cancelled'};
+
     list.innerHTML = filtered.map(b => {
         const svcs = (b.services || []).map(s => `<span class="bc-svc-tag">${serviceLabels[s] || s}</span>`).join('');
-        const date = b.created_at ? new Date(b.created_at).toLocaleString() : 'N/A';
+        const date = b.created_at ? new Date(b.created_at).toLocaleString('en-NA', {dateStyle:'medium', timeStyle:'short'}) : 'N/A';
         const phone = (b.client_phone || '').replace(/[^0-9]/g, '');
         const assignedName = b.assigned_inspector ? (allInspectors.find(i => i.id === b.assigned_inspector)?.name || 'Unknown') : '';
+        const status = b.status || 'new';
 
         const paidByClient = b.payment_status === 'paid';
         const moneySection = b.price ? `
             <div class="bc-money">
                 <div class="bc-money-row total"><span class="lbl">Total</span><span class="val">N$${fmt(b.price)}</span></div>
                 <div class="bc-money-row fee"><span class="lbl">Your fee (${b.commission_rate || defaultCommission}%)</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
-                <div class="bc-money-row payout"><span class="lbl">Inspector payout</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
-                <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:0.75rem;">
-                    ${paidByClient ? '<span style="color:var(--good);font-weight:600">✓ Client paid</span>' : '<span style="color:var(--fair);font-weight:600">⚠ Awaiting payment</span>'}
-                    ${b.paid_to_inspector ? '<br><span style="color:var(--good);font-weight:600">✓ Inspector paid</span>' : ''}
+                <div class="bc-money-row payout"><span class="lbl">Inspector</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
+                <div class="bc-money-status">
+                    ${paidByClient ? '<span class="pay-yes">✓ Client paid</span>' : '<span class="pay-no">⚠ Awaiting payment</span>'}
+                    ${b.paid_to_inspector ? '<span class="pay-yes">✓ Inspector paid</span>' : ''}
                 </div>
             </div>
-            <button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')" style="margin-top:6px">Edit Price</button>
-            ${!paidByClient ? `<button class="btn btn-sm btn-success" onclick="markClientPaid('${b.id}')" style="margin-top:6px">Mark Client Paid</button>` : ''}
         ` : `
-            <div class="bc-money" style="text-align:center;color:var(--text-light)">
-                <p style="margin-bottom:8px">No price set</p>
+            <div class="bc-money" style="text-align:center">
+                <p style="color:var(--text-light);margin-bottom:10px;font-size:0.85rem">No price set</p>
                 <button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')">Set Price</button>
             </div>
         `;
 
         return `
-        <div class="booking-card status-${b.status || 'new'}">
-            <div class="bc-section">
-                <h3>Client & Vehicle</h3>
-                <p class="ref">${b.reference || 'N/A'}</p>
-                <p><strong>${b.client_name || 'N/A'}</strong></p>
-                <p>${b.client_phone || ''} ${b.client_email ? '· ' + b.client_email : ''}</p>
-                <p>${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}</p>
-                <p style="font-size:0.8rem;color:var(--text-light)">Asking: N$${b.asking_price || 'N/A'}</p>
-                <div class="bc-services">${svcs}</div>
+        <div class="booking-card status-${status}">
+            <div class="bc-header">
+                <div class="bc-header-left">
+                    <span class="bc-ref">${b.reference || 'N/A'}</span>
+                    <span class="bc-date">${date}</span>
+                </div>
+                <span class="bc-status-badge ${status}">${statusLabelMap[status]}</span>
             </div>
-            <div class="bc-section">
-                <h3>Inspection</h3>
-                <p>Vehicle at: <strong>${b.seller_location || 'N/A'}</strong></p>
-                <p>Seller: ${b.seller_contact || 'N/A'}</p>
-                ${b.notes ? `<p style="margin-top:6px;font-size:0.8rem;color:var(--text-light)">Notes: ${b.notes}</p>` : ''}
-                <p class="date" style="margin-top:8px">${date}</p>
-                ${phone ? `<a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp client</a>` : ''}
-                ${assignedName ? `<p style="margin-top:6px;font-size:0.8rem"><strong>Inspector:</strong> ${assignedName}</p>` : ''}
+            <div class="bc-body">
+                <div class="bc-col">
+                    <h4>Client</h4>
+                    <p><strong>${b.client_name || 'N/A'}</strong></p>
+                    <p class="muted">${b.client_phone || ''}</p>
+                    ${b.client_email ? `<p class="muted">${b.client_email}</p>` : ''}
+                    ${phone ? `<p style="margin-top:6px"><a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp client</a></p>` : ''}
+                    <h4 style="margin-top:14px">Vehicle</h4>
+                    <p><strong>${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}</strong></p>
+                    <p class="muted">Asking: N$${b.asking_price || 'N/A'}</p>
+                    <div class="bc-services">${svcs}</div>
+                </div>
+                <div class="bc-col">
+                    <h4>Inspection Location</h4>
+                    <p><strong>${b.seller_location || 'N/A'}</strong></p>
+                    <p class="muted">Seller: ${b.seller_contact || 'N/A'}</p>
+                    ${assignedName ? `<h4 style="margin-top:14px">Assigned To</h4><p><strong>${assignedName}</strong></p>` : ''}
+                    ${b.notes ? `<h4 style="margin-top:14px">Notes</h4><p class="muted">${b.notes}</p>` : ''}
+                </div>
+                <div class="bc-col">
+                    <h4>Pricing</h4>
+                    ${moneySection}
+                </div>
             </div>
-            <div>
-                ${moneySection}
-            </div>
-            <div class="bc-actions">
-                <select class="status-select" onchange="updateBookingStatus('${b.id}', this.value)">
-                    <option value="new" ${b.status==='new'?'selected':''}>New</option>
-                    <option value="confirmed" ${b.status==='confirmed'?'selected':''}>Confirmed</option>
-                    <option value="assigned" ${b.status==='assigned'?'selected':''}>Assigned</option>
-                    <option value="in-progress" ${b.status==='in-progress'?'selected':''}>In Progress</option>
-                    <option value="completed" ${b.status==='completed'?'selected':''}>Completed</option>
-                    <option value="cancelled" ${b.status==='cancelled'?'selected':''}>Cancelled</option>
-                </select>
-                <select class="inspector-select" onchange="assignInspector('${b.id}', this.value)">
-                    <option value="">Assign inspector...</option>
-                    ${inspectorOpts}
-                </select>
-                ${b.status === 'completed' ? `<button class="btn btn-sm btn-primary" onclick="copyReviewLink('${b.reference}')">Copy Review Link</button>` : ''}
-                <button class="btn btn-danger btn-sm" onclick="deleteBooking('${b.id}')">Delete</button>
+            <div class="bc-footer">
+                <div class="bc-footer-left">
+                    <select class="status-select" onchange="updateBookingStatus('${b.id}', this.value)">
+                        <option value="new" ${status==='new'?'selected':''}>New</option>
+                        <option value="confirmed" ${status==='confirmed'?'selected':''}>Confirmed</option>
+                        <option value="assigned" ${status==='assigned'?'selected':''}>Assigned</option>
+                        <option value="in-progress" ${status==='in-progress'?'selected':''}>In Progress</option>
+                        <option value="completed" ${status==='completed'?'selected':''}>Completed</option>
+                        <option value="cancelled" ${status==='cancelled'?'selected':''}>Cancelled</option>
+                    </select>
+                    <select class="inspector-select" onchange="assignInspector('${b.id}', this.value)">
+                        <option value="">Assign inspector...</option>
+                        ${inspectorOpts}
+                    </select>
+                </div>
+                <div class="bc-footer-actions">
+                    ${b.price ? `<button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')">Edit Price</button>` : ''}
+                    ${b.price && !paidByClient ? `<button class="btn btn-sm btn-success" onclick="markClientPaid('${b.id}')">Mark Client Paid</button>` : ''}
+                    ${status === 'completed' ? `<button class="btn btn-sm btn-primary" onclick="copyReviewLink('${b.reference}')">Copy Review Link</button>` : ''}
+                    <button class="btn btn-danger btn-sm" onclick="deleteBooking('${b.id}')">Delete</button>
+                </div>
             </div>
         </div>`;
     }).join('');
@@ -1213,39 +1274,72 @@ function renderInspectors() {
         return;
     }
 
+    const statusLabelMap = {pending:'Pending',approved:'Approved',active:'Active',suspended:'Suspended'};
+
     list.innerHTML = filtered.map(i => {
         const date = i.created_at ? new Date(i.created_at).toLocaleDateString() : '';
         const phone = (i.phone || '').replace(/[^0-9]/g, '');
         const completedJobs = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').length;
+        const activeJobs = allBookings.filter(b => b.assigned_inspector === i.id && (b.status === 'assigned' || b.status === 'in-progress')).length;
         const totalEarned = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').reduce((s,b) => s + (parseFloat(b.inspector_payout) || 0), 0);
-        const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% (custom)` : `${defaultCommission}% (default)`;
+        const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% custom` : `${defaultCommission}% default`;
+        const initials = (i.name || '?').split(' ').map(n => n.charAt(0)).slice(0, 2).join('').toUpperCase();
 
         return `
-        <div class="inspector-card status-${i.status}">
-            <div class="bc-section">
-                <h3>Inspector</h3>
-                <p><strong>${i.name}</strong> <span class="commission-tag">${commissionDisplay}</span></p>
-                <p>${i.phone} ${i.email ? '· ' + i.email : ''}</p>
-                <p>${i.town}, ${i.region}</p>
-                <p class="date">Joined: ${date}</p>
-                ${phone ? `<a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp</a>` : ''}
+        <div class="inspector-card">
+            <div class="ic-header">
+                <div class="ic-header-left">
+                    <div class="ic-avatar">${initials}</div>
+                    <div>
+                        <div class="ic-name">${i.name}</div>
+                        <div class="ic-meta">${i.town}, ${i.region} · Joined ${date}</div>
+                    </div>
+                </div>
+                <span class="ic-status-badge ${i.status}">${statusLabelMap[i.status] || i.status}</span>
             </div>
-            <div class="bc-section">
-                <h3>Performance</h3>
-                <p><strong>${completedJobs}</strong> jobs completed</p>
-                <p style="color:var(--secondary);font-weight:700">N$${fmt(totalEarned)} earned (lifetime)</p>
-                ${i.experience ? `<p style="margin-top:8px;font-size:0.8rem;color:var(--text-light)">${i.experience}</p>` : ''}
-                ${i.pin ? `<p style="margin-top:6px;font-size:0.78rem;color:var(--text-muted)">PIN: ${i.pin}</p>` : ''}
+            <div class="ic-body">
+                <div class="ic-col">
+                    <h4>Contact</h4>
+                    <p>${i.phone}</p>
+                    ${i.email ? `<p class="muted">${i.email}</p>` : ''}
+                    ${phone ? `<p style="margin-top:6px"><a class="wa-link" href="https://wa.me/${phone}" target="_blank">Open WhatsApp</a></p>` : ''}
+                    <h4 style="margin-top:14px">Commission Rate</h4>
+                    <p><span class="commission-tag">${commissionDisplay}</span></p>
+                    ${i.pin ? `<p class="muted" style="margin-top:6px">PIN: ${i.pin}</p>` : ''}
+                </div>
+                <div class="ic-col">
+                    <h4>Performance</h4>
+                    <div style="display:flex;gap:24px;margin-top:6px">
+                        <div>
+                            <div class="stat-num">${completedJobs}</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div>
+                            <div class="stat-num">${activeJobs}</div>
+                            <div class="stat-label">Active</div>
+                        </div>
+                    </div>
+                    <h4 style="margin-top:14px">Lifetime Earnings</h4>
+                    <p><span class="stat-num gold">N$${fmt(totalEarned)}</span></p>
+                </div>
+                <div class="ic-col">
+                    <h4>Experience</h4>
+                    <p class="muted">${i.experience || 'No experience info provided.'}</p>
+                </div>
             </div>
-            <div class="bc-actions">
-                <select class="status-select" onchange="updateInspectorStatus('${i.id}', this.value)">
-                    <option value="pending" ${i.status==='pending'?'selected':''}>Pending</option>
-                    <option value="approved" ${i.status==='approved'?'selected':''}>Approved</option>
-                    <option value="active" ${i.status==='active'?'selected':''}>Active</option>
-                    <option value="suspended" ${i.status==='suspended'?'selected':''}>Suspended</option>
-                </select>
-                <button class="btn btn-primary btn-sm" onclick="editInspector('${i.id}')">Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteInspector('${i.id}')">Delete</button>
+            <div class="ic-footer">
+                <div class="ic-footer-left">
+                    <select class="status-select" onchange="updateInspectorStatus('${i.id}', this.value)">
+                        <option value="pending" ${i.status==='pending'?'selected':''}>Pending</option>
+                        <option value="approved" ${i.status==='approved'?'selected':''}>Approved</option>
+                        <option value="active" ${i.status==='active'?'selected':''}>Active</option>
+                        <option value="suspended" ${i.status==='suspended'?'selected':''}>Suspended</option>
+                    </select>
+                </div>
+                <div class="ic-footer-actions">
+                    <button class="btn btn-primary btn-sm" onclick="editInspector('${i.id}')">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteInspector('${i.id}')">Delete</button>
+                </div>
             </div>
         </div>`;
     }).join('');
