@@ -1310,10 +1310,45 @@ h3 { font-size: 1.25rem; }
 }
 
 .contact-tagline {
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 28px;
-    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 12px;
+    font-size: 0.95rem;
     line-height: 1.6;
+}
+
+.contact-cta-line {
+    color: var(--secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.footer-cta-btn {
+    margin-bottom: 24px;
+}
+
+.footer-trust {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.footer-trust span {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.footer-trust span::before {
+    content: '\2713';
+    color: var(--secondary);
+    margin-right: 8px;
+}
+
+.footer-sub {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
 }
 
 .contact-details {
