@@ -7,6 +7,7 @@
 <title>ViewNam Admin</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--primary:#0B3D2E;--primary-dark:#062A1F;--secondary:#D4A843;--good:#27AE60;--fair:#F39C12;--poor:#E74C3C;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E;--text-muted:#9E9EB0}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -72,6 +73,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .status-pill.cancelled{border-top-color:var(--poor)}
 .status-pill .num{font-size:1.4rem;font-weight:800;color:var(--text)}
 .status-pill .lbl{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);font-weight:600;margin-top:2px}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.chart-card h4{font-size:0.85rem;font-weight:600;color:var(--text-light);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
+.chart-card canvas{max-height:240px}
 
 /* Top inspectors list */
 .top-list{background:var(--card);border-radius:12px;padding:8px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
@@ -165,6 +172,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     .status-row{grid-template-columns:repeat(3,1fr)}
     .booking-card,.inspector-card{grid-template-columns:1fr}
     .modal .field-row{grid-template-columns:1fr}
+    .chart-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -194,6 +202,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     <button class="tab" data-panel="bookingsPanel">Bookings</button>
     <button class="tab" data-panel="inspectorsPanel">Inspectors</button>
     <button class="tab" data-panel="payoutsPanel">Payouts</button>
+    <button class="tab" data-panel="reviewsPanel">Reviews</button>
     <button class="tab" data-panel="settingsPanel">Settings</button>
 </div>
 
@@ -227,6 +236,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
         <h3 class="section-h">Booking Status</h3>
         <div class="status-row" id="statusRow"></div>
 
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h4>Bookings — Last 30 Days</h4>
+                <canvas id="bookingsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Revenue — Last 30 Days</h4>
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
         <h3 class="section-h">Top Inspectors</h3>
         <div class="top-list" id="topInspectors"><div class="loading">Loading...</div></div>
 
@@ -248,6 +268,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
             </select>
             <select id="filterInspectorFilter">
                 <option value="">All Inspectors</option>
+            </select>
+            <select id="filterPayment">
+                <option value="">All Payments</option>
+                <option value="pending">Awaiting Payment</option>
+                <option value="paid">Client Paid</option>
             </select>
             <input type="text" id="filterSearch" placeholder="Search name, ref, vehicle...">
             <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
@@ -292,6 +317,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
         <div id="payoutsList"><div class="loading">Loading...</div></div>
     </div>
 
+    <!-- REVIEWS -->
+    <div class="panel" id="reviewsPanel">
+        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);max-width:760px;margin-bottom:24px">
+            <div class="stat-card gold">
+                <div class="stat-label">Average Rating</div>
+                <div class="stat-value"><span id="statAvgRating">0.0</span> <span style="font-size:1rem;color:var(--text-light)">/ 5</span></div>
+                <div class="stat-sub"><span id="statTotalReviews">0</span> reviews</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">5-Star Reviews</div>
+                <div class="stat-value" id="statFiveStar">0</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Review Rate</div>
+                <div class="stat-value"><span id="statReviewRate">0</span>%</div>
+                <div class="stat-sub">Of completed bookings</div>
+            </div>
+        </div>
+
+        <h3 class="section-h">All Reviews</h3>
+        <div id="reviewsList"><div class="loading">Loading...</div></div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="panel" id="settingsPanel">
         <div class="settings-card">
@@ -306,6 +354,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
             </div>
             <button class="btn btn-primary" onclick="saveDefaultCommission()">Save</button>
             <p id="settingsMsg" style="margin-top:12px;font-size:0.85rem;"></p>
+        </div>
+
+        <div class="settings-card" style="margin-top:24px">
+            <h2>Bank Account Details</h2>
+            <p class="help">These details are shown to customers after they submit a booking. Customers will use these to make payment.</p>
+            <div class="field">
+                <label>Bank Name</label>
+                <input type="text" id="bankName" placeholder="e.g. Bank Windhoek">
+            </div>
+            <div class="field">
+                <label>Account Name</label>
+                <input type="text" id="bankAcctName" placeholder="e.g. ViewNam">
+            </div>
+            <div class="field">
+                <label>Account Number</label>
+                <input type="text" id="bankAcctNum" placeholder="e.g. 8001234567">
+            </div>
+            <div class="field">
+                <label>Branch Code</label>
+                <input type="text" id="bankBranch" placeholder="e.g. 481972">
+            </div>
+            <button class="btn btn-primary" onclick="saveBankDetails()">Save Bank Details</button>
+            <p id="bankMsg" style="margin-top:12px;font-size:0.85rem;"></p>
         </div>
 
         <div class="settings-card" style="margin-top:24px">
@@ -588,12 +659,15 @@ async function loadBookings() {
 function renderBookings() {
     const status = document.getElementById('filterStatus').value;
     const inspector = document.getElementById('filterInspectorFilter').value;
+    const payment = document.getElementById('filterPayment').value;
     const search = document.getElementById('filterSearch').value.toLowerCase();
     const list = document.getElementById('bookingsList');
 
     const filtered = allBookings.filter(b => {
         if (status && b.status !== status) return false;
         if (inspector && b.assigned_inspector !== inspector) return false;
+        if (payment === 'paid' && b.payment_status !== 'paid') return false;
+        if (payment === 'pending' && b.payment_status === 'paid') return false;
         if (search) {
             const haystack = `${b.client_name} ${b.reference} ${b.vehicle_make} ${b.vehicle_model} ${b.client_phone}`.toLowerCase();
             if (!haystack.includes(search)) return false;
@@ -615,14 +689,19 @@ function renderBookings() {
         const phone = (b.client_phone || '').replace(/[^0-9]/g, '');
         const assignedName = b.assigned_inspector ? (allInspectors.find(i => i.id === b.assigned_inspector)?.name || 'Unknown') : '';
 
+        const paidByClient = b.payment_status === 'paid';
         const moneySection = b.price ? `
             <div class="bc-money">
                 <div class="bc-money-row total"><span class="lbl">Total</span><span class="val">N$${fmt(b.price)}</span></div>
                 <div class="bc-money-row fee"><span class="lbl">Your fee (${b.commission_rate || defaultCommission}%)</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
                 <div class="bc-money-row payout"><span class="lbl">Inspector payout</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
-                ${b.paid_to_inspector ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--good);font-weight:600">✓ Inspector paid</div>' : ''}
+                <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:0.75rem;">
+                    ${paidByClient ? '<span style="color:var(--good);font-weight:600">✓ Client paid</span>' : '<span style="color:var(--fair);font-weight:600">⚠ Awaiting payment</span>'}
+                    ${b.paid_to_inspector ? '<br><span style="color:var(--good);font-weight:600">✓ Inspector paid</span>' : ''}
+                </div>
             </div>
             <button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')" style="margin-top:6px">Edit Price</button>
+            ${!paidByClient ? `<button class="btn btn-sm btn-success" onclick="markClientPaid('${b.id}')" style="margin-top:6px">Mark Client Paid</button>` : ''}
         ` : `
             <div class="bc-money" style="text-align:center;color:var(--text-light)">
                 <p style="margin-bottom:8px">No price set</p>
@@ -666,6 +745,7 @@ function renderBookings() {
                     <option value="">Assign inspector...</option>
                     ${inspectorOpts}
                 </select>
+                ${b.status === 'completed' ? `<button class="btn btn-sm btn-primary" onclick="copyReviewLink('${b.reference}')">Copy Review Link</button>` : ''}
                 <button class="btn btn-danger btn-sm" onclick="deleteBooking('${b.id}')">Delete</button>
             </div>
         </div>`;
@@ -989,16 +1069,199 @@ async function markPaid(bookingId) {
     else loadBookings();
 }
 
-// Re-render payouts when bookings tab data updates
+function copyReviewLink(ref) {
+    const url = `${location.origin}/review.html?ref=${ref}`;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Review link copied:\n' + url + '\n\nSend this to the client via WhatsApp.');
+    }).catch(() => {
+        prompt('Copy this review link:', url);
+    });
+}
+
+async function markClientPaid(bookingId) {
+    if (!confirm('Mark this booking as paid by the client?')) return;
+    const { error } = await supabase.from('bookings').update({
+        payment_status: 'paid',
+        paid_at: new Date().toISOString()
+    }).eq('id', bookingId);
+    if (error) alert('Error: ' + error.message);
+    else loadBookings();
+}
+
+// =====================
+// CHARTS
+// =====================
+let bookingsChartObj = null;
+let revenueChartObj = null;
+
+function renderCharts() {
+    const days = 30;
+    const labels = [];
+    const bookingCounts = [];
+    const revenues = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setHours(0,0,0,0);
+        d.setDate(d.getDate() - i);
+        const next = new Date(d);
+        next.setDate(next.getDate() + 1);
+
+        labels.push(d.toLocaleDateString('en-NA', { month: 'short', day: 'numeric' }));
+
+        const dayBookings = allBookings.filter(b => {
+            const created = new Date(b.created_at);
+            return created >= d && created < next;
+        });
+        bookingCounts.push(dayBookings.length);
+
+        const dayRevenue = dayBookings
+            .filter(b => b.status === 'completed')
+            .reduce((s, b) => s + (parseFloat(b.price) || 0), 0);
+        revenues.push(dayRevenue);
+    }
+
+    const ctx1 = document.getElementById('bookingsChart');
+    if (ctx1 && typeof Chart !== 'undefined') {
+        if (bookingsChartObj) bookingsChartObj.destroy();
+        bookingsChartObj = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Bookings',
+                    data: bookingCounts,
+                    borderColor: '#0B3D2E',
+                    backgroundColor: 'rgba(11,61,46,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+    }
+
+    const ctx2 = document.getElementById('revenueChart');
+    if (ctx2 && typeof Chart !== 'undefined') {
+        if (revenueChartObj) revenueChartObj.destroy();
+        revenueChartObj = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue (N$)',
+                    data: revenues,
+                    backgroundColor: '#D4A843',
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+    }
+}
+
+// =====================
+// REVIEWS
+// =====================
+let allReviews = [];
+
+async function loadReviews() {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
+    allReviews = data || [];
+    renderReviews();
+}
+
+function renderReviews() {
+    const list = document.getElementById('reviewsList');
+    const completedCount = allBookings.filter(b => b.status === 'completed').length;
+
+    // Stats
+    const total = allReviews.length;
+    const avg = total > 0 ? (allReviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : '0.0';
+    const fiveStar = allReviews.filter(r => r.rating === 5).length;
+    const reviewRate = completedCount > 0 ? Math.round((total / completedCount) * 100) : 0;
+
+    document.getElementById('statAvgRating').textContent = avg;
+    document.getElementById('statTotalReviews').textContent = total;
+    document.getElementById('statFiveStar').textContent = fiveStar;
+    document.getElementById('statReviewRate').textContent = reviewRate;
+
+    if (!total) {
+        list.innerHTML = '<div class="empty"><h2>No reviews yet</h2><p>Reviews from clients will appear here.</p></div>';
+        return;
+    }
+
+    list.innerHTML = allReviews.map(r => {
+        const inspector = allInspectors.find(i => i.id === r.inspector_id);
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const date = new Date(r.created_at).toLocaleDateString();
+        return `
+        <div style="background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--secondary)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+                <div>
+                    <div style="font-size:1.3rem;color:var(--secondary);letter-spacing:2px">${stars}</div>
+                    <div style="font-weight:600;margin-top:4px">${r.client_name || 'Anonymous'} ${r.client_location ? `<span style="font-weight:400;color:var(--text-light)">— ${r.client_location}</span>` : ''}</div>
+                </div>
+                <div style="text-align:right;font-size:0.8rem;color:var(--text-muted)">
+                    ${date}<br>
+                    ${inspector ? `<span style="color:var(--primary);font-weight:600">Inspector: ${inspector.name}</span>` : ''}
+                </div>
+            </div>
+            ${r.comment ? `<p style="font-size:0.9rem;color:var(--text-light);margin-top:8px;line-height:1.6;font-style:italic">"${r.comment}"</p>` : ''}
+        </div>`;
+    }).join('');
+}
+
+// =====================
+// BANK DETAILS
+// =====================
+async function loadBankDetails() {
+    if (!supabase) return;
+    const { data } = await supabase.from('settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
+    if (!data) return;
+    const get = k => data.find(d => d.key === k)?.value || '';
+    document.getElementById('bankName').value = get('bank_name');
+    document.getElementById('bankAcctName').value = get('bank_account_name');
+    document.getElementById('bankAcctNum').value = get('bank_account_number');
+    document.getElementById('bankBranch').value = get('bank_branch_code');
+}
+
+async function saveBankDetails() {
+    const items = [
+        { key: 'bank_name', value: document.getElementById('bankName').value },
+        { key: 'bank_account_name', value: document.getElementById('bankAcctName').value },
+        { key: 'bank_account_number', value: document.getElementById('bankAcctNum').value },
+        { key: 'bank_branch_code', value: document.getElementById('bankBranch').value },
+    ];
+    let hasError = false;
+    for (const item of items) {
+        const { error } = await supabase.from('settings')
+            .update({ value: item.value, updated_at: new Date().toISOString() })
+            .eq('key', item.key);
+        if (error) { hasError = true; break; }
+    }
+    const msg = document.getElementById('bankMsg');
+    if (hasError) {
+        msg.innerHTML = '<span style="color:var(--poor)">Error saving</span>';
+    } else {
+        msg.innerHTML = '<span style="color:var(--good)">✓ Saved</span>';
+        setTimeout(() => { msg.textContent = ''; }, 3000);
+    }
+}
+
+// Re-render dashboard wrap
 const origRenderDashboard = renderDashboard;
 renderDashboard = function() {
     origRenderDashboard();
     renderPayouts();
+    renderCharts();
 };
 
 // --- Filters ---
 document.getElementById('filterStatus').addEventListener('change', renderBookings);
 document.getElementById('filterInspectorFilter').addEventListener('change', renderBookings);
+document.getElementById('filterPayment').addEventListener('change', renderBookings);
 document.getElementById('filterSearch').addEventListener('input', renderBookings);
 document.getElementById('filterInspectorStatus').addEventListener('change', renderInspectors);
 document.getElementById('filterInspectorSearch').addEventListener('input', renderInspectors);
@@ -1006,8 +1269,10 @@ document.getElementById('filterInspectorSearch').addEventListener('input', rende
 // --- Init ---
 async function init() {
     await loadSettings();
+    await loadBankDetails();
     await loadInspectors();
     await loadBookings();
+    await loadReviews();
 }
 init();
 </script>

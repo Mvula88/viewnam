@@ -693,6 +693,7 @@
                             <li><a href="#pricing">Pricing</a></li>
                             <li><a href="#booking">Check A Car</a></li>
                             <li><a href="track.html">Track Your Booking</a></li>
+                            <li><a href="review.html">Leave a Review</a></li>
                             <li><a href="sample-report.html">Sample Report</a></li>
                         </ul>
                     </div>
@@ -738,10 +739,22 @@
             <div class="modal-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <h3>Booking Request Sent!</h3>
-            <p>Thank you! We'll review your request and get back to you within 2 hours during business hours.</p>
+            <h3>Booking Received!</h3>
+            <p>Thank you! To start the inspection, please complete payment using the details below.</p>
             <p class="modal-ref">Your reference: <strong><span id="bookingRef"></span></strong></p>
-            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px;">Save this reference to <a href="track.html" style="color:var(--primary);font-weight:600;">track your booking status</a>.</p>
+
+            <div style="background:var(--bg-light); border-left:4px solid var(--secondary); padding:16px; margin:16px 0; text-align:left; border-radius:8px;">
+                <strong style="color:var(--primary); display:block; margin-bottom:8px;">Payment Details</strong>
+                <div style="font-size:0.85rem; line-height:1.7;" id="paymentDetails">
+                    <div><strong>Bank:</strong> <span id="payBank">Bank Windhoek</span></div>
+                    <div><strong>Account Name:</strong> <span id="payAcctName">ViewNam</span></div>
+                    <div><strong>Account Number:</strong> <span id="payAcctNum">—</span></div>
+                    <div><strong>Branch Code:</strong> <span id="payBranch">—</span></div>
+                    <div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--border);"><strong>Use as reference:</strong> <span id="payRef" style="color:var(--primary); font-weight:700;"></span></div>
+                </div>
+            </div>
+
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px;">After payment, send proof to <a href="https://wa.me/264813214813" target="_blank" style="color:var(--primary);font-weight:600;">our WhatsApp</a>. Track your booking <a href="track.html" style="color:var(--primary);font-weight:600;">here</a>.</p>
             <button class="btn btn-primary" onclick="closeModal()">Got it!</button>
         </div>
     </div>

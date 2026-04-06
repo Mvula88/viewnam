@@ -8,6 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('copyrightYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+    // --- Load bank details from Supabase ---
+    (async function loadBankDetails() {
+        if (typeof supabase === 'undefined' || !supabase) return;
+        try {
+            const { data } = await supabase.from('settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
+            if (!data) return;
+            const get = (key) => data.find(d => d.key === key)?.value || '';
+            const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+            set('payBank', get('bank_name'));
+            set('payAcctName', get('bank_account_name'));
+            set('payAcctNum', get('bank_account_number'));
+            set('payBranch', get('bank_branch_code'));
+        } catch (e) { /* silent */ }
+    })();
+
     // --- Navbar scroll effect ---
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -123,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Generate reference number
         const ref = 'VN-' + Date.now().toString(36).toUpperCase();
         bookingRef.textContent = ref;
+        const payRef = document.getElementById('payRef');
+        if (payRef) payRef.textContent = ref;
 
         // Collect form data
         const formData = new FormData(bookingForm);

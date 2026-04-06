@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Rate your ViewNam vehicle inspection experience.">
+<meta name="robots" content="noindex, nofollow">
+<title>ViewNam — Rate Your Inspection</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B3D2E;--primary-dark:#062A1F;--secondary:#D4A843;--good:#27AE60;--poor:#E74C3C;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E;--text-muted:#9E9EB0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.topnav{background:var(--primary);padding:16px 24px}
+.topnav a{color:#fff;text-decoration:none}
+.topnav img{height:48px}
+
+.container{max-width:560px;margin:0 auto;padding:40px 16px 80px}
+
+.review-header{text-align:center;margin-bottom:32px}
+.review-header h1{font-size:1.6rem;margin-bottom:8px;color:var(--primary)}
+.review-header p{color:var(--text-light);font-size:0.95rem}
+
+.review-card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+
+.lookup-form{display:flex;gap:10px;margin-bottom:20px}
+.lookup-form input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit}
+.lookup-form input:focus{outline:none;border-color:var(--primary)}
+.lookup-form button{padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;font-family:inherit}
+
+.booking-info{background:var(--bg);padding:16px;border-radius:8px;margin-bottom:24px;display:none}
+.booking-info h3{font-size:0.95rem;margin-bottom:8px}
+.booking-info p{font-size:0.85rem;color:var(--text-light);margin-bottom:3px}
+.booking-info .inspector-name{color:var(--primary);font-weight:600;margin-top:8px}
+
+.review-form{display:none}
+
+.field{margin-bottom:18px}
+.field label{display:block;font-size:0.9rem;font-weight:600;color:var(--text);margin-bottom:8px}
+
+.stars{display:flex;gap:8px;justify-content:center;margin:16px 0 24px}
+.star{font-size:2.4rem;cursor:pointer;color:var(--border);transition:transform 0.15s}
+.star:hover{transform:scale(1.15)}
+.star.active{color:var(--secondary)}
+
+.rating-label{text-align:center;font-size:0.95rem;font-weight:600;color:var(--text-light);min-height:24px;margin-bottom:16px}
+
+textarea{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.95rem;font-family:inherit;resize:vertical;min-height:100px}
+textarea:focus{outline:none;border-color:var(--primary)}
+
+.submit-btn{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+.submit-btn:hover{background:var(--primary-dark)}
+.submit-btn:disabled{background:var(--text-muted);cursor:not-allowed}
+
+.error{color:var(--poor);font-size:0.85rem;text-align:center;margin-top:12px;display:none}
+.error.show{display:block}
+
+.success-screen{text-align:center;display:none;padding:40px 20px}
+.success-screen .icon{font-size:3.5rem;margin-bottom:16px}
+.success-screen h2{color:var(--primary);margin-bottom:8px}
+.success-screen p{color:var(--text-light)}
+</style>
+</head>
+<body>
+
+<div class="topnav"><a href="index.html"><img src="images/ViewNam logo.png" alt="ViewNam"></a></div>
+
+<div class="container">
+    <div class="review-header">
+        <h1>How was your inspection?</h1>
+        <p>Your feedback helps us improve and helps other buyers.</p>
+    </div>
+
+    <div class="review-card">
+        <!-- Step 1: Lookup -->
+        <div id="lookupStep">
+            <div class="field">
+                <label>Enter your booking reference</label>
+                <div class="lookup-form">
+                    <input type="text" id="refInput" placeholder="e.g. VN-ABC123">
+                    <button onclick="lookupBooking()">Find</button>
+                </div>
+                <p class="error" id="lookupError">Booking not found or not completed yet.</p>
+            </div>
+        </div>
+
+        <!-- Step 2: Booking info + review form -->
+        <div class="booking-info" id="bookingInfo">
+            <h3 id="bi_vehicle"></h3>
+            <p id="bi_date"></p>
+            <p class="inspector-name" id="bi_inspector"></p>
+        </div>
+
+        <div class="review-form" id="reviewForm">
+            <div class="field">
+                <label>Your rating</label>
+                <div class="stars" id="stars">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <div class="rating-label" id="ratingLabel">Tap a star to rate</div>
+            </div>
+
+            <div class="field">
+                <label>Tell us about your experience (optional)</label>
+                <textarea id="commentInput" placeholder="What did you think of the inspection? Was the inspector professional? Did the report help you?"></textarea>
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="submitReview()" disabled>Submit Review</button>
+            <p class="error" id="submitError"></p>
+        </div>
+
+        <!-- Success -->
+        <div class="success-screen" id="successScreen">
+            <div class="icon">⭐</div>
+            <h2>Thank you!</h2>
+            <p>Your review has been submitted.</p>
+            <p style="margin-top:16px"><a href="index.html" style="color:var(--primary);font-weight:600">Back to ViewNam</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+let currentBooking = null;
+let currentRating = 0;
+
+const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+
+// Auto-fill from URL ?ref=VN-XXX
+const urlParams = new URLSearchParams(window.location.search);
+const urlRef = urlParams.get('ref');
+if (urlRef) {
+    document.getElementById('refInput').value = urlRef;
+    setTimeout(lookupBooking, 200);
+}
+
+document.getElementById('refInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') lookupBooking();
+});
+
+async function lookupBooking() {
+    const ref = document.getElementById('refInput').value.trim().toUpperCase();
+    document.getElementById('lookupError').classList.remove('show');
+    if (!ref || !supabase) return;
+
+    // Find booking
+    const { data: booking, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('reference', ref)
+        .single();
+
+    if (error || !booking) {
+        document.getElementById('lookupError').textContent = 'Booking not found.';
+        document.getElementById('lookupError').classList.add('show');
+        return;
+    }
+
+    if (booking.status !== 'completed') {
+        document.getElementById('lookupError').textContent = 'You can only review completed inspections.';
+        document.getElementById('lookupError').classList.add('show');
+        return;
+    }
+
+    // Check if already reviewed
+    const { data: existing } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('booking_id', booking.id)
+        .maybeSingle();
+
+    if (existing) {
+        document.getElementById('lookupError').textContent = 'You have already reviewed this inspection.';
+        document.getElementById('lookupError').classList.add('show');
+        return;
+    }
+
+    currentBooking = booking;
+
+    // Get inspector name
+    let inspectorName = 'your inspector';
+    if (booking.assigned_inspector) {
+        const { data: inspector } = await supabase
+            .from('inspectors')
+            .select('name')
+            .eq('id', booking.assigned_inspector)
+            .single();
+        if (inspector) inspectorName = inspector.name;
+    }
+
+    // Show booking info + form
+    document.getElementById('bi_vehicle').textContent = `${booking.vehicle_year || ''} ${booking.vehicle_make || ''} ${booking.vehicle_model || ''}`.trim();
+    document.getElementById('bi_date').textContent = `Inspected on ${new Date(booking.completed_at || booking.created_at).toLocaleDateString()}`;
+    document.getElementById('bi_inspector').textContent = `Inspector: ${inspectorName}`;
+
+    document.getElementById('lookupStep').style.display = 'none';
+    document.getElementById('bookingInfo').style.display = 'block';
+    document.getElementById('reviewForm').style.display = 'block';
+}
+
+// Star rating
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => {
+        currentRating = parseInt(star.dataset.rating);
+        document.querySelectorAll('.star').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.rating) <= currentRating);
+        });
+        document.getElementById('ratingLabel').textContent = ratingLabels[currentRating];
+        document.getElementById('submitBtn').disabled = false;
+    });
+});
+
+async function submitReview() {
+    if (!currentRating || !currentBooking) return;
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const { error } = await supabase.from('reviews').insert({
+        booking_id: currentBooking.id,
+        inspector_id: currentBooking.assigned_inspector,
+        rating: currentRating,
+        comment: document.getElementById('commentInput').value || null,
+        client_name: currentBooking.client_name,
+        client_location: currentBooking.client_location,
+        is_public: true,
+    });
+
+    if (error) {
+        document.getElementById('submitError').textContent = 'Error: ' + error.message;
+        document.getElementById('submitError').classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Review';
+        return;
+    }
+
+    document.getElementById('bookingInfo').style.display = 'none';
+    document.getElementById('reviewForm').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+}
+</script>
+</body>
+</html>
