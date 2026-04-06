@@ -59,14 +59,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .panel.active{display:block}
 
 /* Dashboard stat cards */
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
-.stat-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--primary)}
-.stat-card.gold{border-left-color:var(--secondary)}
-.stat-card.green{border-left-color:var(--good)}
-.stat-card.amber{border-left-color:var(--fair)}
-.stat-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;margin-bottom:6px}
-.stat-value{font-size:1.8rem;font-weight:800;color:var(--text);line-height:1.1}
-.stat-sub{font-size:0.8rem;color:var(--text-light);margin-top:4px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-bottom:32px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.stat-card{background:var(--card);padding:24px 28px}
+.stat-card.gold,.stat-card.green,.stat-card.amber{border:none}
+.stat-label{font-size:0.78rem;color:var(--text-light);font-weight:500;margin-bottom:10px}
+.stat-value{font-size:1.75rem;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:-0.5px}
+.stat-sub{font-size:0.78rem;color:var(--text-muted);margin-top:6px;font-weight:400}
 
 /* Section heading */
 .section-h{font-size:1.05rem;font-weight:700;color:var(--text);margin:32px 0 14px;display:flex;justify-content:space-between;align-items:center}
