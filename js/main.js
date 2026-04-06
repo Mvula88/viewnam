@@ -4,19 +4,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =============================================
-    // CONFIG — Update these with your real details
-    // =============================================
-    const CONFIG = {
-        // Your WhatsApp number (with country code, no + or spaces)
-        ownerWhatsApp: '264813214813',
-
-        // EmailJS credentials (sign up free at https://www.emailjs.com)
-        // Leave empty to skip email — WhatsApp will still work
-        emailjsPublicKey: '',    // e.g. 'abc123XYZ'
-        emailjsServiceId: '',    // e.g. 'service_viewnam'
-        emailjsTemplateId: '',   // e.g. 'template_booking'
-    };
+    // --- Dynamic copyright year ---
+    const yearEl = document.getElementById('copyrightYear');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     // --- Navbar scroll effect ---
     const navbar = document.getElementById('navbar');
@@ -120,15 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const successModal = document.getElementById('successModal');
     const bookingRef = document.getElementById('bookingRef');
 
-    const serviceNames = {
-        'full-package': 'Full Package (from N$1,800)',
-        'visual-inspection': 'Visual Inspection (from N$750)',
-        'mechanical-diagnostics': 'Mechanical Inspection + Diagnostics (from N$700)',
-        'test-drive': 'Test Drive Assessment (from N$650)'
-    };
-
     bookingForm.addEventListener('submit', (e) => {
         e.preventDefault();
+
+        // Validate at least one service is selected
+        const selectedServices = bookingForm.querySelectorAll('input[name="services"]:checked');
+        if (selectedServices.length === 0) {
+            alert('Please select at least one service.');
+            return;
+        }
 
         // Generate reference number
         const ref = 'VN-' + Date.now().toString(36).toUpperCase();
@@ -149,13 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         data.submittedAt = new Date().toISOString();
         data.status = 'new';
 
-        // 1. Save to Supabase (primary) + localStorage (fallback)
+        // Save to Supabase + localStorage backup
         saveBooking(data);
-
-        // 2. Send email via EmailJS (if configured)
-        if (CONFIG.emailjsPublicKey) {
-            sendEmail(data);
-        }
 
         // Show success modal
         successModal.classList.add('active');
@@ -196,40 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     notes: data.notes || null,
                 });
                 if (error) console.error('Supabase insert error:', error);
-                else console.log('Booking saved to Supabase');
             } catch (e) {
                 console.error('Supabase save failed:', e);
             }
         }
-    }
-
-    // --- Send email via EmailJS ---
-    function sendEmail(data) {
-        if (typeof emailjs === 'undefined') return;
-
-        const selectedServices = (data.services || [])
-            .map(s => serviceNames[s] || s)
-            .join(', ');
-
-        emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateId, {
-            reference: data.reference,
-            client_name: data.fullName,
-            client_phone: data.phone,
-            client_email: data.email || 'N/A',
-            client_location: data.buyerLocation,
-            vehicle: `${data.vehicleYear} ${data.vehicleMake} ${data.vehicleModel}`,
-            asking_price: data.askingPrice || 'N/A',
-            vehicle_link: data.vehicleLink || 'N/A',
-            vehicle_location: data.sellerLocation,
-            seller_contact: data.sellerContact || 'N/A',
-            services: selectedServices,
-            notes: data.notes || 'None',
-            submitted_at: new Date().toLocaleString(),
-        }).then(() => {
-            console.log('Email sent successfully');
-        }).catch((err) => {
-            console.error('Email failed:', err);
-        });
     }
 
     // --- Close modal ---
