@@ -13,12 +13,12 @@
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 
-        .topbar{background:var(--primary);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
-        .topbar h1{font-size:1.2rem;font-weight:700}
-        .topbar .lv{color:#fff}.topbar .ln{color:var(--secondary)}
+        .topbar{background:#fff;color:var(--text);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+        .topbar h1{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:12px;color:var(--text)}
+        .topbar h1 img{height:48px}
         .topbar-right{display:flex;gap:16px;align-items:center}
-        .topbar-stats{display:flex;gap:16px;font-size:0.85rem;opacity:0.8}
-        .topbar-stats strong{color:var(--secondary)}
+        .topbar-stats{display:flex;gap:20px;font-size:0.85rem;color:var(--text-light)}
+        .topbar-stats strong{color:var(--primary);font-size:1rem}
 
         .tab-bar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0}
         .tab{padding:14px 20px;font-size:0.9rem;font-weight:600;color:var(--text-light);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s}
@@ -119,14 +119,14 @@
 </div>
 
 <div class="topbar">
-    <h1><img src="images/ViewNam logo.png" alt="ViewNam" style="height:36px;"> Admin</h1>
+    <h1><img src="images/ViewNam logo.png" alt="ViewNam"> <span style="font-size:0.85rem;font-weight:500;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Admin</span></h1>
     <div class="topbar-right">
         <div class="topbar-stats">
             <span><strong id="totalCount">0</strong> Bookings</span>
             <span><strong id="newCount">0</strong> New</span>
             <span><strong id="inspectorCount">0</strong> Inspectors</span>
         </div>
-        <button onclick="logoutAdmin()" style="background:none;border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;cursor:pointer;font-family:inherit;margin-left:16px;">Log out</button>
+        <button onclick="logoutAdmin()" style="background:var(--primary);border:none;color:#fff;padding:8px 18px;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;margin-left:16px;">Log out</button>
     </div>
 </div>
 
