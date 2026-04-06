@@ -1437,8 +1437,9 @@ h3 { font-size: 1.25rem; }
 }
 
 .footer-bottom {
-    background: transparent;
+    background: var(--primary-dark);
     padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .footer-bottom .container {
