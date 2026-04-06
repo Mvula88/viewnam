@@ -203,6 +203,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     <button class="tab" data-panel="inspectorsPanel">Inspectors</button>
     <button class="tab" data-panel="payoutsPanel">Payouts</button>
     <button class="tab" data-panel="reviewsPanel">Reviews</button>
+    <button class="tab" data-panel="reportsPanel">Reports</button>
     <button class="tab" data-panel="settingsPanel">Settings</button>
 </div>
 
@@ -338,6 +339,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 
         <h3 class="section-h">All Reviews</h3>
         <div id="reviewsList"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="panel" id="reportsPanel">
+        <div class="filters">
+            <select id="reportMonth"></select>
+            <select id="reportYear"></select>
+            <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+        </div>
+
+        <div id="reportContent">
+            <div class="empty"><p>Select a month and year, then click Generate Report.</p></div>
+        </div>
     </div>
 
     <!-- SETTINGS -->
@@ -757,8 +771,16 @@ async function updateBookingStatus(id, status) {
     if (status === 'confirmed') updates.confirmed_at = new Date().toISOString();
     if (status === 'completed') updates.completed_at = new Date().toISOString();
     const { error } = await supabase.from('bookings').update(updates).eq('id', id);
-    if (error) alert('Error: ' + error.message);
-    else loadBookings();
+    if (error) { alert('Error: ' + error.message); return; }
+
+    const booking = allBookings.find(b => b.id === id);
+    if (booking) {
+        // Offer to notify client on key status changes
+        if (status === 'confirmed' || status === 'in-progress' || status === 'completed') {
+            offerClientNotification({ ...booking, status });
+        }
+    }
+    loadBookings();
 }
 
 async function assignInspector(bookingId, inspectorId) {
@@ -776,8 +798,60 @@ async function assignInspector(bookingId, inspectorId) {
     }
 
     const { error } = await supabase.from('bookings').update(updates).eq('id', bookingId);
-    if (error) alert('Error: ' + error.message);
-    else loadBookings();
+    if (error) { alert('Error: ' + error.message); return; }
+
+    // Offer to notify the inspector
+    const inspector = allInspectors.find(i => i.id === inspectorId);
+    if (inspector && booking) {
+        offerInspectorNotification(inspector, booking);
+    }
+    loadBookings();
+}
+
+// =====================
+// NOTIFICATIONS (click-to-send WhatsApp)
+// =====================
+function offerInspectorNotification(inspector, booking) {
+    const phone = (inspector.phone || '').replace(/[^0-9]/g, '');
+    if (!phone) return;
+
+    const msg = [
+        `*New Inspection Job — ViewNam*`,
+        ``,
+        `Hi ${inspector.name}, you have been assigned a new inspection.`,
+        ``,
+        `*Reference:* ${booking.reference}`,
+        `*Vehicle:* ${booking.vehicle_year || ''} ${booking.vehicle_make || ''} ${booking.vehicle_model || ''}`,
+        `*Vehicle location:* ${booking.seller_location || 'N/A'}`,
+        `*Seller contact:* ${booking.seller_contact || 'N/A'}`,
+        booking.notes ? `*Client notes:* ${booking.notes}` : '',
+        ``,
+        `Your payout: N$${fmt(booking.inspector_payout || 0)}`,
+        ``,
+        `Log in to view details: ${location.origin}/inspector-login.html`
+    ].filter(Boolean).join('\n');
+
+    if (confirm('Notify ' + inspector.name + ' on WhatsApp about this new job?')) {
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+}
+
+function offerClientNotification(booking) {
+    const phone = (booking.client_phone || '').replace(/[^0-9]/g, '');
+    if (!phone) return;
+
+    const statusMessages = {
+        'confirmed': `Hi ${booking.client_name}, your ViewNam booking *${booking.reference}* has been confirmed. We will assign an inspector shortly.`,
+        'in-progress': `Hi ${booking.client_name}, the inspection of your ${booking.vehicle_make || 'vehicle'} (Ref: ${booking.reference}) is now in progress. We'll send your report soon.`,
+        'completed': `Hi ${booking.client_name}, your inspection report for *${booking.reference}* is ready! Check your email or contact us for the full report.\n\nWe'd love your feedback — please rate our service: ${location.origin}/review.html?ref=${booking.reference}`
+    };
+
+    const msg = statusMessages[booking.status];
+    if (!msg) return;
+
+    if (confirm('Notify the client on WhatsApp about this status change?')) {
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
 }
 
 async function deleteBooking(id) {
@@ -1250,6 +1324,162 @@ async function saveBankDetails() {
     }
 }
 
+// =====================
+// REPORTS
+// =====================
+function initReports() {
+    const monthSel = document.getElementById('reportMonth');
+    const yearSel = document.getElementById('reportYear');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const now = new Date();
+    monthSel.innerHTML = months.map((m, i) => `<option value="${i}" ${i === now.getMonth() ? 'selected' : ''}>${m}</option>`).join('');
+    const years = [];
+    for (let y = now.getFullYear(); y >= now.getFullYear() - 3; y--) years.push(y);
+    yearSel.innerHTML = years.map(y => `<option value="${y}" ${y === now.getFullYear() ? 'selected' : ''}>${y}</option>`).join('');
+}
+
+function generateReport() {
+    const month = parseInt(document.getElementById('reportMonth').value);
+    const year = parseInt(document.getElementById('reportYear').value);
+    const monthName = ['January','February','March','April','May','June','July','August','September','October','November','December'][month];
+
+    const start = new Date(year, month, 1);
+    const end = new Date(year, month + 1, 1);
+
+    const monthBookings = allBookings.filter(b => {
+        const d = new Date(b.created_at);
+        return d >= start && d < end;
+    });
+
+    const completed = monthBookings.filter(b => b.status === 'completed');
+    const cancelled = monthBookings.filter(b => b.status === 'cancelled');
+
+    const totalRevenue = completed.reduce((s, b) => s + (parseFloat(b.price) || 0), 0);
+    const totalCommission = completed.reduce((s, b) => s + (parseFloat(b.platform_fee) || 0), 0);
+    const totalPayouts = completed.reduce((s, b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+    const paidPayouts = completed.filter(b => b.paid_to_inspector).reduce((s, b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+    const unpaidPayouts = totalPayouts - paidPayouts;
+
+    // VAT calculation (15% in Namibia)
+    // Total revenue includes VAT, so VAT amount = revenue * 15/115
+    const vatAmount = totalRevenue * 15 / 115;
+    const revenueExclVat = totalRevenue - vatAmount;
+
+    // Group by inspector
+    const byInspector = {};
+    completed.forEach(b => {
+        const id = b.assigned_inspector || 'unassigned';
+        if (!byInspector[id]) byInspector[id] = { count: 0, revenue: 0, commission: 0, payout: 0, unpaid: 0 };
+        byInspector[id].count++;
+        byInspector[id].revenue += parseFloat(b.price) || 0;
+        byInspector[id].commission += parseFloat(b.platform_fee) || 0;
+        byInspector[id].payout += parseFloat(b.inspector_payout) || 0;
+        if (!b.paid_to_inspector) byInspector[id].unpaid += parseFloat(b.inspector_payout) || 0;
+    });
+
+    const inspectorRows = Object.entries(byInspector).map(([id, s]) => {
+        const inspector = allInspectors.find(i => i.id === id);
+        const name = inspector ? inspector.name : 'Unassigned';
+        const phone = inspector ? (inspector.phone || '').replace(/[^0-9]/g, '') : '';
+        return `
+        <tr>
+            <td>${name}</td>
+            <td style="text-align:center">${s.count}</td>
+            <td style="text-align:right">N$${fmt(s.revenue)}</td>
+            <td style="text-align:right">N$${fmt(s.payout)}</td>
+            <td style="text-align:right;color:${s.unpaid > 0 ? 'var(--poor)' : 'var(--good)'};font-weight:600">N$${fmt(s.unpaid)}</td>
+            <td style="text-align:center">${phone ? `<a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp</a>` : '-'}</td>
+        </tr>`;
+    }).join('');
+
+    const html = `
+    <div style="background:var(--card);border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;border-bottom:2px solid var(--primary);padding-bottom:16px">
+            <div>
+                <h2 style="font-size:1.4rem;color:var(--primary);margin-bottom:4px">Monthly Report — ${monthName} ${year}</h2>
+                <p style="color:var(--text-light);font-size:0.85rem">Generated ${new Date().toLocaleString()}</p>
+            </div>
+            <button class="btn btn-primary" onclick="exportReportCSV(${month}, ${year})">Export CSV</button>
+        </div>
+
+        <h3 style="font-size:1rem;color:var(--primary);margin-bottom:12px">Bookings Summary</h3>
+        <div class="stat-grid" style="margin-bottom:24px">
+            <div class="stat-card">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value">${monthBookings.length}</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value">${completed.length}</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Cancelled</div>
+                <div class="stat-value">${cancelled.length}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">In Progress</div>
+                <div class="stat-value">${monthBookings.length - completed.length - cancelled.length}</div>
+            </div>
+        </div>
+
+        <h3 style="font-size:1rem;color:var(--primary);margin-bottom:12px">Financial Summary</h3>
+        <table class="report-table" style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:0.9rem">
+            <tr><td>Gross Revenue (incl. VAT)</td><td style="text-align:right;font-weight:700">N$${fmt(totalRevenue)}</td></tr>
+            <tr><td>VAT (15%)</td><td style="text-align:right;color:var(--text-light)">N$${fmt(vatAmount)}</td></tr>
+            <tr><td>Revenue (excl. VAT)</td><td style="text-align:right">N$${fmt(revenueExclVat)}</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding-top:8px"><strong>Your Commission (Platform Fee)</strong></td><td style="text-align:right;color:var(--primary);font-weight:700;padding-top:8px">N$${fmt(totalCommission)}</td></tr>
+            <tr><td>Total Inspector Payouts</td><td style="text-align:right;color:var(--secondary);font-weight:600">N$${fmt(totalPayouts)}</td></tr>
+            <tr><td style="color:var(--good)">— Paid to Inspectors</td><td style="text-align:right;color:var(--good)">N$${fmt(paidPayouts)}</td></tr>
+            <tr><td style="color:var(--poor)">— Outstanding</td><td style="text-align:right;color:var(--poor);font-weight:700">N$${fmt(unpaidPayouts)}</td></tr>
+        </table>
+
+        <h3 style="font-size:1rem;color:var(--primary);margin-bottom:12px">By Inspector</h3>
+        <table class="report-table" style="width:100%;border-collapse:collapse;font-size:0.85rem">
+            <thead>
+                <tr style="background:var(--bg);border-bottom:1px solid var(--border)">
+                    <th style="padding:10px;text-align:left">Inspector</th>
+                    <th style="padding:10px;text-align:center">Jobs</th>
+                    <th style="padding:10px;text-align:right">Revenue</th>
+                    <th style="padding:10px;text-align:right">Their Payout</th>
+                    <th style="padding:10px;text-align:right">Outstanding</th>
+                    <th style="padding:10px;text-align:center">Contact</th>
+                </tr>
+            </thead>
+            <tbody>${inspectorRows || '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-light)">No completed jobs this month</td></tr>'}</tbody>
+        </table>
+    </div>`;
+
+    document.getElementById('reportContent').innerHTML = html;
+}
+
+function exportReportCSV(month, year) {
+    const monthName = ['January','February','March','April','May','June','July','August','September','October','November','December'][month];
+    const start = new Date(year, month, 1);
+    const end = new Date(year, month + 1, 1);
+
+    const monthBookings = allBookings.filter(b => {
+        const d = new Date(b.created_at);
+        return d >= start && d < end;
+    });
+
+    const headers = ['Reference','Status','Client Name','Vehicle','Town','Inspector','Price','Commission','Inspector Payout','Paid to Inspector','Created'];
+    const rows = monthBookings.map(b => [
+        b.reference, b.status, b.client_name,
+        `${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}`.trim(),
+        b.seller_location || '',
+        allInspectors.find(i => i.id === b.assigned_inspector)?.name || '',
+        b.price || 0, b.platform_fee || 0, b.inspector_payout || 0,
+        b.paid_to_inspector ? 'Yes' : 'No',
+        new Date(b.created_at).toLocaleDateString()
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `viewnam-report-${monthName}-${year}.csv`;
+    a.click();
+}
+
 // Re-render dashboard wrap
 const origRenderDashboard = renderDashboard;
 renderDashboard = function() {
@@ -1268,6 +1498,7 @@ document.getElementById('filterInspectorSearch').addEventListener('input', rende
 
 // --- Init ---
 async function init() {
+    initReports();
     await loadSettings();
     await loadBankDetails();
     await loadInspectors();

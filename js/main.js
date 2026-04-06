@@ -23,6 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { /* silent */ }
     })();
 
+    // --- Load real reviews from Supabase ---
+    (async function loadRealReviews() {
+        const row = document.getElementById('testimonialRow');
+        if (!row || typeof supabase === 'undefined' || !supabase) return;
+        try {
+            const { data } = await supabase
+                .from('reviews')
+                .select('*')
+                .eq('is_public', true)
+                .gte('rating', 4)
+                .order('rating', { ascending: false })
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (!data || data.length < 3) return; // Keep static fallbacks if fewer than 3 real reviews
+
+            row.innerHTML = data.map(r => {
+                const stars = '★'.repeat(r.rating);
+                const comment = r.comment || 'Great service from ViewNam.';
+                const author = r.client_name ? r.client_name.split(' ')[0] + (r.client_name.split(' ')[1] ? ' ' + r.client_name.split(' ')[1].charAt(0) + '.' : '') : 'Client';
+                const location = r.client_location || 'Namibia';
+                return `<blockquote class="testimonial-card">
+                    <div style="color:#D4A843;font-size:1.1rem;margin-bottom:8px;letter-spacing:2px;">${stars}</div>
+                    <p>"${comment}"</p>
+                    <cite>— ${author}, ${location}</cite>
+                </blockquote>`;
+            }).join('');
+        } catch (e) { /* keep static fallbacks */ }
+    })();
+
     // --- Navbar scroll effect ---
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
