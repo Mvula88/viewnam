@@ -204,10 +204,12 @@
     <section class="section coverage" id="coverage">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Nationwide</span>
-                <h2>We Cover All of Namibia</h2>
-                <p>Click any town on the map to see coverage details</p>
+                <span class="section-tag">Available Across Namibia</span>
+                <h2>We Inspect Cars Across Namibia</h2>
+                <p>Our inspectors are based in major towns across Namibia.</p>
+                <p class="coverage-highlight">No matter where the car is — we can go check it.</p>
             </div>
+            <p class="coverage-label">Available in:</p>
             <div class="coverage-towns">
                 <span>Windhoek</span>
                 <span>Walvis Bay</span>
@@ -236,7 +238,7 @@
             <div class="coverage-map-wrap">
                 <div id="namibiaMap"></div>
             </div>
-            <p class="coverage-note" style="text-align:center; margin-top:24px;">Don't see your town? <a href="#contact">Contact us</a> — we're expanding fast.</p>
+            <p class="coverage-note" style="text-align:center; margin-top:24px;">Don't see your town? <a href="#booking">Send us the car location</a> — we'll confirm availability.</p>
         </div>
     </section>
 
@@ -395,23 +397,28 @@
     <section class="section booking" id="booking">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Get Started</span>
-                <h2>Book Your Inspection</h2>
-                <p>Fill in the details below and we'll get back to you within 2 hours</p>
+                <span class="section-tag">Check Your Car Before You Buy</span>
+                <h2>Send Us The Car Details</h2>
+                <p>Fill in the details and we'll confirm your booking and inspection.</p>
+                <div class="booking-trust">
+                    <span>Fast response</span>
+                    <span>No hidden costs</span>
+                    <span>Trusted local inspectors</span>
+                </div>
             </div>
             <div class="booking-wrapper">
                 <!-- Step Indicators -->
                 <div class="step-indicators" id="stepIndicators">
                     <div class="step-ind active" data-step="1"><span>1</span> Your Details</div>
-                    <div class="step-ind" data-step="2"><span>2</span> Vehicle</div>
-                    <div class="step-ind" data-step="3"><span>3</span> Location</div>
-                    <div class="step-ind" data-step="4"><span>4</span> Service & Notes</div>
+                    <div class="step-ind" data-step="2"><span>2</span> Car Details</div>
+                    <div class="step-ind" data-step="3"><span>3</span> Car Location</div>
+                    <div class="step-ind" data-step="4"><span>4</span> Choose Service</div>
                 </div>
 
                 <form class="booking-form" id="bookingForm">
                     <!-- Step 1: Your Details -->
                     <div class="form-step active" data-step="1">
-                        <h3>Your Details</h3>
+                        <h3>Tell Us About You</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="fullName">Full Name *</label>
@@ -419,18 +426,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="phone">WhatsApp Number *</label>
-                                <input type="tel" id="phone" name="phone" required placeholder="e.g. +264 81 321 4813">
+                                <input type="tel" id="phone" name="phone" required placeholder="Your WhatsApp number (we'll contact you here)">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" name="email" placeholder="e.g. johannes@email.com">
+                                <label for="email">Email (optional)</label>
+                                <input type="email" id="email" name="email" placeholder="Email (optional)">
                             </div>
                             <div class="form-group">
                                 <label for="buyerLocation">Your Location *</label>
                                 <select id="buyerLocation" name="buyerLocation" required>
-                                    <option value="">Select your town</option>
+                                    <option value="">Where are you based?</option>
                                     <option value="windhoek">Windhoek</option>
                                     <option value="walvis-bay">Walvis Bay</option>
                                     <option value="swakopmund">Swakopmund</option>
@@ -450,13 +457,14 @@
                         </div>
                         <div class="form-nav">
                             <div></div>
-                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Vehicle Details</button>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next &rarr; Car Details</button>
                         </div>
+                        <p class="form-privacy">Your information is safe and only used for your inspection.</p>
                     </div>
 
-                    <!-- Step 2: Vehicle Details -->
+                    <!-- Step 2: Car Details -->
                     <div class="form-step" data-step="2">
-                        <h3>Vehicle Details</h3>
+                        <h3>Car Details</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="vehicleMake">Make *</label>
@@ -483,13 +491,13 @@
                         </div>
                         <div class="form-nav">
                             <button type="button" class="btn btn-outline form-prev-btn" onclick="prevStep()">Back</button>
-                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Location</button>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next &rarr; Car Location</button>
                         </div>
                     </div>
 
-                    <!-- Step 3: Seller & Location -->
+                    <!-- Step 3: Car Location -->
                     <div class="form-step" data-step="3">
-                        <h3>Seller & Inspection Location</h3>
+                        <h3>Where Is The Car?</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="sellerLocation">Vehicle Location (Town) *</label>
@@ -518,13 +526,13 @@
                         </div>
                         <div class="form-nav">
                             <button type="button" class="btn btn-outline form-prev-btn" onclick="prevStep()">Back</button>
-                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next: Select Service</button>
+                            <button type="button" class="btn btn-primary form-next-btn" onclick="nextStep()">Next &rarr; Choose Service</button>
                         </div>
                     </div>
 
-                    <!-- Step 4: Service & Notes -->
+                    <!-- Step 4: Choose Service -->
                     <div class="form-step" data-step="4">
-                        <h3>Select Service(s) *</h3>
+                        <h3>What Do You Want Us To Check?</h3>
                         <div class="package-options">
                             <label class="package-option">
                                 <input type="checkbox" name="services" value="full-package">
@@ -581,17 +589,16 @@
     <section class="section faq">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">FAQ</span>
-                <h2>Common Questions</h2>
+                <h2>Questions People Ask Before Booking</h2>
             </div>
             <div class="faq-list">
                 <div class="faq-item">
                     <button class="faq-question">
-                        How long does an inspection take?
+                        How long does the inspection take?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>A Basic inspection takes about 30–45 minutes. A Standard inspection takes 1–2 hours. A Premium inspection with OBD scan and video walkaround takes 2–3 hours. You'll receive your report within 24 hours (12 hours for Premium).</p>
+                        <p>Most inspections take between 1–3 hours depending on the package. You will receive your full report within 24 hours.</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -600,16 +607,16 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>Our inspectors are experienced car professionals — mechanics, spare parts specialists, and auction buyers who have deep knowledge of vehicles. Every inspector is personally vetted, tested, and trained on our standardised inspection checklist before they join the ViewNam network.</p>
+                        <p>Our inspectors are experienced car experts — mechanics, car dealers, and specialists who work with vehicles every day. Each inspector is vetted before joining our network.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question">
-                        What if the vehicle fails the inspection?
+                        What if the car has problems?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>That's exactly why you hired us! If our inspector finds issues, we'll clearly document them with photos and explanations. We'll give you an honest recommendation — and potentially save you from a costly mistake. The inspection fee is a small price compared to buying a problem vehicle.</p>
+                        <p>That's exactly why we inspect it. If we find issues, we show you clearly with photos and explain everything — so you can decide whether to buy or walk away.</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -618,28 +625,29 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>We accept EFT (bank transfer), MTC MoMo (mobile money), and Bank Windhoek e-wallet. Payment is required before the inspection begins. Once we confirm your booking, we'll send you payment details via WhatsApp.</p>
+                        <p>Payment is done upfront before the inspection. You can pay via bank transfer (EFT) or eWallet services from all major banks. Once your booking is confirmed, we'll send payment details via WhatsApp.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question">
-                        Can I request a specific focus area?
+                        Can I ask you to check something specific?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>Absolutely. When booking, use the "Additional Notes" field to tell us about any specific concerns — like a known oil leak, accident history, or anything the seller mentioned. Our inspector will pay extra attention to those areas.</p>
+                        <p>Yes. When booking, you can tell us any concerns — like engine issues, accident history, or anything the seller mentioned. Our inspector will focus on those areas.</p>
                     </div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question">
-                        Is the inspection a guarantee that the car is good?
+                        Is the inspection a guarantee that the car is perfect?
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
                     <div class="faq-answer">
-                        <p>Our inspection is a professional, advisory assessment — not a warranty or guarantee. We report what we find at the time of inspection. Some issues (like intermittent electrical faults) may not be detectable during a single visit. The final purchase decision is always yours.</p>
+                        <p>No — but it helps you avoid buying a bad car. We give you an honest, professional assessment based on what we find during the inspection, so you can make the right decision.</p>
                     </div>
                 </div>
             </div>
+            <p class="faq-cta">Still unsure? <a href="#booking">Send us the car</a> and we'll guide you.</p>
         </div>
     </section>
 
