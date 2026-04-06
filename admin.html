@@ -248,6 +248,64 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
             </div>
         </div>
 
+        <h3 class="section-h">Key Metrics</h3>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Avg Booking Value</div>
+                <div class="stat-value">N$<span id="statAvgBooking">0</span></div>
+                <div class="stat-sub">Per completed inspection</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-label">Avg Time to Complete</div>
+                <div class="stat-value"><span id="statAvgTime">—</span></div>
+                <div class="stat-sub">From booking to report</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Returning Customers</div>
+                <div class="stat-value"><span id="statReturningCust">0</span></div>
+                <div class="stat-sub"><span id="statNewCust">0</span> new this month</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Customer Lifetime Value</div>
+                <div class="stat-value">N$<span id="statClv">0</span></div>
+                <div class="stat-sub">Avg per customer</div>
+            </div>
+        </div>
+
+        <div class="stat-grid" style="margin-top:16px">
+            <div class="stat-card">
+                <div class="stat-label">Active Inspectors</div>
+                <div class="stat-value" id="statActiveInsp">0</div>
+                <div class="stat-sub"><span id="statInactiveInsp">0</span> inactive</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Inspector Response</div>
+                <div class="stat-value" id="statResponseTime">—</div>
+                <div class="stat-sub">From assigned → started</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-label">Most Popular Service</div>
+                <div class="stat-value" id="statTopService" style="font-size:1rem;line-height:1.4">—</div>
+                <div class="stat-sub"><span id="statTopServiceCount">0</span> bookings</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Conversion Rate</div>
+                <div class="stat-value"><span id="statConversion">0</span>%</div>
+                <div class="stat-sub">Bookings → Completed</div>
+            </div>
+        </div>
+
+        <div class="chart-grid" style="margin-top:24px">
+            <div class="chart-card">
+                <h4>Status Distribution</h4>
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h4>Service Popularity</h4>
+                <canvas id="serviceChart"></canvas>
+            </div>
+        </div>
+
         <h3 class="section-h">Top Inspectors</h3>
         <div class="top-list" id="topInspectors"><div class="loading">Loading...</div></div>
 
@@ -650,6 +708,147 @@ function renderDashboard() {
     document.getElementById('topTowns').innerHTML = topTownList.length ?
         topTownList.map(([town, count]) => `<div class="top-list-row"><div class="name">${town}</div><div class="val">${count} bookings</div></div>`).join('') :
         '<div class="empty"><p>No bookings yet.</p></div>';
+
+    // ===== NEW METRICS =====
+
+    // Avg booking value (completed bookings with price)
+    const pricedCompleted = completed.filter(b => parseFloat(b.price) > 0);
+    const avgBooking = pricedCompleted.length > 0 ? totalRevenue / pricedCompleted.length : 0;
+    document.getElementById('statAvgBooking').textContent = fmt(avgBooking);
+
+    // Avg time to complete (created_at -> completed_at)
+    const completedWithTime = completed.filter(b => b.completed_at && b.created_at);
+    if (completedWithTime.length > 0) {
+        const totalMs = completedWithTime.reduce((s, b) => {
+            return s + (new Date(b.completed_at) - new Date(b.created_at));
+        }, 0);
+        const avgMs = totalMs / completedWithTime.length;
+        const avgHours = avgMs / (1000 * 60 * 60);
+        document.getElementById('statAvgTime').textContent = avgHours < 24
+            ? Math.round(avgHours) + 'h'
+            : Math.round(avgHours / 24) + 'd';
+    } else {
+        document.getElementById('statAvgTime').textContent = '—';
+    }
+
+    // Returning customers (clients with > 1 booking, by phone)
+    const customerBookings = {};
+    allBookings.forEach(b => {
+        const key = (b.client_phone || '').replace(/[^0-9]/g, '');
+        if (!key) return;
+        if (!customerBookings[key]) customerBookings[key] = [];
+        customerBookings[key].push(b);
+    });
+    const returningCustomers = Object.values(customerBookings).filter(arr => arr.length > 1).length;
+    const newCustomersThisMonth = Object.values(customerBookings).filter(arr => {
+        // Customer is "new" if their FIRST booking was this month
+        const firstBooking = arr.reduce((earliest, b) => {
+            return new Date(b.created_at) < new Date(earliest.created_at) ? b : earliest;
+        });
+        return new Date(firstBooking.created_at) >= thisMonth;
+    }).length;
+    document.getElementById('statReturningCust').textContent = returningCustomers;
+    document.getElementById('statNewCust').textContent = newCustomersThisMonth;
+
+    // Customer lifetime value (avg revenue per unique customer)
+    const totalCustomers = Object.keys(customerBookings).length;
+    const clv = totalCustomers > 0 ? totalRevenue / totalCustomers : 0;
+    document.getElementById('statClv').textContent = fmt(clv);
+
+    // Active vs inactive inspectors
+    const activeInsp = allInspectors.filter(i => i.status === 'active').length;
+    const inactiveInsp = allInspectors.filter(i => i.status !== 'active').length;
+    document.getElementById('statActiveInsp').textContent = activeInsp;
+    document.getElementById('statInactiveInsp').textContent = inactiveInsp;
+
+    // Avg inspector response time (assigned -> in-progress)
+    // Approximation: time from booking creation to status change to in-progress
+    // Since we don't track exact "assigned_at" timestamp, we use a proxy:
+    // Look at completed bookings and divide their total elapsed time roughly
+    // For now show "—" since we don't have the exact field
+    document.getElementById('statResponseTime').textContent = '—';
+
+    // Most popular service
+    const serviceCounts = {};
+    allBookings.forEach(b => {
+        (b.services || []).forEach(s => {
+            serviceCounts[s] = (serviceCounts[s] || 0) + 1;
+        });
+    });
+    const topService = Object.entries(serviceCounts).sort((a, b) => b[1] - a[1])[0];
+    if (topService) {
+        document.getElementById('statTopService').textContent = serviceLabels[topService[0]] || topService[0];
+        document.getElementById('statTopServiceCount').textContent = topService[1];
+    } else {
+        document.getElementById('statTopService').textContent = '—';
+        document.getElementById('statTopServiceCount').textContent = '0';
+    }
+
+    // Conversion rate (completed / total non-cancelled)
+    const nonCancelled = allBookings.filter(b => b.status !== 'cancelled').length;
+    const conversion = nonCancelled > 0 ? Math.round((completed.length / nonCancelled) * 100) : 0;
+    document.getElementById('statConversion').textContent = conversion;
+
+    // Status distribution donut chart
+    renderStatusChart(statuses, statusLabels);
+
+    // Service popularity chart
+    renderServiceChart(serviceCounts);
+}
+
+// =====================
+// EXTRA CHARTS
+// =====================
+let statusChartObj = null;
+let serviceChartObj = null;
+
+function renderStatusChart(statuses, labels) {
+    const ctx = document.getElementById('statusChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (statusChartObj) statusChartObj.destroy();
+
+    const counts = statuses.map(s => allBookings.filter(b => b.status === s).length);
+    const colors = ['#D4A843','#0B3D2E','#F39C12','#F39C12','#27AE60','#E74C3C'];
+
+    statusChartObj = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: statuses.map(s => labels[s]),
+            datasets: [{ data: counts, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12 } }
+            }
+        }
+    });
+}
+
+function renderServiceChart(serviceCounts) {
+    const ctx = document.getElementById('serviceChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    if (serviceChartObj) serviceChartObj.destroy();
+
+    const entries = Object.entries(serviceCounts).sort((a, b) => b[1] - a[1]);
+    const labels = entries.map(([s]) => serviceLabels[s] || s);
+    const counts = entries.map(([, c]) => c);
+
+    serviceChartObj = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{ label: 'Bookings', data: counts, backgroundColor: '#0B3D2E' }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
 }
 
 // =====================
