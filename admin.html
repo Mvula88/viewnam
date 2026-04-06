@@ -1,108 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-<link rel="apple-touch-icon" href="images/favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>ViewNam Admin — Bookings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary:#0B3D2E; --secondary:#D4A843; --good:#27AE60; --fair:#F39C12; --poor:#E74C3C; --bg:#F5F6FA; --card:#fff; --border:#E2E8F0; --text:#1A1A2E; --text-light:#5A5A6E; }
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+<title>ViewNam Admin</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B3D2E;--primary-dark:#062A1F;--secondary:#D4A843;--good:#27AE60;--fair:#F39C12;--poor:#E74C3C;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E;--text-muted:#9E9EB0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 
-        .topbar{background:#fff;color:var(--text);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.04)}
-        .topbar h1{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:12px;color:var(--text)}
-        .topbar h1 img{height:48px}
-        .topbar-right{display:flex;gap:16px;align-items:center}
-        .topbar-stats{display:flex;gap:20px;font-size:0.85rem;color:var(--text-light)}
-        .topbar-stats strong{color:var(--primary);font-size:1rem}
+/* Top bar */
+.topbar{background:#fff;color:var(--text);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,0.04);position:sticky;top:0;z-index:50}
+.topbar h1{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:12px}
+.topbar h1 img{height:48px}
+.topbar h1 span{font-size:0.75rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:1px}
+.topbar-right{display:flex;gap:12px;align-items:center}
+.logout-btn{background:var(--primary);border:none;color:#fff;padding:8px 18px;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.logout-btn:hover{background:var(--primary-dark)}
 
-        .tab-bar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0}
-        .tab{padding:14px 20px;font-size:0.9rem;font-weight:600;color:var(--text-light);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s}
-        .tab.active{color:var(--primary);border-bottom-color:var(--primary)}
-        .tab:hover{color:var(--primary)}
+/* Tab bar */
+.tab-bar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto;position:sticky;top:74px;z-index:49}
+.tab{padding:14px 20px;font-size:0.9rem;font-weight:600;color:var(--text-light);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab:hover{color:var(--primary)}
 
-        .container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.container{max-width:1200px;margin:0 auto;padding:24px 16px}
 
-        .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-        .filters select,.filters input{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit;background:var(--card)}
-        .filters select:focus,.filters input:focus{outline:none;border-color:var(--primary)}
+/* Buttons */
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--poor);color:#fff}
+.btn-danger:hover{background:#C0392B}
+.btn-success{background:var(--good);color:#fff}
+.btn-success:hover{background:#1e8449}
+.btn-sm{padding:5px 12px;font-size:0.75rem}
 
-        .btn{padding:8px 18px;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
-        .btn-primary{background:var(--primary);color:#fff}
-        .btn-primary:hover{background:#062A1F}
-        .btn-danger{background:var(--poor);color:#fff}
-        .btn-danger:hover{background:#C0392B}
-        .btn-sm{padding:5px 12px;font-size:0.75rem}
+/* Filters */
+.filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filters select,.filters input{padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit;background:var(--card)}
+.filters select:focus,.filters input:focus{outline:none;border-color:var(--primary)}
 
-        .booking-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--secondary);display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:start}
-        .booking-card.status-confirmed{border-left-color:var(--primary)}
-        .booking-card.status-assigned{border-left-color:var(--fair)}
-        .booking-card.status-in-progress{border-left-color:var(--fair)}
-        .booking-card.status-completed{border-left-color:var(--good)}
-        .booking-card.status-cancelled{border-left-color:var(--poor);opacity:0.6}
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
 
-        .bc-section h3{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);margin-bottom:6px}
-        .bc-section p{font-size:0.9rem;margin-bottom:3px}
-        .bc-section .ref{font-weight:700;color:var(--primary);font-size:0.95rem}
-        .bc-section .date{font-size:0.8rem;color:var(--text-light)}
-        .bc-services{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-        .bc-svc-tag{padding:2px 8px;background:var(--bg);border-radius:10px;font-size:0.75rem;font-weight:500;color:var(--text-light)}
-        .bc-actions{display:flex;flex-direction:column;gap:6px}
-        .status-select{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.8rem;font-family:inherit}
-        .inspector-select{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.8rem;font-family:inherit;width:100%}
+/* Dashboard stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--primary)}
+.stat-card.gold{border-left-color:var(--secondary)}
+.stat-card.green{border-left-color:var(--good)}
+.stat-card.amber{border-left-color:var(--fair)}
+.stat-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;margin-bottom:6px}
+.stat-value{font-size:1.8rem;font-weight:800;color:var(--text);line-height:1.1}
+.stat-sub{font-size:0.8rem;color:var(--text-light);margin-top:4px}
 
-        .wa-link{display:inline-flex;align-items:center;gap:4px;color:#25D366;font-weight:600;font-size:0.85rem;text-decoration:none}
-        .wa-link:hover{text-decoration:underline}
+/* Section heading */
+.section-h{font-size:1.05rem;font-weight:700;color:var(--text);margin:32px 0 14px;display:flex;justify-content:space-between;align-items:center}
 
-        /* Inspector cards */
-        .inspector-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);display:grid;grid-template-columns:1fr 1fr auto;gap:16px;border-left:4px solid var(--border)}
-        .inspector-card.status-active{border-left-color:var(--good)}
-        .inspector-card.status-approved{border-left-color:var(--primary)}
-        .inspector-card.status-pending{border-left-color:var(--secondary)}
-        .inspector-card.status-suspended{border-left-color:var(--poor)}
+/* Status breakdown */
+.status-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:24px}
+.status-pill{background:var(--card);border-radius:10px;padding:14px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.05);border-top:3px solid var(--text-muted)}
+.status-pill.new{border-top-color:var(--secondary)}
+.status-pill.confirmed{border-top-color:var(--primary)}
+.status-pill.assigned{border-top-color:var(--fair)}
+.status-pill.in-progress{border-top-color:var(--fair)}
+.status-pill.completed{border-top-color:var(--good)}
+.status-pill.cancelled{border-top-color:var(--poor)}
+.status-pill .num{font-size:1.4rem;font-weight:800;color:var(--text)}
+.status-pill .lbl{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);font-weight:600;margin-top:2px}
 
-        .empty{text-align:center;padding:60px 20px;color:var(--text-light)}
-        .empty h2{margin-bottom:8px}
+/* Top inspectors list */
+.top-list{background:var(--card);border-radius:12px;padding:8px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.top-list-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:0.9rem}
+.top-list-row:last-child{border-bottom:none}
+.top-list-row .name{font-weight:600}
+.top-list-row .meta{color:var(--text-light);font-size:0.8rem}
+.top-list-row .val{font-weight:700;color:var(--primary)}
 
-        .loading{text-align:center;padding:40px;color:var(--text-light);font-size:0.9rem}
+/* Booking card */
+.booking-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--secondary);display:grid;grid-template-columns:1.2fr 1fr 0.6fr auto;gap:16px;align-items:start}
+.booking-card.status-confirmed{border-left-color:var(--primary)}
+.booking-card.status-assigned{border-left-color:var(--fair)}
+.booking-card.status-in-progress{border-left-color:var(--fair)}
+.booking-card.status-completed{border-left-color:var(--good)}
+.booking-card.status-cancelled{border-left-color:var(--poor);opacity:0.6}
 
-        .panel{display:none}
-        .panel.active{display:block}
+.bc-section h3{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);margin-bottom:6px}
+.bc-section p{font-size:0.88rem;margin-bottom:3px}
+.bc-section .ref{font-weight:700;color:var(--primary);font-size:0.95rem}
+.bc-section .date{font-size:0.78rem;color:var(--text-light)}
+.bc-services{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.bc-svc-tag{padding:2px 8px;background:var(--bg);border-radius:10px;font-size:0.72rem;font-weight:500;color:var(--text-light)}
 
-        /* Modal */
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;display:none}
-        .modal-overlay.open{display:flex}
-        .modal{background:#fff;border-radius:16px;padding:28px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
-        .modal h2{font-size:1.1rem;color:var(--primary);margin-bottom:16px}
-        .modal .field{margin-bottom:12px}
-        .modal .field label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-light);margin-bottom:4px}
-        .modal .field input,.modal .field select,.modal .field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit}
-        .modal .field input:focus,.modal .field select:focus,.modal .field textarea:focus{outline:none;border-color:var(--primary)}
-        .modal .field textarea{min-height:70px;resize:vertical}
-        .modal .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .modal-actions{display:flex;gap:10px;margin-top:16px}
-        .modal-actions .btn{flex:1}
-        .btn-cancel{background:var(--bg);color:var(--text);border:1.5px solid var(--border);padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.bc-money{background:var(--bg);border-radius:8px;padding:12px;font-size:0.82rem}
+.bc-money-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.bc-money-row.total{font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:4px}
+.bc-money-row .lbl{color:var(--text-light)}
+.bc-money-row .val{color:var(--text);font-weight:600}
+.bc-money-row.fee .val{color:var(--primary)}
+.bc-money-row.payout .val{color:var(--secondary);font-weight:700}
 
-        @media(max-width:768px){.booking-card,.inspector-card{grid-template-columns:1fr}.modal .field-row{grid-template-columns:1fr}}
+.bc-actions{display:flex;flex-direction:column;gap:6px}
+.status-select,.inspector-select{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.78rem;font-family:inherit}
 
-        /* Login Gate */
-        .login-gate{position:fixed;inset:0;background:var(--primary);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
-        .login-box{background:var(--card);border-radius:16px;padding:40px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-        .login-box img{height:64px;margin-bottom:16px}
-        .login-box h2{font-size:1.2rem;margin-bottom:8px;color:var(--text)}
-        .login-box p{color:var(--text-light);font-size:0.9rem;margin-bottom:24px}
-        .login-box input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;text-align:center;letter-spacing:4px}
-        .login-box input:focus{outline:none;border-color:var(--primary)}
-        .login-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
-        .login-box button:hover{background:#062A1F}
-        .login-box .error{color:var(--poor);font-size:0.85rem;margin-top:8px;display:none}
-        .login-box .error.show{display:block}
-    </style>
+.wa-link{display:inline-flex;align-items:center;gap:4px;color:#25D366;font-weight:600;font-size:0.8rem;text-decoration:none}
+.wa-link:hover{text-decoration:underline}
+
+.empty{text-align:center;padding:60px 20px;color:var(--text-light)}
+.empty h2{margin-bottom:8px}
+.loading{text-align:center;padding:40px;color:var(--text-light)}
+
+/* Inspector card */
+.inspector-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);display:grid;grid-template-columns:1fr 1fr auto;gap:16px;border-left:4px solid var(--border)}
+.inspector-card.status-active{border-left-color:var(--good)}
+.inspector-card.status-approved{border-left-color:var(--primary)}
+.inspector-card.status-pending{border-left-color:var(--secondary)}
+.inspector-card.status-suspended{border-left-color:var(--poor)}
+.commission-tag{display:inline-block;background:var(--secondary);color:var(--primary-dark);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;margin-left:6px}
+
+/* Settings */
+.settings-card{background:var(--card);border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);max-width:560px}
+.settings-card h2{font-size:1.1rem;color:var(--primary);margin-bottom:8px}
+.settings-card p.help{font-size:0.85rem;color:var(--text-light);margin-bottom:20px}
+.settings-card .field{margin-bottom:16px}
+.settings-card label{display:block;font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.settings-card input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit}
+.settings-card input:focus{outline:none;border-color:var(--primary)}
+.input-suffix{position:relative}
+.input-suffix .suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-light);font-weight:600}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+.modal h2{font-size:1.1rem;color:var(--primary);margin-bottom:16px}
+.modal .field{margin-bottom:12px}
+.modal .field label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-light);margin-bottom:4px}
+.modal .field input,.modal .field select,.modal .field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit}
+.modal .field input:focus,.modal .field select:focus,.modal .field textarea:focus{outline:none;border-color:var(--primary)}
+.modal .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-actions .btn{flex:1}
+.btn-cancel{background:var(--bg);color:var(--text);border:1.5px solid var(--border);padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* Login Gate */
+.login-gate{position:fixed;inset:0;background:var(--primary);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.login-box{background:var(--card);border-radius:16px;padding:40px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-box img{height:64px;margin-bottom:16px}
+.login-box h2{font-size:1.2rem;margin-bottom:8px}
+.login-box p{color:var(--text-light);font-size:0.9rem;margin-bottom:24px}
+.login-box input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;text-align:center;letter-spacing:4px}
+.login-box input:focus{outline:none;border-color:var(--primary)}
+.login-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+.login-box button:hover{background:var(--primary-dark)}
+.login-box .error{color:var(--poor);font-size:0.85rem;margin-top:8px;display:none}
+.login-box .error.show{display:block}
+
+@media(max-width:768px){
+    .stat-grid{grid-template-columns:repeat(2,1fr)}
+    .status-row{grid-template-columns:repeat(3,1fr)}
+    .booking-card,.inspector-card{grid-template-columns:1fr}
+    .modal .field-row{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
@@ -119,32 +183,59 @@
 </div>
 
 <div class="topbar">
-    <h1><img src="images/ViewNam logo.png" alt="ViewNam"> <span style="font-size:0.85rem;font-weight:500;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Admin</span></h1>
+    <h1><img src="images/ViewNam logo.png" alt="ViewNam"> <span>Admin</span></h1>
     <div class="topbar-right">
-        <div class="topbar-stats">
-            <span><strong id="totalCount">0</strong> Bookings</span>
-            <span><strong id="newCount">0</strong> New</span>
-            <span><strong id="inspectorCount">0</strong> Inspectors</span>
-        </div>
-        <button onclick="logoutAdmin()" style="background:var(--primary);border:none;color:#fff;padding:8px 18px;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;margin-left:16px;">Log out</button>
+        <button class="logout-btn" onclick="logoutAdmin()">Log out</button>
     </div>
 </div>
 
-<script>
-function logoutAdmin() {
-    sessionStorage.removeItem('viewnam_admin');
-    location.reload();
-}
-</script>
-
 <div class="tab-bar">
-    <div class="tab active" data-panel="bookingsPanel">Bookings</div>
-    <div class="tab" data-panel="inspectorsPanel">Inspectors</div>
+    <button class="tab active" data-panel="dashboardPanel">Dashboard</button>
+    <button class="tab" data-panel="bookingsPanel">Bookings</button>
+    <button class="tab" data-panel="inspectorsPanel">Inspectors</button>
+    <button class="tab" data-panel="payoutsPanel">Payouts</button>
+    <button class="tab" data-panel="settingsPanel">Settings</button>
 </div>
 
 <div class="container">
-    <!-- Bookings Panel -->
-    <div class="panel active" id="bookingsPanel">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="dashboardPanel">
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">N$<span id="statRevenue">0</span></div>
+                <div class="stat-sub">Gross from completed bookings</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-label">Your Commission</div>
+                <div class="stat-value">N$<span id="statCommission">0</span></div>
+                <div class="stat-sub">Platform fees earned</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Owed To Inspectors</div>
+                <div class="stat-value">N$<span id="statOwed">0</span></div>
+                <div class="stat-sub">Completed but unpaid</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value" id="statTotalBookings">0</div>
+                <div class="stat-sub"><span id="statThisMonth">0</span> this month</div>
+            </div>
+        </div>
+
+        <h3 class="section-h">Booking Status</h3>
+        <div class="status-row" id="statusRow"></div>
+
+        <h3 class="section-h">Top Inspectors</h3>
+        <div class="top-list" id="topInspectors"><div class="loading">Loading...</div></div>
+
+        <h3 class="section-h">Busiest Towns</h3>
+        <div class="top-list" id="topTowns"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="panel" id="bookingsPanel">
         <div class="filters">
             <select id="filterStatus">
                 <option value="">All Statuses</option>
@@ -155,14 +246,17 @@ function logoutAdmin() {
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
             </select>
+            <select id="filterInspectorFilter">
+                <option value="">All Inspectors</option>
+            </select>
             <input type="text" id="filterSearch" placeholder="Search name, ref, vehicle...">
             <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
             <button class="btn btn-primary" onclick="loadBookings()">Refresh</button>
         </div>
-        <div id="bookingsList"><div class="loading">Loading bookings...</div></div>
+        <div id="bookingsList"><div class="loading">Loading...</div></div>
     </div>
 
-    <!-- Inspectors Panel -->
+    <!-- INSPECTORS -->
     <div class="panel" id="inspectorsPanel">
         <div class="filters">
             <select id="filterInspectorStatus">
@@ -176,15 +270,63 @@ function logoutAdmin() {
             <button class="btn btn-primary" onclick="loadInspectors()">Refresh</button>
             <button class="btn btn-primary" onclick="openAddInspector()">+ Add Inspector</button>
         </div>
-        <div id="inspectorsList"><div class="loading">Loading inspectors...</div></div>
+        <div id="inspectorsList"><div class="loading">Loading...</div></div>
     </div>
+
+    <!-- PAYOUTS -->
+    <div class="panel" id="payoutsPanel">
+        <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);max-width:600px;margin-bottom:24px">
+            <div class="stat-card amber">
+                <div class="stat-label">Pending Payouts</div>
+                <div class="stat-value">N$<span id="statPendingPayouts">0</span></div>
+                <div class="stat-sub"><span id="statPendingCount">0</span> bookings to pay</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Total Paid Out</div>
+                <div class="stat-value">N$<span id="statTotalPaid">0</span></div>
+                <div class="stat-sub">All-time</div>
+            </div>
+        </div>
+
+        <h3 class="section-h">Awaiting Payment</h3>
+        <div id="payoutsList"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="settingsPanel">
+        <div class="settings-card">
+            <h2>Default Commission Rate</h2>
+            <p class="help">This is the percentage you keep from each booking. Inspectors without a custom rate will use this default.</p>
+            <div class="field">
+                <label for="defaultCommission">Commission percentage</label>
+                <div class="input-suffix">
+                    <input type="number" id="defaultCommission" min="0" max="100" step="0.5" placeholder="15">
+                    <span class="suffix">%</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveDefaultCommission()">Save</button>
+            <p id="settingsMsg" style="margin-top:12px;font-size:0.85rem;"></p>
+        </div>
+
+        <div class="settings-card" style="margin-top:24px">
+            <h2>How Commission Works</h2>
+            <p class="help" style="margin-bottom:0;line-height:1.7">
+                <strong>1.</strong> Customer books an inspection and pays you the full amount.<br>
+                <strong>2.</strong> When you assign the booking to an inspector, the system calculates your commission and the inspector's payout.<br>
+                <strong>3.</strong> If the inspector has a custom commission rate set, that's used. Otherwise the default above applies.<br>
+                <strong>4.</strong> Once the inspection is completed, mark the inspector as paid in the Payouts tab.
+            </p>
+        </div>
+    </div>
+
 </div>
 
 <!-- Add Inspector Modal -->
 <div class="modal-overlay" id="addInspectorModal">
     <div class="modal">
-        <h2>Add Inspector</h2>
+        <h2 id="inspectorModalTitle">Add Inspector</h2>
         <form id="addInspectorForm">
+            <input type="hidden" id="ai_id">
             <div class="field-row">
                 <div class="field">
                     <label>Full Name *</label>
@@ -218,54 +360,62 @@ function logoutAdmin() {
             </div>
             <div class="field">
                 <label>Experience</label>
-                <textarea id="ai_experience" placeholder="Mechanic, spare parts, auction buyer, etc."></textarea>
+                <textarea id="ai_experience" rows="2" placeholder="Mechanic, spare parts, auction buyer, etc."></textarea>
             </div>
             <div class="field-row">
                 <div class="field">
-                    <label>OBD Scanner?</label>
-                    <select id="ai_obd">
-                        <option value="no">No</option>
-                        <option value="yes">Yes</option>
-                        <option value="willing">Willing to get one</option>
-                    </select>
+                    <label>Custom Commission Rate (%)</label>
+                    <input type="number" id="ai_commission" min="0" max="100" step="0.5" placeholder="Leave empty to use default">
                 </div>
-                <div class="field">
-                    <label>Own Transport?</label>
-                    <select id="ai_transport">
-                        <option value="">Select</option>
-                        <option value="yes-car">Yes, own car</option>
-                        <option value="yes-bike">Yes, motorbike</option>
-                        <option value="no">No</option>
-                    </select>
-                </div>
-            </div>
-            <div class="field-row">
                 <div class="field">
                     <label>Status</label>
                     <select id="ai_status">
                         <option value="active">Active</option>
                         <option value="approved">Approved</option>
                         <option value="pending">Pending</option>
+                        <option value="suspended">Suspended</option>
                     </select>
                 </div>
-                <div class="field">
-                    <label>Login PIN (4 digits)</label>
-                    <input type="text" id="ai_pin" placeholder="e.g. 1234" maxlength="6">
-                </div>
+            </div>
+            <div class="field">
+                <label>Login PIN (4-6 digits)</label>
+                <input type="text" id="ai_pin" placeholder="e.g. 1234" maxlength="6">
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn-cancel" onclick="closeAddInspector()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Inspector</button>
+                <button type="submit" class="btn btn-primary">Save Inspector</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- Set Booking Price Modal -->
+<div class="modal-overlay" id="priceModal">
+    <div class="modal">
+        <h2>Set Booking Price</h2>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px">Enter the total amount the customer paid. Commission and inspector payout will be calculated automatically.</p>
+        <input type="hidden" id="pm_bookingId">
+        <div class="field">
+            <label>Total Price (N$)</label>
+            <div class="input-suffix">
+                <input type="number" id="pm_price" min="0" step="50" placeholder="1800">
+            </div>
+        </div>
+        <div id="pm_preview" style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.85rem;margin-bottom:12px;display:none">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Commission rate:</span><strong id="pm_rate">15%</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Your fee:</span><strong style="color:var(--primary)" id="pm_fee">N$0</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Inspector payout:</span><strong style="color:var(--secondary)" id="pm_payout">N$0</strong></div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closePriceModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="savePrice()">Save Price</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // --- Login gate ---
-const ADMIN_USER = 'ismaelmvula@gmail.com';
 const ADMIN_PIN = '1953';
-
 function checkAdminPwd() {
     const pwd = document.getElementById('adminPwd').value.trim();
     if (pwd === ADMIN_PIN) {
@@ -275,13 +425,15 @@ function checkAdminPwd() {
         document.getElementById('loginErr').classList.add('show');
     }
 }
-
 document.getElementById('adminPwd').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') checkAdminPwd();
 });
-
 if (sessionStorage.getItem('viewnam_admin') === '1') {
     document.getElementById('loginGate').style.display = 'none';
+}
+function logoutAdmin() {
+    sessionStorage.removeItem('viewnam_admin');
+    location.reload();
 }
 </script>
 
@@ -289,12 +441,13 @@ if (sessionStorage.getItem('viewnam_admin') === '1') {
 <script src="js/supabase-config.js"></script>
 <script>
 const serviceLabels = {
-    'full-package':'Full Package', 'visual-inspection':'Visual Inspection',
-    'mechanical-diagnostics':'Mechanical + Diagnostics', 'test-drive':'Test Drive',
+    'full-package':'Full Package','visual-inspection':'Visual Inspection',
+    'mechanical-diagnostics':'Mechanical + Diagnostics','test-drive':'Test Drive',
 };
 
 let allBookings = [];
 let allInspectors = [];
+let defaultCommission = 15;
 
 // --- Tab switching ---
 document.querySelectorAll('.tab').forEach(tab => {
@@ -306,39 +459,141 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
-// ===========================
-// BOOKINGS
-// ===========================
-async function loadBookings() {
-    const list = document.getElementById('bookingsList');
-    list.innerHTML = '<div class="loading">Loading...</div>';
+// =====================
+// SETTINGS
+// =====================
+async function loadSettings() {
+    const { data } = await supabase.from('settings').select('*').eq('key', 'default_commission_rate').single();
+    if (data) {
+        defaultCommission = parseFloat(data.value) || 15;
+        document.getElementById('defaultCommission').value = defaultCommission;
+    }
+}
 
-    if (!supabase) {
-        list.innerHTML = '<div class="empty"><h2>Supabase not configured</h2><p>Add your Supabase URL and key in js/supabase-config.js</p></div>';
+async function saveDefaultCommission() {
+    const val = parseFloat(document.getElementById('defaultCommission').value);
+    if (isNaN(val) || val < 0 || val > 100) {
+        alert('Enter a valid percentage between 0 and 100');
         return;
     }
-
-    const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+    const { error } = await supabase.from('settings')
+        .update({ value: val.toString(), updated_at: new Date().toISOString() })
+        .eq('key', 'default_commission_rate');
     if (error) {
-        list.innerHTML = `<div class="empty"><h2>Error loading bookings</h2><p>${error.message}</p></div>`;
-        return;
+        document.getElementById('settingsMsg').innerHTML = '<span style="color:var(--poor)">Error: ' + error.message + '</span>';
+    } else {
+        defaultCommission = val;
+        document.getElementById('settingsMsg').innerHTML = '<span style="color:var(--good)">✓ Saved</span>';
+        setTimeout(() => { document.getElementById('settingsMsg').textContent = ''; }, 3000);
     }
+}
 
+// =====================
+// HELPERS
+// =====================
+function getInspectorRate(inspectorId) {
+    if (!inspectorId) return defaultCommission;
+    const inspector = allInspectors.find(i => i.id === inspectorId);
+    if (inspector && inspector.commission_rate != null) return parseFloat(inspector.commission_rate);
+    return defaultCommission;
+}
+
+function calculateFees(price, rate) {
+    const fee = (price * rate) / 100;
+    return {
+        platform_fee: Math.round(fee * 100) / 100,
+        inspector_payout: Math.round((price - fee) * 100) / 100
+    };
+}
+
+function fmt(n) {
+    if (n == null || isNaN(n)) return '0';
+    return new Intl.NumberFormat('en-NA', { maximumFractionDigits: 0 }).format(n);
+}
+
+// =====================
+// DASHBOARD
+// =====================
+function renderDashboard() {
+    const completed = allBookings.filter(b => b.status === 'completed');
+    const totalRevenue = completed.reduce((sum, b) => sum + (parseFloat(b.price) || 0), 0);
+    const totalCommission = completed.reduce((sum, b) => sum + (parseFloat(b.platform_fee) || 0), 0);
+    const totalOwed = completed.filter(b => !b.paid_to_inspector).reduce((sum, b) => sum + (parseFloat(b.inspector_payout) || 0), 0);
+
+    document.getElementById('statRevenue').textContent = fmt(totalRevenue);
+    document.getElementById('statCommission').textContent = fmt(totalCommission);
+    document.getElementById('statOwed').textContent = fmt(totalOwed);
+    document.getElementById('statTotalBookings').textContent = allBookings.length;
+
+    // This month
+    const thisMonth = new Date();
+    thisMonth.setDate(1); thisMonth.setHours(0,0,0,0);
+    const thisMonthCount = allBookings.filter(b => new Date(b.created_at) >= thisMonth).length;
+    document.getElementById('statThisMonth').textContent = thisMonthCount;
+
+    // Status breakdown
+    const statuses = ['new','confirmed','assigned','in-progress','completed','cancelled'];
+    const statusLabels = {new:'New',confirmed:'Confirmed',assigned:'Assigned','in-progress':'In Progress',completed:'Completed',cancelled:'Cancelled'};
+    document.getElementById('statusRow').innerHTML = statuses.map(s => {
+        const count = allBookings.filter(b => b.status === s).length;
+        return `<div class="status-pill ${s}"><div class="num">${count}</div><div class="lbl">${statusLabels[s]}</div></div>`;
+    }).join('');
+
+    // Top inspectors
+    const inspectorStats = {};
+    completed.forEach(b => {
+        if (!b.assigned_inspector) return;
+        if (!inspectorStats[b.assigned_inspector]) inspectorStats[b.assigned_inspector] = { count: 0, earned: 0 };
+        inspectorStats[b.assigned_inspector].count++;
+        inspectorStats[b.assigned_inspector].earned += parseFloat(b.inspector_payout) || 0;
+    });
+    const topInspList = Object.entries(inspectorStats)
+        .map(([id, s]) => ({ id, ...s, name: allInspectors.find(i => i.id === id)?.name || 'Unknown' }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+    document.getElementById('topInspectors').innerHTML = topInspList.length ?
+        topInspList.map(i => `<div class="top-list-row"><div><div class="name">${i.name}</div><div class="meta">${i.count} jobs completed</div></div><div class="val">N$${fmt(i.earned)}</div></div>`).join('') :
+        '<div class="empty"><p>No completed jobs yet.</p></div>';
+
+    // Top towns
+    const townStats = {};
+    allBookings.forEach(b => {
+        const town = b.seller_location || 'Unknown';
+        townStats[town] = (townStats[town] || 0) + 1;
+    });
+    const topTownList = Object.entries(townStats).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    document.getElementById('topTowns').innerHTML = topTownList.length ?
+        topTownList.map(([town, count]) => `<div class="top-list-row"><div class="name">${town}</div><div class="val">${count} bookings</div></div>`).join('') :
+        '<div class="empty"><p>No bookings yet.</p></div>';
+}
+
+// =====================
+// BOOKINGS
+// =====================
+async function loadBookings() {
+    if (!supabase) return;
+    const { data, error } = await supabase.from('bookings').select('*').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
     allBookings = data || [];
+
+    // Populate inspector filter
+    const filter = document.getElementById('filterInspectorFilter');
+    filter.innerHTML = '<option value="">All Inspectors</option>' +
+        allInspectors.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+
     renderBookings();
+    renderDashboard();
 }
 
 function renderBookings() {
     const status = document.getElementById('filterStatus').value;
+    const inspector = document.getElementById('filterInspectorFilter').value;
     const search = document.getElementById('filterSearch').value.toLowerCase();
     const list = document.getElementById('bookingsList');
 
     const filtered = allBookings.filter(b => {
         if (status && b.status !== status) return false;
+        if (inspector && b.assigned_inspector !== inspector) return false;
         if (search) {
             const haystack = `${b.client_name} ${b.reference} ${b.vehicle_make} ${b.vehicle_model} ${b.client_phone}`.toLowerCase();
             if (!haystack.includes(search)) return false;
@@ -346,28 +601,34 @@ function renderBookings() {
         return true;
     });
 
-    // Stats
-    document.getElementById('totalCount').textContent = allBookings.length;
-    document.getElementById('newCount').textContent = allBookings.filter(b => b.status === 'new').length;
-
     if (!filtered.length) {
         list.innerHTML = '<div class="empty"><h2>No bookings found</h2><p>Bookings from the website will appear here.</p></div>';
         return;
     }
 
-    // Build inspector options for assignment dropdown
     const activeInspectors = allInspectors.filter(i => i.status === 'active' || i.status === 'approved');
-    const inspectorOpts = activeInspectors.map(i =>
-        `<option value="${i.id}">${i.name} (${i.town})</option>`
-    ).join('');
+    const inspectorOpts = activeInspectors.map(i => `<option value="${i.id}">${i.name} (${i.town})</option>`).join('');
 
     list.innerHTML = filtered.map(b => {
         const svcs = (b.services || []).map(s => `<span class="bc-svc-tag">${serviceLabels[s] || s}</span>`).join('');
         const date = b.created_at ? new Date(b.created_at).toLocaleString() : 'N/A';
         const phone = (b.client_phone || '').replace(/[^0-9]/g, '');
-        const assignedName = b.assigned_inspector
-            ? (allInspectors.find(i => i.id === b.assigned_inspector)?.name || 'Unknown')
-            : '';
+        const assignedName = b.assigned_inspector ? (allInspectors.find(i => i.id === b.assigned_inspector)?.name || 'Unknown') : '';
+
+        const moneySection = b.price ? `
+            <div class="bc-money">
+                <div class="bc-money-row total"><span class="lbl">Total</span><span class="val">N$${fmt(b.price)}</span></div>
+                <div class="bc-money-row fee"><span class="lbl">Your fee (${b.commission_rate || defaultCommission}%)</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
+                <div class="bc-money-row payout"><span class="lbl">Inspector payout</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
+                ${b.paid_to_inspector ? '<div style="margin-top:6px;font-size:0.75rem;color:var(--good);font-weight:600">✓ Inspector paid</div>' : ''}
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')" style="margin-top:6px">Edit Price</button>
+        ` : `
+            <div class="bc-money" style="text-align:center;color:var(--text-light)">
+                <p style="margin-bottom:8px">No price set</p>
+                <button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')">Set Price</button>
+            </div>
+        `;
 
         return `
         <div class="booking-card status-${b.status || 'new'}">
@@ -375,21 +636,22 @@ function renderBookings() {
                 <h3>Client & Vehicle</h3>
                 <p class="ref">${b.reference || 'N/A'}</p>
                 <p><strong>${b.client_name || 'N/A'}</strong></p>
-                <p>${b.client_phone || ''} ${b.client_email ? '&middot; ' + b.client_email : ''}</p>
+                <p>${b.client_phone || ''} ${b.client_email ? '· ' + b.client_email : ''}</p>
                 <p>${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}</p>
-                <p style="font-size:0.85rem;color:var(--text-light)">Asking: N$${b.asking_price || 'N/A'}</p>
+                <p style="font-size:0.8rem;color:var(--text-light)">Asking: N$${b.asking_price || 'N/A'}</p>
                 <div class="bc-services">${svcs}</div>
             </div>
             <div class="bc-section">
-                <h3>Inspection Details</h3>
+                <h3>Inspection</h3>
                 <p>Vehicle at: <strong>${b.seller_location || 'N/A'}</strong></p>
                 <p>Seller: ${b.seller_contact || 'N/A'}</p>
-                <p>Client from: ${b.client_location || 'N/A'}</p>
-                ${b.vehicle_link ? `<p><a href="${b.vehicle_link}" target="_blank" style="color:var(--primary);font-size:0.85rem">View listing</a></p>` : ''}
-                ${b.notes ? `<p style="margin-top:6px;font-size:0.85rem;color:var(--text-light)">Notes: ${b.notes}</p>` : ''}
-                <p class="date" style="margin-top:8px">Submitted: ${date}</p>
+                ${b.notes ? `<p style="margin-top:6px;font-size:0.8rem;color:var(--text-light)">Notes: ${b.notes}</p>` : ''}
+                <p class="date" style="margin-top:8px">${date}</p>
                 ${phone ? `<a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp client</a>` : ''}
-                ${assignedName ? `<p style="margin-top:6px;font-size:0.85rem"><strong>Inspector:</strong> ${assignedName}</p>` : ''}
+                ${assignedName ? `<p style="margin-top:6px;font-size:0.8rem"><strong>Inspector:</strong> ${assignedName}</p>` : ''}
+            </div>
+            <div>
+                ${moneySection}
             </div>
             <div class="bc-actions">
                 <select class="status-select" onchange="updateBookingStatus('${b.id}', this.value)">
@@ -414,7 +676,6 @@ async function updateBookingStatus(id, status) {
     const updates = { status };
     if (status === 'confirmed') updates.confirmed_at = new Date().toISOString();
     if (status === 'completed') updates.completed_at = new Date().toISOString();
-
     const { error } = await supabase.from('bookings').update(updates).eq('id', id);
     if (error) alert('Error: ' + error.message);
     else loadBookings();
@@ -422,10 +683,19 @@ async function updateBookingStatus(id, status) {
 
 async function assignInspector(bookingId, inspectorId) {
     if (!inspectorId) return;
-    const { error } = await supabase.from('bookings').update({
-        assigned_inspector: inspectorId,
-        status: 'assigned'
-    }).eq('id', bookingId);
+    const booking = allBookings.find(b => b.id === bookingId);
+    const updates = { assigned_inspector: inspectorId, status: 'assigned' };
+
+    // Recalculate fees based on this inspector's commission
+    if (booking && booking.price) {
+        const rate = getInspectorRate(inspectorId);
+        const fees = calculateFees(parseFloat(booking.price), rate);
+        updates.commission_rate = rate;
+        updates.platform_fee = fees.platform_fee;
+        updates.inspector_payout = fees.inspector_payout;
+    }
+
+    const { error } = await supabase.from('bookings').update(updates).eq('id', bookingId);
     if (error) alert('Error: ' + error.message);
     else loadBookings();
 }
@@ -437,13 +707,67 @@ async function deleteBooking(id) {
     else loadBookings();
 }
 
+// --- Price modal ---
+function openPriceModal(bookingId) {
+    const booking = allBookings.find(b => b.id === bookingId);
+    document.getElementById('pm_bookingId').value = bookingId;
+    document.getElementById('pm_price').value = booking.price || '';
+    updatePricePreview();
+    document.getElementById('priceModal').classList.add('open');
+}
+
+function closePriceModal() {
+    document.getElementById('priceModal').classList.remove('open');
+}
+
+function updatePricePreview() {
+    const price = parseFloat(document.getElementById('pm_price').value);
+    if (!price || isNaN(price)) {
+        document.getElementById('pm_preview').style.display = 'none';
+        return;
+    }
+    const bookingId = document.getElementById('pm_bookingId').value;
+    const booking = allBookings.find(b => b.id === bookingId);
+    const rate = getInspectorRate(booking ? booking.assigned_inspector : null);
+    const fees = calculateFees(price, rate);
+
+    document.getElementById('pm_rate').textContent = rate + '%';
+    document.getElementById('pm_fee').textContent = 'N$' + fmt(fees.platform_fee);
+    document.getElementById('pm_payout').textContent = 'N$' + fmt(fees.inspector_payout);
+    document.getElementById('pm_preview').style.display = 'block';
+}
+
+document.getElementById('pm_price').addEventListener('input', updatePricePreview);
+
+async function savePrice() {
+    const bookingId = document.getElementById('pm_bookingId').value;
+    const price = parseFloat(document.getElementById('pm_price').value);
+    if (!price || isNaN(price)) { alert('Enter a valid price'); return; }
+
+    const booking = allBookings.find(b => b.id === bookingId);
+    const rate = getInspectorRate(booking ? booking.assigned_inspector : null);
+    const fees = calculateFees(price, rate);
+
+    const { error } = await supabase.from('bookings').update({
+        price: price,
+        commission_rate: rate,
+        platform_fee: fees.platform_fee,
+        inspector_payout: fees.inspector_payout
+    }).eq('id', bookingId);
+
+    if (error) alert('Error: ' + error.message);
+    else { closePriceModal(); loadBookings(); }
+}
+
 function exportCSV() {
     if (!allBookings.length) return alert('No bookings to export.');
-    const headers = ['Reference','Status','Name','Phone','Email','Location','Vehicle Make','Vehicle Model','Year','Asking Price','Vehicle Location','Seller Contact','Services','Notes','Created'];
+    const headers = ['Reference','Status','Name','Phone','Email','Vehicle','Year','Price','Commission Rate','Platform Fee','Inspector Payout','Inspector','Created'];
     const rows = allBookings.map(b => [
-        b.reference, b.status, b.client_name, b.client_phone, b.client_email, b.client_location,
-        b.vehicle_make, b.vehicle_model, b.vehicle_year, b.asking_price,
-        b.seller_location, b.seller_contact, (b.services||[]).join('; '), b.notes, b.created_at
+        b.reference, b.status, b.client_name, b.client_phone, b.client_email,
+        `${b.vehicle_make} ${b.vehicle_model}`, b.vehicle_year,
+        b.price, b.commission_rate, b.platform_fee, b.inspector_payout,
+        allInspectors.find(i => i.id === b.assigned_inspector)?.name || '',
+        b.created_at
     ]);
     const csv = [headers, ...rows].map(r => r.map(c => `"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -453,30 +777,14 @@ function exportCSV() {
     a.click();
 }
 
-// ===========================
+// =====================
 // INSPECTORS
-// ===========================
+// =====================
 async function loadInspectors() {
-    const list = document.getElementById('inspectorsList');
-    list.innerHTML = '<div class="loading">Loading...</div>';
-
-    if (!supabase) {
-        list.innerHTML = '<div class="empty"><h2>Supabase not configured</h2></div>';
-        return;
-    }
-
-    const { data, error } = await supabase
-        .from('inspectors')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        list.innerHTML = `<div class="empty"><h2>Error</h2><p>${error.message}</p></div>`;
-        return;
-    }
-
+    if (!supabase) return;
+    const { data, error } = await supabase.from('inspectors').select('*').order('created_at', { ascending: false });
+    if (error) { console.error(error); return; }
     allInspectors = data || [];
-    document.getElementById('inspectorCount').textContent = allInspectors.filter(i => i.status === 'active').length;
     renderInspectors();
 }
 
@@ -492,29 +800,33 @@ function renderInspectors() {
     });
 
     if (!filtered.length) {
-        list.innerHTML = '<div class="empty"><h2>No inspectors found</h2><p>Inspector applications will appear here.</p></div>';
+        list.innerHTML = '<div class="empty"><h2>No inspectors found</h2></div>';
         return;
     }
 
     list.innerHTML = filtered.map(i => {
         const date = i.created_at ? new Date(i.created_at).toLocaleDateString() : '';
         const phone = (i.phone || '').replace(/[^0-9]/g, '');
+        const completedJobs = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').length;
+        const totalEarned = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').reduce((s,b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+        const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% (custom)` : `${defaultCommission}% (default)`;
+
         return `
         <div class="inspector-card status-${i.status}">
             <div class="bc-section">
-                <h3>Inspector Details</h3>
-                <p><strong>${i.name}</strong></p>
-                <p>${i.phone} ${i.email ? '&middot; ' + i.email : ''}</p>
+                <h3>Inspector</h3>
+                <p><strong>${i.name}</strong> <span class="commission-tag">${commissionDisplay}</span></p>
+                <p>${i.phone} ${i.email ? '· ' + i.email : ''}</p>
                 <p>${i.town}, ${i.region}</p>
-                <p class="date">Applied: ${date}</p>
+                <p class="date">Joined: ${date}</p>
                 ${phone ? `<a class="wa-link" href="https://wa.me/${phone}" target="_blank">WhatsApp</a>` : ''}
             </div>
             <div class="bc-section">
-                <h3>Experience & Equipment</h3>
-                <p style="font-size:0.85rem;color:var(--text-light)">${i.experience || 'N/A'}</p>
-                <p style="margin-top:8px">OBD Scanner: <strong>${i.has_obd || 'N/A'}</strong></p>
-                <p>Transport: <strong>${i.has_transport || 'N/A'}</strong></p>
-                ${i.pin ? `<p style="margin-top:8px;font-size:0.8rem;color:var(--text-light)">PIN: ${i.pin}</p>` : ''}
+                <h3>Performance</h3>
+                <p><strong>${completedJobs}</strong> jobs completed</p>
+                <p style="color:var(--secondary);font-weight:700">N$${fmt(totalEarned)} earned (lifetime)</p>
+                ${i.experience ? `<p style="margin-top:8px;font-size:0.8rem;color:var(--text-light)">${i.experience}</p>` : ''}
+                ${i.pin ? `<p style="margin-top:6px;font-size:0.78rem;color:var(--text-muted)">PIN: ${i.pin}</p>` : ''}
             </div>
             <div class="bc-actions">
                 <select class="status-select" onchange="updateInspectorStatus('${i.id}', this.value)">
@@ -523,7 +835,7 @@ function renderInspectors() {
                     <option value="active" ${i.status==='active'?'selected':''}>Active</option>
                     <option value="suspended" ${i.status==='suspended'?'selected':''}>Suspended</option>
                 </select>
-                <button class="btn btn-primary btn-sm" onclick="setInspectorPin('${i.id}')">Set PIN</button>
+                <button class="btn btn-primary btn-sm" onclick="editInspector('${i.id}')">Edit</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteInspector('${i.id}')">Delete</button>
             </div>
         </div>`;
@@ -536,14 +848,6 @@ async function updateInspectorStatus(id, status) {
     else loadInspectors();
 }
 
-async function setInspectorPin(id) {
-    const pin = prompt('Set a 4-digit PIN for this inspector (they use this to log in):');
-    if (!pin || pin.length < 4) return;
-    const { error } = await supabase.from('inspectors').update({ pin }).eq('id', id);
-    if (error) alert('Error: ' + error.message);
-    else { alert('PIN set.'); loadInspectors(); }
-}
-
 async function deleteInspector(id) {
     if (!confirm('Delete this inspector?')) return;
     const { error } = await supabase.from('inspectors').delete().eq('id', id);
@@ -551,20 +855,33 @@ async function deleteInspector(id) {
     else loadInspectors();
 }
 
-// --- Filters ---
-document.getElementById('filterStatus').addEventListener('change', renderBookings);
-document.getElementById('filterSearch').addEventListener('input', renderBookings);
-document.getElementById('filterInspectorStatus').addEventListener('change', renderInspectors);
-document.getElementById('filterInspectorSearch').addEventListener('input', renderInspectors);
-
-// --- Add Inspector Modal ---
+// --- Add/Edit Inspector Modal ---
 function openAddInspector() {
+    document.getElementById('inspectorModalTitle').textContent = 'Add Inspector';
+    document.getElementById('addInspectorForm').reset();
+    document.getElementById('ai_id').value = '';
+    document.getElementById('addInspectorModal').classList.add('open');
+}
+
+function editInspector(id) {
+    const i = allInspectors.find(x => x.id === id);
+    if (!i) return;
+    document.getElementById('inspectorModalTitle').textContent = 'Edit Inspector';
+    document.getElementById('ai_id').value = i.id;
+    document.getElementById('ai_name').value = i.name || '';
+    document.getElementById('ai_phone').value = i.phone || '';
+    document.getElementById('ai_email').value = i.email || '';
+    document.getElementById('ai_town').value = i.town || '';
+    document.getElementById('ai_region').value = i.region || '';
+    document.getElementById('ai_experience').value = i.experience || '';
+    document.getElementById('ai_commission').value = i.commission_rate != null ? i.commission_rate : '';
+    document.getElementById('ai_status').value = i.status || 'active';
+    document.getElementById('ai_pin').value = i.pin || '';
     document.getElementById('addInspectorModal').classList.add('open');
 }
 
 function closeAddInspector() {
     document.getElementById('addInspectorModal').classList.remove('open');
-    document.getElementById('addInspectorForm').reset();
 }
 
 document.getElementById('addInspectorModal').addEventListener('click', (e) => {
@@ -573,6 +890,8 @@ document.getElementById('addInspectorModal').addEventListener('click', (e) => {
 
 document.getElementById('addInspectorForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const id = document.getElementById('ai_id').value;
+    const commissionVal = document.getElementById('ai_commission').value;
     const data = {
         name: document.getElementById('ai_name').value,
         phone: document.getElementById('ai_phone').value,
@@ -580,25 +899,117 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         town: document.getElementById('ai_town').value,
         region: document.getElementById('ai_region').value,
         experience: document.getElementById('ai_experience').value || null,
-        has_obd: document.getElementById('ai_obd').value,
-        has_transport: document.getElementById('ai_transport').value || null,
+        commission_rate: commissionVal !== '' ? parseFloat(commissionVal) : null,
         status: document.getElementById('ai_status').value,
         pin: document.getElementById('ai_pin').value || null,
     };
 
-    const { error } = await supabase.from('inspectors').insert(data);
-    if (error) {
-        alert('Error: ' + error.message);
+    let error;
+    if (id) {
+        ({ error } = await supabase.from('inspectors').update(data).eq('id', id));
+    } else {
+        ({ error } = await supabase.from('inspectors').insert(data));
+    }
+
+    if (error) { alert('Error: ' + error.message); return; }
+    closeAddInspector();
+    loadInspectors();
+});
+
+// =====================
+// PAYOUTS
+// =====================
+function renderPayouts() {
+    const completed = allBookings.filter(b => b.status === 'completed');
+    const pending = completed.filter(b => !b.paid_to_inspector);
+    const paid = completed.filter(b => b.paid_to_inspector);
+
+    const pendingTotal = pending.reduce((s, b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+    const paidTotal = paid.reduce((s, b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+
+    document.getElementById('statPendingPayouts').textContent = fmt(pendingTotal);
+    document.getElementById('statPendingCount').textContent = pending.length;
+    document.getElementById('statTotalPaid').textContent = fmt(paidTotal);
+
+    const list = document.getElementById('payoutsList');
+    if (!pending.length) {
+        list.innerHTML = '<div class="empty"><h2>All caught up</h2><p>No pending payouts.</p></div>';
         return;
     }
 
-    closeAddInspector();
-    loadInspectors();
-    alert('Inspector added successfully.');
-});
+    // Group by inspector
+    const byInspector = {};
+    pending.forEach(b => {
+        const inspId = b.assigned_inspector || 'unassigned';
+        if (!byInspector[inspId]) byInspector[inspId] = [];
+        byInspector[inspId].push(b);
+    });
+
+    list.innerHTML = Object.entries(byInspector).map(([inspId, bookings]) => {
+        const inspector = allInspectors.find(i => i.id === inspId);
+        const inspName = inspector ? inspector.name : 'Unassigned';
+        const inspPhone = inspector ? (inspector.phone || '').replace(/[^0-9]/g, '') : '';
+        const subtotal = bookings.reduce((s, b) => s + (parseFloat(b.inspector_payout) || 0), 0);
+
+        return `
+        <div style="background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                <div>
+                    <h3 style="font-size:1rem;margin-bottom:2px">${inspName}</h3>
+                    <p style="font-size:0.8rem;color:var(--text-light)">${bookings.length} job${bookings.length>1?'s':''} pending</p>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:1.4rem;font-weight:800;color:var(--secondary)">N$${fmt(subtotal)}</div>
+                    ${inspPhone ? `<a class="wa-link" href="https://wa.me/${inspPhone}" target="_blank">WhatsApp</a>` : ''}
+                </div>
+            </div>
+            ${bookings.map(b => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+                    <div>
+                        <strong>${b.reference}</strong> — ${b.vehicle_year || ''} ${b.vehicle_make || ''} ${b.vehicle_model || ''}
+                        <div style="font-size:0.78rem;color:var(--text-light)">${new Date(b.completed_at || b.created_at).toLocaleDateString()}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <strong>N$${fmt(b.inspector_payout)}</strong>
+                        <button class="btn btn-success btn-sm" onclick="markPaid('${b.id}')">Mark Paid</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>`;
+    }).join('');
+}
+
+async function markPaid(bookingId) {
+    if (!confirm('Mark this payout as paid? Make sure you have transferred the money.')) return;
+    const { error } = await supabase.from('bookings').update({
+        paid_to_inspector: true,
+        paid_to_inspector_at: new Date().toISOString()
+    }).eq('id', bookingId);
+    if (error) alert('Error: ' + error.message);
+    else loadBookings();
+}
+
+// Re-render payouts when bookings tab data updates
+const origRenderDashboard = renderDashboard;
+renderDashboard = function() {
+    origRenderDashboard();
+    renderPayouts();
+};
+
+// --- Filters ---
+document.getElementById('filterStatus').addEventListener('change', renderBookings);
+document.getElementById('filterInspectorFilter').addEventListener('change', renderBookings);
+document.getElementById('filterSearch').addEventListener('input', renderBookings);
+document.getElementById('filterInspectorStatus').addEventListener('change', renderInspectors);
+document.getElementById('filterInspectorSearch').addEventListener('input', renderInspectors);
 
 // --- Init ---
-loadInspectors().then(() => loadBookings());
+async function init() {
+    await loadSettings();
+    await loadInspectors();
+    await loadBookings();
+}
+init();
 </script>
 </body>
 </html>
