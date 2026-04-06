@@ -89,9 +89,34 @@
         .btn-cancel{background:var(--bg);color:var(--text);border:1.5px solid var(--border);padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit}
 
         @media(max-width:768px){.booking-card,.inspector-card{grid-template-columns:1fr}.modal .field-row{grid-template-columns:1fr}}
+
+        /* Login Gate */
+        .login-gate{position:fixed;inset:0;background:var(--primary);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+        .login-box{background:var(--card);border-radius:16px;padding:40px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+        .login-box img{height:64px;margin-bottom:16px}
+        .login-box h2{font-size:1.2rem;margin-bottom:8px;color:var(--text)}
+        .login-box p{color:var(--text-light);font-size:0.9rem;margin-bottom:24px}
+        .login-box input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;text-align:center;letter-spacing:4px}
+        .login-box input:focus{outline:none;border-color:var(--primary)}
+        .login-box button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+        .login-box button:hover{background:#062A1F}
+        .login-box .error{color:var(--poor);font-size:0.85rem;margin-top:8px;display:none}
+        .login-box .error.show{display:block}
     </style>
 </head>
 <body>
+
+<!-- Login Gate -->
+<div class="login-gate" id="loginGate">
+    <div class="login-box">
+        <img src="images/ViewNam logo.png" alt="ViewNam">
+        <h2>Admin Access</h2>
+        <p>Enter your admin password to continue</p>
+        <input type="password" id="adminPwd" placeholder="••••••" autofocus>
+        <button onclick="checkAdminPwd()">Log In</button>
+        <p class="error" id="loginErr">Incorrect password.</p>
+    </div>
+</div>
 
 <div class="topbar">
     <h1><img src="images/ViewNam logo.png" alt="ViewNam" style="height:36px;"> Admin</h1>
@@ -101,8 +126,16 @@
             <span><strong id="newCount">0</strong> New</span>
             <span><strong id="inspectorCount">0</strong> Inspectors</span>
         </div>
+        <button onclick="logoutAdmin()" style="background:none;border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;cursor:pointer;font-family:inherit;margin-left:16px;">Log out</button>
     </div>
 </div>
+
+<script>
+function logoutAdmin() {
+    sessionStorage.removeItem('viewnam_admin');
+    location.reload();
+}
+</script>
 
 <div class="tab-bar">
     <div class="tab active" data-panel="bookingsPanel">Bookings</div>
@@ -227,6 +260,30 @@
         </form>
     </div>
 </div>
+
+<script>
+// --- Login gate ---
+const ADMIN_USER = 'ismaelmvula@gmail.com';
+const ADMIN_PIN = '1953';
+
+function checkAdminPwd() {
+    const pwd = document.getElementById('adminPwd').value.trim();
+    if (pwd === ADMIN_PIN) {
+        sessionStorage.setItem('viewnam_admin', '1');
+        document.getElementById('loginGate').style.display = 'none';
+    } else {
+        document.getElementById('loginErr').classList.add('show');
+    }
+}
+
+document.getElementById('adminPwd').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkAdminPwd();
+});
+
+if (sessionStorage.getItem('viewnam_admin') === '1') {
+    document.getElementById('loginGate').style.display = 'none';
+}
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
