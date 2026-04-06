@@ -126,6 +126,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .earning-row .badge.paid{background:#E8F8EF;color:#1e8449}
 .earning-row .badge.unpaid{background:#FEF5E7;color:#A77512}
 
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:14px 22px;border-radius:8px;font-size:0.9rem;font-weight:500;box-shadow:0 6px 24px rgba(0,0,0,0.2);z-index:1000;display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform 0.3s ease;max-width:360px}
+.toast.show{transform:translateX(0)}
+.toast.success{background:var(--good)}
+.toast.error{background:var(--poor)}
+.toast svg{width:18px;height:18px;flex-shrink:0}
+
 @media(max-width:768px){
     .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;width:260px}
     .sidebar.open{transform:translateX(0);box-shadow:2px 0 20px rgba(0,0,0,0.15)}
@@ -295,9 +302,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </main>
 </div>
 
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
 <script>
+// Toast notification
+let toastTimer = null;
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    const icon = type === 'success'
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+    toast.innerHTML = icon + '<span>' + message + '</span>';
+    toast.className = 'toast ' + type + ' show';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
 let currentInspector = null;
 let allJobs = [];
 let defaultCommission = 15;
@@ -545,7 +569,8 @@ function renderEarnings() {
 
 async function startInspection(id, btn) {
     const { error } = await supabase.from('bookings').update({ status: 'in-progress' }).eq('id', id);
-    if (error) { alert('Error: ' + error.message); return; }
+    if (error) { showToast(error.message, 'error'); return; }
+    showToast('Inspection started');
     const job = JSON.parse(btn.dataset.job);
     const params = new URLSearchParams({
         ref: job.ref || '', make: job.make || '', model: job.model || '', year: job.year || '',
@@ -560,8 +585,8 @@ async function completeInspection(id) {
         status: 'completed',
         completed_at: new Date().toISOString()
     }).eq('id', id);
-    if (error) alert('Error: ' + error.message);
-    else loadJobs();
+    if (error) showToast(error.message, 'error');
+    else { showToast('Inspection completed'); loadJobs(); }
 }
 
 // Auto-login from session

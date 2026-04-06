@@ -8,6 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('copyrightYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+    // --- Toast notification (creates floating element on demand) ---
+    let toastTimer = null;
+    function showToast(message, type = 'success') {
+        let toast = document.getElementById('vnToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'vnToast';
+            toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:#1A1A2E;color:#fff;padding:14px 22px;border-radius:8px;font-size:0.9rem;font-weight:500;font-family:Inter,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,0.2);z-index:9999;max-width:90%;text-align:center;transition:transform 0.3s ease;';
+            document.body.appendChild(toast);
+        }
+        const colors = { success: '#27AE60', error: '#E74C3C', info: '#1A1A2E' };
+        toast.style.background = colors[type] || colors.info;
+        toast.textContent = message;
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.style.transform = 'translateX(-50%) translateY(120%)';
+        }, 4000);
+    }
+    window.showToast = showToast;
+
     // --- Load bank details from Supabase ---
     (async function loadBankDetails() {
         if (typeof supabase === 'undefined' || !supabase) return;
@@ -161,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Validate at least one service is selected
         const selectedServices = bookingForm.querySelectorAll('input[name="services"]:checked');
         if (selectedServices.length === 0) {
-            alert('Please select at least one service.');
+            showToast('Please select at least one service', 'error');
             return;
         }
 
@@ -208,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!result.success) {
-            alert('Could not submit your booking: ' + result.error + '\n\nYour details have been saved locally. Please try again or contact us on WhatsApp.');
+            showToast('Could not submit booking. Saved locally — please try again or contact us on WhatsApp.', 'error');
             return;
         }
 
