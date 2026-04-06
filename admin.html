@@ -70,38 +70,36 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .section-h{font-size:1.05rem;font-weight:700;color:var(--text);margin:32px 0 14px;display:flex;justify-content:space-between;align-items:center}
 
 /* Status breakdown */
-.status-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:24px}
-.status-pill{background:var(--card);border-radius:10px;padding:14px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.05);border-top:3px solid var(--text-muted)}
-.status-pill.new{border-top-color:var(--secondary)}
-.status-pill.confirmed{border-top-color:var(--primary)}
-.status-pill.assigned{border-top-color:var(--fair)}
-.status-pill.in-progress{border-top-color:var(--fair)}
-.status-pill.completed{border-top-color:var(--good)}
-.status-pill.cancelled{border-top-color:var(--poor)}
-.status-pill .num{font-size:1.4rem;font-weight:800;color:var(--text)}
-.status-pill .lbl{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);font-weight:600;margin-top:2px}
+.status-row{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;margin-bottom:24px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.status-pill{background:var(--card);padding:18px 14px;text-align:center}
+.status-pill.new,.status-pill.confirmed,.status-pill.assigned,.status-pill.in-progress,.status-pill.completed,.status-pill.cancelled{border:none}
+.status-pill .num{font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.status-pill .lbl{font-size:0.75rem;color:var(--text-light);font-weight:500;margin-top:4px}
 
 /* Charts */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.chart-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
-.chart-card h4{font-size:0.85rem;font-weight:600;color:var(--text-light);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px}
+.chart-card h4{font-size:0.85rem;font-weight:500;color:var(--text-light);margin-bottom:16px}
 .chart-card canvas{max-height:240px}
 
 /* Top inspectors list */
-.top-list{background:var(--card);border-radius:12px;padding:8px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
-.top-list-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:0.9rem}
+.top-list{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.top-list-row{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);font-size:0.9rem}
 .top-list-row:last-child{border-bottom:none}
 .top-list-row .name{font-weight:600}
-.top-list-row .meta{color:var(--text-light);font-size:0.8rem}
-.top-list-row .val{font-weight:700;color:var(--primary)}
+.top-list-row .meta{color:var(--text-light);font-size:0.8rem;margin-top:2px}
+.top-list-row .val{font-weight:600;color:var(--primary)}
 
 /* Booking card */
-.booking-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border-left:4px solid var(--secondary);display:grid;grid-template-columns:1.2fr 1fr 0.6fr auto;gap:16px;align-items:start}
-.booking-card.status-confirmed{border-left-color:var(--primary)}
-.booking-card.status-assigned{border-left-color:var(--fair)}
-.booking-card.status-in-progress{border-left-color:var(--fair)}
-.booking-card.status-completed{border-left-color:var(--good)}
-.booking-card.status-cancelled{border-left-color:var(--poor);opacity:0.6}
+.booking-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:10px;display:grid;grid-template-columns:1.2fr 1fr 0.6fr auto;gap:16px;align-items:start;position:relative}
+.booking-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--text-muted);border-radius:8px 0 0 8px}
+.booking-card.status-new::before{background:var(--secondary)}
+.booking-card.status-confirmed::before{background:var(--primary)}
+.booking-card.status-assigned::before{background:var(--fair)}
+.booking-card.status-in-progress::before{background:var(--fair)}
+.booking-card.status-completed::before{background:var(--good)}
+.booking-card.status-cancelled::before{background:var(--poor)}
+.booking-card.status-cancelled{opacity:0.6}
 
 .bc-section h3{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-light);margin-bottom:6px}
 .bc-section p{font-size:0.88rem;margin-bottom:3px}
@@ -129,15 +127,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 .loading{text-align:center;padding:40px;color:var(--text-light)}
 
 /* Inspector card */
-.inspector-card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);display:grid;grid-template-columns:1fr 1fr auto;gap:16px;border-left:4px solid var(--border)}
-.inspector-card.status-active{border-left-color:var(--good)}
-.inspector-card.status-approved{border-left-color:var(--primary)}
-.inspector-card.status-pending{border-left-color:var(--secondary)}
-.inspector-card.status-suspended{border-left-color:var(--poor)}
+.inspector-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr auto;gap:16px;position:relative}
+.inspector-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--text-muted);border-radius:8px 0 0 8px}
+.inspector-card.status-active::before{background:var(--good)}
+.inspector-card.status-approved::before{background:var(--primary)}
+.inspector-card.status-pending::before{background:var(--secondary)}
+.inspector-card.status-suspended::before{background:var(--poor)}
 .commission-tag{display:inline-block;background:var(--secondary);color:var(--primary-dark);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;margin-left:6px}
 
 /* Settings */
-.settings-card{background:var(--card);border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);max-width:560px}
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;max-width:560px}
 .settings-card h2{font-size:1.1rem;color:var(--primary);margin-bottom:8px}
 .settings-card p.help{font-size:0.85rem;color:var(--text-light);margin-bottom:20px}
 .settings-card .field{margin-bottom:16px}
