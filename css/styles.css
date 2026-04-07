@@ -1660,7 +1660,7 @@ h3 { font-size: 1.25rem; }
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 56px 0 40px;
+        padding: 96px 0 40px;
         gap: 28px;
     }
 
@@ -2078,7 +2078,7 @@ h3 { font-size: 1.25rem; }
 
     /* Hero */
     .hero-grid {
-        padding: 48px 0 24px;
+        padding: 88px 0 24px;
         gap: 20px;
     }
 
