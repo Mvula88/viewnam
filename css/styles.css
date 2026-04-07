@@ -1622,6 +1622,15 @@ h3 { font-size: 1.25rem; }
     }
 
     /* Nav */
+    .nav-container {
+        height: auto;
+        padding: 10px 0;
+    }
+
+    .logo-img {
+        height: 40px;
+    }
+
     .mobile-toggle {
         display: flex;
     }
@@ -1629,7 +1638,7 @@ h3 { font-size: 1.25rem; }
     .nav-links {
         display: none;
         position: absolute;
-        top: 72px;
+        top: 62px;
         left: 0;
         right: 0;
         background: white;
@@ -1652,6 +1661,11 @@ h3 { font-size: 1.25rem; }
         display: none;
     }
 
+    /* Hero needs more top offset since navbar is shorter */
+    .hero {
+        padding-top: 62px;
+    }
+
     /* Hero */
     .hero .container {
         padding: 0 20px;
@@ -1660,7 +1674,7 @@ h3 { font-size: 1.25rem; }
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 96px 0 40px;
+        padding: 40px 0 36px;
         gap: 28px;
     }
 
@@ -2078,7 +2092,7 @@ h3 { font-size: 1.25rem; }
 
     /* Hero */
     .hero-grid {
-        padding: 88px 0 24px;
+        padding: 36px 0 20px;
         gap: 20px;
     }
 
