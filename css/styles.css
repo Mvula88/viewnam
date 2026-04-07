@@ -1654,14 +1654,14 @@ h3 { font-size: 1.25rem; }
 
     /* Hero */
     .hero .container {
-        padding: 0 24px;
+        padding: 0 20px;
     }
 
     .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
-        padding: 48px 0 40px;
-        gap: 24px;
+        padding: 56px 0 40px;
+        gap: 28px;
     }
 
     .step-indicators {
@@ -1683,15 +1683,29 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero h1 {
-        font-size: 2rem;
+        font-size: 1.85rem;
+        line-height: 1.18;
+        margin-bottom: 18px;
     }
 
     .hero-badge {
         font-size: 0.7rem;
+        margin-bottom: 18px;
     }
 
     .hero-subtitle {
-        font-size: 0.95rem;
+        font-size: 1rem;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .hero-checks {
+        gap: 8px 16px;
+        margin-bottom: 24px;
+    }
+
+    .hero-checks span {
+        font-size: 0.85rem;
     }
 
     .hero-actions {
@@ -1701,6 +1715,13 @@ h3 { font-size: 1.25rem; }
     .hero-actions .btn {
         width: 100%;
         text-align: center;
+        padding: 14px 24px;
+        font-size: 0.95rem;
+    }
+
+    .hero-warning {
+        font-size: 0.8rem;
+        margin-top: 16px;
     }
 
     .hero-image {
@@ -1709,7 +1730,7 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero-image dotlottie-player {
-        max-width: 300px !important;
+        max-width: 280px !important;
     }
 
     /* Problem */
@@ -1722,10 +1743,36 @@ h3 { font-size: 1.25rem; }
         gap: 12px;
     }
 
+    .problem-card {
+        padding: 22px 20px;
+    }
+
+    .problem-card h3 {
+        font-size: 1rem;
+    }
+
+    .problem-card p {
+        font-size: 0.88rem;
+    }
+
+    .problem-tagline {
+        font-size: 0.95rem;
+        padding: 0 16px;
+    }
+
     /* Steps */
     .steps-row {
         grid-template-columns: 1fr;
         gap: 12px;
+    }
+
+    .step-card {
+        padding: 22px 20px;
+    }
+
+    .step-num {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
     }
 
     /* Services */
@@ -1734,24 +1781,43 @@ h3 { font-size: 1.25rem; }
         gap: 12px;
     }
 
+    .service-card {
+        padding: 22px 20px;
+    }
+
     /* Coverage */
     #namibiaMap {
-        height: 350px;
+        height: 320px;
     }
 
     .coverage-towns {
         gap: 6px;
+        padding: 0 8px;
     }
 
     .coverage-towns span {
-        font-size: 0.8rem;
-        padding: 5px 12px;
+        font-size: 0.75rem;
+        padding: 5px 11px;
+    }
+
+    .coverage-label {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+    }
+
+    .coverage-highlight {
+        font-size: 0.92rem;
+    }
+
+    .coverage-map-wrap {
+        margin: 0 -4px;
     }
 
     /* Pricing */
     .pricing-highlight-inner {
         grid-template-columns: 1fr;
         text-align: center;
+        padding: 28px 22px;
     }
 
     .pricing-highlight-inner .pricing-features {
@@ -1761,18 +1827,42 @@ h3 { font-size: 1.25rem; }
     .pricing-grid,
     .pricing-grid.services-pricing {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .pricing-card {
         padding: 24px 20px;
     }
 
+    .pricing-card.featured.wide {
+        padding: 0;
+    }
+
     .price {
-        font-size: 2.4rem;
+        font-size: 2.2rem;
     }
 
     .pricing-subtitle {
         font-size: 1rem;
+        margin: 32px 0 14px;
+    }
+
+    .pricing-note-box {
+        padding: 16px 20px;
+        margin-top: 24px;
+    }
+
+    .pricing-note-box p {
+        font-size: 0.88rem;
+    }
+
+    .pricing-trust {
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .pricing-trust span {
+        font-size: 0.8rem;
     }
 
     /* Testimonials */
@@ -1781,16 +1871,71 @@ h3 { font-size: 1.25rem; }
         gap: 12px;
     }
 
+    .testimonial-card {
+        padding: 22px 20px;
+    }
+
+    .testimonial-card p {
+        font-size: 0.92rem;
+        line-height: 1.65;
+    }
+
+    .testimonial-tagline {
+        font-size: 0.9rem;
+        padding: 0 16px;
+        margin-top: 20px;
+    }
+
     /* About */
     .about-grid {
         grid-template-columns: 1fr;
+        gap: 28px;
     }
 
     .about-image {
         order: -1;
     }
 
+    .about-image img {
+        max-height: 280px;
+        object-fit: cover;
+        width: 100%;
+        border-radius: 12px;
+    }
+
+    .about-content-full h2 {
+        font-size: 1.6rem;
+        margin-bottom: 18px;
+    }
+
+    .about-text p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .about-points {
+        margin-top: 22px;
+        gap: 10px;
+    }
+
+    .about-point {
+        font-size: 0.92rem;
+    }
+
+    .about-tagline {
+        font-size: 0.95rem;
+        margin-top: 20px;
+    }
+
     /* Booking */
+    .booking-trust {
+        gap: 14px;
+    }
+
+    .booking-trust span {
+        font-size: 0.8rem;
+    }
+
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -1814,10 +1959,27 @@ h3 { font-size: 1.25rem; }
         padding: 14px 16px;
     }
 
+    .package-content strong {
+        font-size: 0.92rem;
+    }
+
+    .package-content span {
+        font-size: 0.8rem;
+    }
+
     /* FAQ */
     .faq-question {
         font-size: 0.95rem;
         padding: 16px 0;
+    }
+
+    .faq-answer p {
+        font-size: 0.9rem;
+    }
+
+    .faq-cta {
+        font-size: 0.92rem;
+        padding: 0 16px;
     }
 
     /* Footer */
@@ -1828,6 +1990,20 @@ h3 { font-size: 1.25rem; }
     .contact-grid {
         grid-template-columns: 1fr;
         gap: 32px;
+        padding-bottom: 36px;
+    }
+
+    .contact-tagline {
+        font-size: 0.92rem;
+    }
+
+    .contact-cta-line {
+        font-size: 0.92rem;
+    }
+
+    .footer-cta-btn {
+        width: 100%;
+        text-align: center;
     }
 
     .contact-links {
@@ -1839,6 +2015,16 @@ h3 { font-size: 1.25rem; }
         flex-direction: column;
         gap: 12px;
         text-align: center;
+    }
+
+    /* Section headers */
+    .section-header h2 {
+        font-size: 1.6rem;
+        line-height: 1.25;
+    }
+
+    .section-tag {
+        font-size: 0.7rem;
     }
 
     /* Buttons */
@@ -1866,13 +2052,65 @@ h3 { font-size: 1.25rem; }
    =========================== */
 @media (max-width: 480px) {
 
+    .container {
+        padding: 0 16px;
+    }
+
+    .section {
+        padding: 44px 0;
+    }
+
+    .section-header {
+        margin-bottom: 28px;
+    }
+
+    .section-header h2 {
+        font-size: 1.45rem;
+    }
+
+    .section-header p {
+        font-size: 0.9rem;
+    }
+
+    .section-tag {
+        font-size: 0.68rem;
+    }
+
+    /* Hero */
     .hero-grid {
-        padding: 36px 0 16px;
-        gap: 16px;
+        padding: 48px 0 24px;
+        gap: 20px;
     }
 
     .hero h1 {
         font-size: 1.7rem;
+        line-height: 1.2;
+    }
+
+    .hero-badge {
+        font-size: 0.65rem;
+        margin-bottom: 14px;
+    }
+
+    .hero-subtitle {
+        font-size: 0.92rem;
+    }
+
+    .hero-checks {
+        gap: 6px 14px;
+    }
+
+    .hero-checks span {
+        font-size: 0.8rem;
+    }
+
+    .hero-actions .btn {
+        padding: 13px 20px;
+        font-size: 0.9rem;
+    }
+
+    .hero-warning {
+        font-size: 0.78rem;
     }
 
     .hero-image dotlottie-player {
@@ -1880,23 +2118,59 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero .container {
-        padding: 0 20px;
+        padding: 0 18px;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
     }
 
-    .section {
-        padding: 48px 0;
+    /* Problem cards */
+    .problem-card {
+        padding: 20px 18px;
     }
 
-    .section-tag {
-        font-size: 0.7rem;
+    .problem-card h3 {
+        font-size: 0.95rem;
     }
 
+    .problem-card p {
+        font-size: 0.85rem;
+    }
+
+    /* Steps */
+    .step-card {
+        padding: 20px 18px;
+    }
+
+    .step-num {
+        font-size: 1.6rem;
+    }
+
+    .step-card h3 {
+        font-size: 1rem;
+    }
+
+    .step-card p {
+        font-size: 0.85rem;
+    }
+
+    /* Services */
+    .service-card {
+        padding: 20px 18px;
+    }
+
+    .service-card h3 {
+        font-size: 0.95rem;
+    }
+
+    .service-card p {
+        font-size: 0.85rem;
+    }
+
+    /* Coverage */
     .coverage-towns span {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         padding: 4px 10px;
     }
 
@@ -1904,14 +2178,104 @@ h3 { font-size: 1.25rem; }
         height: 280px;
     }
 
+    .coverage-highlight {
+        font-size: 0.88rem;
+    }
+
+    /* Pricing */
+    .pricing-card {
+        padding: 22px 18px;
+    }
+
+    .pricing-header h3 {
+        font-size: 1.05rem;
+    }
+
+    .pricing-desc {
+        font-size: 0.85rem;
+    }
+
+    .price {
+        font-size: 2rem;
+    }
+
+    .pricing-features li {
+        font-size: 0.85rem;
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        padding: 20px 18px;
+    }
+
+    .testimonial-card p {
+        font-size: 0.88rem;
+    }
+
+    .testimonial-card cite {
+        font-size: 0.8rem;
+    }
+
+    /* About */
+    .about-content-full h2 {
+        font-size: 1.5rem;
+    }
+
+    .about-text p {
+        font-size: 0.9rem;
+    }
+
+    .about-point {
+        font-size: 0.88rem;
+        padding-left: 14px;
+    }
+
+    .about-image img {
+        max-height: 240px;
+    }
+
+    /* FAQ */
+    .faq-question {
+        font-size: 0.9rem;
+        padding: 14px 0;
+    }
+
+    .faq-answer p {
+        font-size: 0.85rem;
+    }
+
+    /* Footer */
     .contact-links {
         grid-template-columns: 1fr;
+        gap: 24px;
     }
 
+    .contact-tagline {
+        font-size: 0.9rem;
+    }
+
+    .footer-col h4 {
+        font-size: 0.88rem;
+    }
+
+    .footer-col a {
+        font-size: 0.85rem;
+    }
+
+    /* Booking form */
     .booking-form {
-        padding: 16px;
+        padding: 18px;
     }
 
+    .booking-trust {
+        gap: 10px;
+    }
+
+    .booking-trust span {
+        font-size: 0.75rem;
+    }
+
+    /* Modal */
     .modal {
         padding: 28px 20px;
     }
