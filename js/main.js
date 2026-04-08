@@ -74,10 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { /* keep static fallbacks */ }
     })();
 
-    // --- Navbar scroll effect ---
+    // --- Navbar scroll effect + scroll-to-top button ---
     const navbar = document.getElementById('navbar');
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
     window.addEventListener('scroll', () => {
         navbar.classList.toggle('scrolled', window.scrollY > 20);
+        if (scrollTopBtn) {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+        }
     });
 
     // --- Mobile menu toggle ---
