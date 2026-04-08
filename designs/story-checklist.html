@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>ViewNam — What We Check</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0B3D2E;
+    color: #FFFFFF;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 50% 10%, rgba(212,168,67,0.1) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 95%, rgba(212,168,67,0.08) 0%, transparent 35%);
+    pointer-events: none;
+  }
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 100px 80px;
+  }
+  .logo {
+    width: 200px;
+    margin-bottom: 20px;
+  }
+  .logo img {
+    width: 100%;
+    filter: brightness(0) invert(1);
+  }
+  .gold-accent {
+    width: 64px;
+    height: 5px;
+    background: #D4A843;
+    border-radius: 3px;
+    margin-bottom: 64px;
+  }
+  .title {
+    font-size: 76px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 80px;
+  }
+  .title span {
+    color: #D4A843;
+  }
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+    flex: 1;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .check-icon {
+    width: 56px;
+    height: 56px;
+    background: #D4A843;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .check-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  .check-text {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .check-item:nth-child(even) .check-text {
+    color: rgba(255,255,255,0.85);
+  }
+  .cta-area {
+    margin-top: auto;
+    text-align: center;
+    padding-top: 60px;
+  }
+  .cta-button {
+    display: inline-block;
+    background: #D4A843;
+    color: #0B3D2E;
+    font-size: 34px;
+    font-weight: 800;
+    padding: 28px 64px;
+    border-radius: 16px;
+    letter-spacing: -0.5px;
+    margin-bottom: 28px;
+  }
+  .cta-url {
+    font-size: 26px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+  /* Decorative side elements */
+  .deco-left {
+    position: absolute;
+    left: 0;
+    top: 400px;
+    width: 8px;
+    height: 300px;
+    background: linear-gradient(to bottom, transparent, #D4A843, transparent);
+    border-radius: 0 4px 4px 0;
+  }
+  .deco-right {
+    position: absolute;
+    right: 0;
+    top: 900px;
+    width: 8px;
+    height: 300px;
+    background: linear-gradient(to bottom, transparent, #D4A843, transparent);
+    border-radius: 4px 0 0 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="deco-left"></div>
+  <div class="deco-right"></div>
+  <div class="container">
+    <div class="logo"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+    <div class="gold-accent"></div>
+    <h1 class="title">What We<br><span>Check</span></h1>
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">Body & paintwork</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">Engine & mechanics</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">Electronics & fault scan</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">Test drive assessment</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">40+ real photos</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0B3D2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="check-text">Buy / Don't Buy verdict</span>
+      </div>
+    </div>
+    <div class="cta-area">
+      <div class="cta-button">Book now</div>
+      <div class="cta-url">viewnam.vercel.app</div>
+    </div>
+  </div>
+</body>
+</html>

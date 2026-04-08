@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>ViewNam — Pricing</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    position: relative;
+  }
+  .left {
+    width: 50%;
+    height: 100%;
+    background: #0B3D2E;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 56px 52px;
+    position: relative;
+  }
+  .left::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(212,168,67,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .left-content {
+    position: relative;
+    z-index: 1;
+  }
+  .logo {
+    width: 160px;
+    margin-bottom: 32px;
+    filter: brightness(0) invert(1);
+  }
+  .left-headline {
+    font-size: 46px;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .left-headline span {
+    color: #D4A843;
+  }
+  .left-sub {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .right {
+    width: 50%;
+    height: 100%;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 44px;
+    gap: 16px;
+  }
+  .price-card {
+    background: #F7F7F7;
+    border-radius: 14px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .price-card.highlighted {
+    background: linear-gradient(135deg, #D4A843, #C49A38);
+    border-color: #D4A843;
+  }
+  .card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .card-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0B3D2E;
+    letter-spacing: -0.3px;
+  }
+  .price-card.highlighted .card-name {
+    color: #FFFFFF;
+  }
+  .card-desc {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(11,61,46,0.5);
+  }
+  .price-card.highlighted .card-desc {
+    color: rgba(255,255,255,0.7);
+  }
+  .card-price {
+    font-size: 28px;
+    font-weight: 900;
+    color: #0B3D2E;
+    letter-spacing: -1px;
+    white-space: nowrap;
+  }
+  .price-card.highlighted .card-price {
+    color: #FFFFFF;
+  }
+  .card-from {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(11,61,46,0.4);
+    text-align: right;
+    margin-bottom: 2px;
+  }
+  .price-card.highlighted .card-from {
+    color: rgba(255,255,255,0.6);
+  }
+  .card-right {
+    text-align: right;
+  }
+  .popular-tag {
+    display: inline-block;
+    background: #0B3D2E;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .bottom-url {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: #0B3D2E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  .bottom-url span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #D4A843;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="left-content">
+      <img class="logo" src="../images/ViewNam logo.png" alt="ViewNam">
+      <h1 class="left-headline">Check Any<br>Car In<br><span>Namibia</span></h1>
+      <p class="left-sub">Professional inspections</p>
+    </div>
+  </div>
+  <div class="right">
+    <div class="price-card">
+      <div class="card-left">
+        <div class="card-name">Visual Check</div>
+        <div class="card-desc">Exterior & interior assessment</div>
+      </div>
+      <div class="card-right">
+        <div class="card-from">from</div>
+        <div class="card-price">N$750</div>
+      </div>
+    </div>
+    <div class="price-card">
+      <div class="card-left">
+        <div class="card-name">Engine + Diagnostics</div>
+        <div class="card-desc">Mechanical & fault code scan</div>
+      </div>
+      <div class="card-right">
+        <div class="card-from">from</div>
+        <div class="card-price">N$700</div>
+      </div>
+    </div>
+    <div class="price-card highlighted">
+      <div class="card-left">
+        <div class="popular-tag">Most Popular</div>
+        <div class="card-name">Full Package</div>
+        <div class="card-desc">Complete inspection + verdict</div>
+      </div>
+      <div class="card-right">
+        <div class="card-from">from</div>
+        <div class="card-price">N$1,800</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-url"><span>viewnam.vercel.app</span></div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ViewNam — Design Studio</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B3D2E;--secondary:#D4A843;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+
+.topbar{background:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-left img{height:42px}
+.topbar-left h1{font-size:1rem;font-weight:700;color:var(--text)}
+.topbar-left h1 span{color:var(--secondary)}
+.topbar a{color:var(--primary);font-weight:600;font-size:0.9rem;text-decoration:none}
+
+.container{max-width:1200px;margin:0 auto;padding:32px 24px}
+
+.intro{text-align:center;margin-bottom:40px}
+.intro h2{font-size:1.6rem;margin-bottom:8px}
+.intro p{color:var(--text-light);font-size:0.95rem;max-width:560px;margin:0 auto}
+
+/* Platform tabs */
+.platform-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.platform-tab{padding:8px 18px;border:1.5px solid var(--border);border-radius:20px;font-size:0.85rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--text-light);transition:all 0.15s;font-family:inherit}
+.platform-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* Design grid */
+.design-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:24px}
+
+.design-item{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow 0.2s}
+.design-item:hover{box-shadow:0 6px 24px rgba(0,0,0,0.08)}
+.design-preview{position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.design-preview iframe{border:none;width:100%;transform-origin:top left}
+.design-info{padding:16px}
+.design-info h3{font-size:0.95rem;margin-bottom:4px}
+.design-info .meta{font-size:0.78rem;color:var(--text-light);margin-bottom:12px}
+.design-info .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.design-info .tag{padding:3px 10px;background:var(--bg);border-radius:12px;font-size:0.72rem;font-weight:500;color:var(--text-light)}
+.design-actions{display:flex;gap:8px}
+.design-actions a,.design-actions button{padding:8px 16px;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-view{background:var(--primary);color:#fff}
+.btn-download{background:var(--secondary);color:var(--primary)}
+.btn-view:hover{opacity:0.9}
+.btn-download:hover{opacity:0.9}
+
+.empty{text-align:center;padding:60px 20px;color:var(--text-light)}
+.empty h3{margin-bottom:8px;color:var(--text)}
+
+/* Sizes legend */
+.sizes{display:flex;justify-content:center;gap:20px;margin-bottom:24px;font-size:0.78rem;color:var(--text-light);flex-wrap:wrap}
+.sizes span{display:flex;align-items:center;gap:6px}
+.sizes .dot{width:8px;height:8px;border-radius:50%}
+
+@media(max-width:768px){
+    .design-grid{grid-template-columns:1fr}
+    .container{padding:20px 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <img src="images/ViewNam logo.png" alt="ViewNam">
+        <h1>Design <span>Studio</span></h1>
+    </div>
+    <a href="index.html">&larr; Back to site</a>
+</div>
+
+<div class="container">
+    <div class="intro">
+        <h2>Social Media Designs</h2>
+        <p>Ready-to-use branded designs for your social media. Open any design, screenshot or download, and post.</p>
+    </div>
+
+    <div class="sizes">
+        <span><span class="dot" style="background:var(--primary)"></span> Instagram Post: 1080x1080</span>
+        <span><span class="dot" style="background:var(--secondary)"></span> Facebook Cover: 820x312</span>
+        <span><span class="dot" style="background:#E74C3C"></span> Story/TikTok: 1080x1920</span>
+        <span><span class="dot" style="background:#3498DB"></span> Facebook Post: 1200x630</span>
+    </div>
+
+    <div class="platform-tabs">
+        <button class="platform-tab active" onclick="filterDesigns('all')">All</button>
+        <button class="platform-tab" onclick="filterDesigns('instagram')">Instagram</button>
+        <button class="platform-tab" onclick="filterDesigns('facebook')">Facebook</button>
+        <button class="platform-tab" onclick="filterDesigns('tiktok')">TikTok</button>
+        <button class="platform-tab" onclick="filterDesigns('story')">Stories</button>
+        <button class="platform-tab" onclick="filterDesigns('cover')">Covers</button>
+    </div>
+
+    <div class="design-grid" id="designGrid">
+        <div class="empty">
+            <h3>Loading designs...</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+// Design registry — each entry points to an HTML file in /designs/
+const designs = [
+    {
+        file: 'designs/ig-full-package.html',
+        title: 'Full Package Promo',
+        platform: 'instagram',
+        type: 'Promo',
+        size: '1080x1080',
+        date: '2026-04-08',
+    },
+    {
+        file: 'designs/ig-dont-buy-blind.html',
+        title: "Don't Buy Blind",
+        platform: 'instagram',
+        type: 'Awareness',
+        size: '1080x1080',
+        date: '2026-04-08',
+    },
+    {
+        file: 'designs/ig-testimonial.html',
+        title: 'Client Testimonial',
+        platform: 'instagram',
+        type: 'Testimonial',
+        size: '1080x1080',
+        date: '2026-04-08',
+    },
+    {
+        file: 'designs/fb-cover.html',
+        title: 'Facebook Cover Image',
+        platform: 'cover',
+        type: 'Cover',
+        size: '820x312',
+        date: '2026-04-08',
+    },
+    {
+        file: 'designs/story-checklist.html',
+        title: 'What We Check — Story',
+        platform: 'story',
+        type: 'Educational',
+        size: '1080x1920',
+        date: '2026-04-08',
+    },
+    {
+        file: 'designs/fb-post-pricing.html',
+        title: 'Pricing Post',
+        platform: 'facebook',
+        type: 'Promo',
+        size: '1200x630',
+        date: '2026-04-08',
+    },
+];
+
+let currentFilter = 'all';
+
+function filterDesigns(platform) {
+    currentFilter = platform;
+    document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    renderDesigns();
+}
+
+function renderDesigns() {
+    const grid = document.getElementById('designGrid');
+    const filtered = currentFilter === 'all' ? designs : designs.filter(d => d.platform === currentFilter);
+
+    if (!filtered.length) {
+        grid.innerHTML = '<div class="empty"><h3>No designs in this category yet</h3><p>Ask Claude Code to generate one!</p></div>';
+        return;
+    }
+
+    // Calculate preview dimensions
+    grid.innerHTML = filtered.map(d => {
+        const [w, h] = d.size.split('x').map(Number);
+        const previewWidth = 340;
+        const scale = previewWidth / w;
+        const previewHeight = Math.min(h * scale, 400);
+
+        return `
+        <div class="design-item" data-platform="${d.platform}">
+            <div class="design-preview" style="height:${previewHeight}px">
+                <iframe src="${d.file}" style="width:${w}px;height:${h}px;transform:scale(${scale});pointer-events:none;" scrolling="no"></iframe>
+            </div>
+            <div class="design-info">
+                <h3>${d.title}</h3>
+                <div class="meta">${d.size} &middot; ${d.date}</div>
+                <div class="tags">
+                    <span class="tag">${d.platform}</span>
+                    <span class="tag">${d.type}</span>
+                </div>
+                <div class="design-actions">
+                    <a href="${d.file}" target="_blank" class="btn-view">Open Full Size</a>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+renderDesigns();
+</script>
+</body>
+</html>

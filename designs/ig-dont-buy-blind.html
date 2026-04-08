@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>ViewNam — Don't Buy Blind</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    position: relative;
+  }
+  .left {
+    width: 54%;
+    height: 100%;
+    background: #0B3D2E;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72px 56px 72px 64px;
+    position: relative;
+  }
+  .left::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -60px;
+    width: 120px;
+    height: 100%;
+    background: #0B3D2E;
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+    z-index: 2;
+  }
+  .right {
+    width: 46%;
+    height: 100%;
+    background: #D4A843;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 72px 48px;
+    position: relative;
+  }
+  .headline {
+    font-size: 62px;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.05;
+    letter-spacing: -2.5px;
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 3;
+  }
+  .headline span {
+    color: #D4A843;
+  }
+  .stat-block {
+    position: relative;
+    z-index: 3;
+  }
+  .stat-label {
+    font-size: 22px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+  .stat-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.3;
+  }
+  .right-content {
+    text-align: center;
+  }
+  .warning-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 32px;
+    background: #0B3D2E;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .warning-icon svg {
+    width: 52px;
+    height: 52px;
+  }
+  .right-headline {
+    font-size: 44px;
+    font-weight: 900;
+    color: #0B3D2E;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 24px;
+  }
+  .right-sub {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(11,61,46,0.7);
+    line-height: 1.4;
+  }
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 88px;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    z-index: 10;
+  }
+  .bottom-bar .logo {
+    height: 36px;
+    filter: brightness(0) invert(1);
+  }
+  .bottom-bar span {
+    font-size: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+  }
+  .bottom-bar .divider {
+    width: 2px;
+    height: 28px;
+    background: rgba(255,255,255,0.3);
+  }
+</style>
+</head>
+<body>
+  <div class="left">
+    <h1 class="headline">Don't Buy<br>A Car<br><span>Without</span><br>Checking<br>It First</h1>
+    <div class="stat-block">
+      <div class="stat-label">The truth</div>
+      <div class="stat-text">Most cars look<br>perfect online.</div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="right-content">
+      <div class="warning-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="right-headline">We inspect it for you.</div>
+      <div class="right-sub">Professional inspections<br>anywhere in Namibia</div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <img class="logo" src="../images/ViewNam logo.png" alt="ViewNam">
+    <div class="divider"></div>
+    <span>viewnam.vercel.app</span>
+  </div>
+</body>
+</html>
