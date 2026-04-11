@@ -476,13 +476,29 @@ function renderStats() {
     document.getElementById('statPendingE').textContent = fmt(pending);
 }
 
+function buildChecklistUrl(j) {
+    const params = new URLSearchParams({
+        ref: j.reference || '',
+        make: j.vehicle_make || '',
+        model: j.vehicle_model || '',
+        year: j.vehicle_year || '',
+        location: j.seller_location || '',
+        seller: j.seller_contact || '',
+        asking: j.asking_price || '',
+        notes: j.notes || '',
+        services: (j.services || []).join(','),
+    });
+    return 'inspector-app/index.html?' + params.toString();
+}
+
 function jobCardHtml(j) {
     const date = j.created_at ? new Date(j.created_at).toLocaleDateString() : '';
     const sellerPhone = (j.seller_contact || '').replace(/[^0-9]/g, '');
     const svcs = (j.services || []).join(', ');
     const status = j.status || '';
     const statusLabels = {assigned:'Assigned','in-progress':'In Progress',completed:'Completed'};
-    const jobData = JSON.stringify({ref:j.reference,make:j.vehicle_make,model:j.vehicle_model,year:j.vehicle_year,location:j.seller_location,seller:j.seller_contact,services:j.services}).replace(/'/g,"&#39;");
+    const checklistUrl = buildChecklistUrl(j);
+    const jobData = JSON.stringify({id:j.id}).replace(/'/g,"&#39;");
 
     return `
     <div class="job-card">
@@ -518,8 +534,8 @@ function jobCardHtml(j) {
         </div>
         <div class="jc-footer">
             ${sellerPhone ? `<a class="job-btn job-btn-wa" href="https://wa.me/${sellerPhone}" target="_blank">Call Seller</a>` : ''}
-            ${status === 'assigned' ? `<button class="job-btn job-btn-primary" onclick="startInspection('${j.id}', this)" data-job='${jobData}'>Start Inspection</button>` : ''}
-            ${status === 'in-progress' ? `<a class="job-btn job-btn-primary" href="inspector-app/index.html?ref=${j.reference}&make=${encodeURIComponent(j.vehicle_make||'')}&model=${encodeURIComponent(j.vehicle_model||'')}&year=${j.vehicle_year||''}" target="_blank">Open Checklist</a>` : ''}
+            ${status === 'assigned' ? `<button class="job-btn job-btn-primary" onclick="startInspection('${j.id}', '${encodeURIComponent(checklistUrl)}')">Start Inspection</button>` : ''}
+            ${status === 'in-progress' ? `<a class="job-btn job-btn-primary" href="${checklistUrl}" target="_blank">Open Checklist</a>` : ''}
             ${status === 'in-progress' ? `<button class="job-btn job-btn-complete" onclick="completeInspection('${j.id}')">Mark Completed</button>` : ''}
         </div>
     </div>`;
@@ -567,15 +583,11 @@ function renderEarnings() {
     }).join('');
 }
 
-async function startInspection(id, btn) {
+async function startInspection(id, encodedUrl) {
     const { error } = await supabase.from('bookings').update({ status: 'in-progress' }).eq('id', id);
     if (error) { showToast(error.message, 'error'); return; }
     showToast('Inspection started');
-    const job = JSON.parse(btn.dataset.job);
-    const params = new URLSearchParams({
-        ref: job.ref || '', make: job.make || '', model: job.model || '', year: job.year || '',
-    });
-    window.open('inspector-app/index.html?' + params.toString(), '_blank');
+    window.open(decodeURIComponent(encodedUrl), '_blank');
     loadJobs();
 }
 

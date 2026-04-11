@@ -119,14 +119,15 @@
 
     // --- Booking Screen ---
     $('startChecklistBtn').addEventListener('click', () => {
+        // Preserve any pre-filled URL params (location, client notes, etc) on state.booking
+        const existingBooking = state.booking || {};
         // Collect booking data
         state.booking = {
+            ...existingBooking,
             refNumber: $('refNumber').value,
             inspectorName: $('inspectorName').value,
             inspectorRegion: $('inspectorRegion').value,
             services: Array.from(document.querySelectorAll('[name="svc"]:checked')).map(c => c.value),
-            clientName: $('clientName').value,
-            clientPhone: $('clientPhone').value,
             vMake: $('vMake').value,
             vModel: $('vModel').value,
             vYear: $('vYear').value,
@@ -147,26 +148,30 @@
         autoSave();
     });
 
+    // Safely set value on an element if it exists
+    function setVal(id, value) {
+        const el = $(id);
+        if (el) el.value = value || '';
+    }
+
     // Populate booking fields from state
     function populateBookingFields() {
         const b = state.booking;
         if (!b) return;
-        $('refNumber').value = b.refNumber || '';
-        $('inspectorName').value = b.inspectorName || '';
-        $('inspectorRegion').value = b.inspectorRegion || '';
-        $('clientName').value = b.clientName || '';
-        $('clientPhone').value = b.clientPhone || '';
-        $('vMake').value = b.vMake || '';
-        $('vModel').value = b.vModel || '';
-        $('vYear').value = b.vYear || '';
-        $('vColour').value = b.vColour || '';
-        $('vReg').value = b.vReg || '';
-        $('vOdo').value = b.vOdo || '';
-        $('vVin').value = b.vVin || '';
-        $('vFuel').value = b.vFuel || '';
-        $('vTrans').value = b.vTrans || '';
-        $('sellerName').value = b.sellerName || '';
-        $('sellerPhone').value = b.sellerPhone || '';
+        setVal('refNumber', b.refNumber);
+        setVal('inspectorName', b.inspectorName);
+        setVal('inspectorRegion', b.inspectorRegion);
+        setVal('vMake', b.vMake);
+        setVal('vModel', b.vModel);
+        setVal('vYear', b.vYear);
+        setVal('vColour', b.vColour);
+        setVal('vReg', b.vReg);
+        setVal('vOdo', b.vOdo);
+        setVal('vVin', b.vVin);
+        setVal('vFuel', b.vFuel);
+        setVal('vTrans', b.vTrans);
+        setVal('sellerName', b.sellerName);
+        setVal('sellerPhone', b.sellerPhone);
 
         // Services checkboxes
         document.querySelectorAll('[name="svc"]').forEach(cb => {
@@ -638,7 +643,7 @@
         <dl class="info-grid">
             <dt>Inspector</dt><dd>${b.inspectorName || ''}</dd>
             <dt>Region</dt><dd>${b.inspectorRegion || ''}</dd>
-            <dt>Client</dt><dd>${b.clientName || ''}</dd>
+            <dt>Vehicle Location</dt><dd>${b.sellerLocation || ''}</dd>
         </dl>`;
 
         // Score + Recommendation
@@ -759,7 +764,9 @@
             `— ViewNam Inspector: ${b.inspectorName || ''}`,
         ].filter(Boolean).join('\n');
 
-        const url = `https://wa.me/${(b.clientPhone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
+        // Send to ViewNam admin — they forward to client (protects client privacy)
+        const ADMIN_WA = '264813214813';
+        const url = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
     });
 
@@ -870,12 +877,20 @@
     // --- Auto-fill from URL params (when opened from inspector dashboard) ---
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('ref')) {
+        const servicesParam = urlParams.get('services') || '';
+        const servicesList = servicesParam ? servicesParam.split(',').filter(Boolean) : [];
+
         // Pre-fill and go straight to booking screen
         state.booking = {
             refNumber: urlParams.get('ref') || '',
             vMake: urlParams.get('make') || '',
             vModel: urlParams.get('model') || '',
             vYear: urlParams.get('year') || '',
+            sellerLocation: urlParams.get('location') || '',
+            sellerPhone: urlParams.get('seller') || '',
+            askingPrice: urlParams.get('asking') || '',
+            clientNotes: urlParams.get('notes') || '',
+            services: servicesList,
         };
         state.startedAt = new Date().toISOString();
 
@@ -883,6 +898,45 @@
         $('vMake').value = state.booking.vMake;
         $('vModel').value = state.booking.vModel;
         $('vYear').value = state.booking.vYear;
+
+        // Seller (inspector needs this to contact seller)
+        if ($('sellerName') && state.booking.sellerLocation) {
+            // Location in seller name field as descriptor
+        }
+        if ($('sellerPhone')) $('sellerPhone').value = state.booking.sellerPhone;
+
+        // Pre-select services based on what client booked
+        document.querySelectorAll('input[name="svc"]').forEach(cb => {
+            cb.checked = servicesList.includes(cb.value);
+        });
+
+        // Show client notes if any (as a read-only notice)
+        if (state.booking.clientNotes) {
+            const notesEl = document.createElement('div');
+            notesEl.className = 'form-card';
+            notesEl.style.cssText = 'background:#FEF5E7;border-left:3px solid var(--secondary);padding:14px 16px;';
+            notesEl.innerHTML = `
+                <h3 class="form-card-title" style="color:#A77512">Client Notes</h3>
+                <p style="font-size:0.9rem;color:var(--text);line-height:1.5">${state.booking.clientNotes}</p>
+            `;
+            const bookingScreen = $('screenBooking').querySelector('.screen-content');
+            bookingScreen.insertBefore(notesEl, bookingScreen.children[2]);
+        }
+
+        // Show location as info note (inspector needs to know where to go)
+        if (state.booking.sellerLocation || state.booking.askingPrice) {
+            const locEl = document.createElement('div');
+            locEl.className = 'form-card';
+            locEl.style.cssText = 'background:#E8F5E9;border-left:3px solid var(--primary);padding:14px 16px;';
+            locEl.innerHTML = `
+                <h3 class="form-card-title" style="color:var(--primary)">Job Info</h3>
+                ${state.booking.sellerLocation ? `<p style="font-size:0.9rem;margin-bottom:4px"><strong>Location:</strong> ${state.booking.sellerLocation}</p>` : ''}
+                ${state.booking.sellerPhone ? `<p style="font-size:0.9rem;margin-bottom:4px"><strong>Seller contact:</strong> ${state.booking.sellerPhone}</p>` : ''}
+                ${state.booking.askingPrice ? `<p style="font-size:0.9rem"><strong>Asking price:</strong> N$${state.booking.askingPrice}</p>` : ''}
+            `;
+            const bookingScreen = $('screenBooking').querySelector('.screen-content');
+            bookingScreen.insertBefore(locEl, bookingScreen.children[2]);
+        }
 
         showScreen('screenBooking');
     }

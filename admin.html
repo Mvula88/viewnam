@@ -1130,12 +1130,25 @@ function renderBookings() {
         const status = b.status || 'new';
 
         const paidByClient = b.payment_status === 'paid';
-        const feeLabel = b.commission_rate ? `Your fee (${b.commission_rate}%)` : 'Your fee (fixed)';
+        // If price is set but fees not yet calculated (no inspector), show preview with default commission
+        let feeLabel, shownPlatformFee, shownInspectorPayout, pendingAssignment = false;
+        if (b.price && (b.platform_fee == null || b.inspector_payout == null)) {
+            pendingAssignment = true;
+            feeLabel = `Your fee (${defaultCommission}% default)`;
+            shownPlatformFee = (b.price * defaultCommission) / 100;
+            shownInspectorPayout = b.price - shownPlatformFee;
+        } else {
+            feeLabel = b.commission_rate ? `Your fee (${b.commission_rate}%)` : 'Your fee (fixed)';
+            shownPlatformFee = b.platform_fee;
+            shownInspectorPayout = b.inspector_payout;
+        }
+
         const moneySection = b.price ? `
             <div class="bc-money">
                 <div class="bc-money-row total"><span class="lbl">Total</span><span class="val">N$${fmt(b.price)}</span></div>
-                <div class="bc-money-row fee"><span class="lbl">${feeLabel}</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
-                <div class="bc-money-row payout"><span class="lbl">Inspector</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
+                <div class="bc-money-row fee"><span class="lbl">${feeLabel}</span><span class="val">N$${fmt(shownPlatformFee)}</span></div>
+                <div class="bc-money-row payout"><span class="lbl">Inspector</span><span class="val">N$${fmt(shownInspectorPayout)}</span></div>
+                ${pendingAssignment ? '<div style="margin-top:6px;font-size:0.72rem;color:var(--text-muted);font-style:italic">Finalized on inspector assignment</div>' : ''}
                 <div class="bc-money-status">
                     ${paidByClient ? '<span class="pay-yes">✓ Client paid</span>' : '<span class="pay-no">⚠ Awaiting payment</span>'}
                     ${b.paid_to_inspector ? '<span class="pay-yes">✓ Inspector paid</span>' : ''}

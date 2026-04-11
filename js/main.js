@@ -249,6 +249,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Auto-calculate booking price from selected services
+    function calculateBookingPrice(services) {
+        if (!services || !services.length) return 0;
+
+        // Full Package is all-inclusive
+        if (services.includes('full-package')) return 1800;
+
+        const prices = {
+            'visual-inspection': 750,
+            'mechanical-diagnostics': 700,
+        };
+
+        const hasOtherOnsiteService = services.some(s => s === 'visual-inspection' || s === 'mechanical-diagnostics');
+        let total = 0;
+
+        services.forEach(s => {
+            if (s === 'test-drive') {
+                // N$300 if booked with another on-site service, else N$650
+                total += hasOtherOnsiteService ? 300 : 650;
+            } else if (prices[s]) {
+                total += prices[s];
+            }
+        });
+
+        return total;
+    }
+
     // --- Save booking to Supabase + localStorage fallback ---
     async function saveBooking(data) {
         // Always save to localStorage as backup
@@ -259,6 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             console.error('localStorage save failed:', e);
         }
+
+        // Auto-calculate price from selected services
+        const calculatedPrice = calculateBookingPrice(data.services || []);
 
         // Save to Supabase if available
         if (typeof supabase !== 'undefined' && supabase) {
@@ -279,6 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     seller_contact: data.sellerContact || null,
                     services: data.services || [],
                     notes: data.notes || null,
+                    price: calculatedPrice > 0 ? calculatedPrice : null,
+                    payment_status: 'pending',
                 });
                 if (error) {
                     console.error('Supabase insert error:', error);
