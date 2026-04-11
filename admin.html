@@ -694,6 +694,21 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
     </div>
 </div>
 
+<!-- Inspection Report Viewer Modal -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal" style="max-width:720px;max-height:90vh;overflow:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h2 style="margin:0">Inspection Report</h2>
+            <button type="button" class="btn-cancel" onclick="closeReportModal()" style="padding:4px 10px">✕</button>
+        </div>
+        <div id="reportModalBody"></div>
+        <div class="modal-actions" style="margin-top:16px">
+            <button type="button" class="btn btn-primary" onclick="printReport()">Print / Save PDF</button>
+            <button type="button" class="btn btn-success" onclick="forwardReportWhatsApp()">Forward on WhatsApp</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
 <script>
@@ -743,6 +758,7 @@ const serviceLabels = {
 
 let allBookings = [];
 let allInspectors = [];
+let allReports = []; // inspection reports submitted by inspectors, keyed by booking_id
 let defaultCommission = 15;
 
 // --- Tab switching ---
@@ -1084,6 +1100,12 @@ async function loadBookings() {
     if (error) { console.error(error); return; }
     allBookings = data || [];
 
+    // Load inspection reports in parallel so the "View Report" button can render correctly
+    try {
+        const { data: reportData } = await supabase.from('reports').select('*').order('submitted_at', { ascending: false });
+        allReports = reportData || [];
+    } catch (e) { /* reports table may not exist yet — ignore */ }
+
     // Populate inspector filter
     const filter = document.getElementById('filterInspectorFilter');
     filter.innerHTML = '<option value="">All Inspectors</option>' +
@@ -1212,6 +1234,7 @@ function renderBookings() {
                 <div class="bc-footer-actions">
                     ${b.price ? `<button class="btn btn-sm btn-primary" onclick="openPriceModal('${b.id}')">Edit Price</button>` : ''}
                     ${b.price && !paidByClient ? `<button class="btn btn-sm btn-success" onclick="markClientPaid('${b.id}')">Mark Client Paid</button>` : ''}
+                    ${allReports.some(r => r.booking_id === b.id) ? `<button class="btn btn-sm btn-success" onclick="openReportModal('${b.id}')">View Report</button>` : ''}
                     ${status === 'completed' ? `<button class="btn btn-sm btn-primary" onclick="copyReviewLink('${b.reference}')">Copy Review Link</button>` : ''}
                     <button class="btn btn-danger btn-sm" onclick="deleteBooking('${b.id}')">Delete</button>
                 </div>
@@ -1316,6 +1339,118 @@ async function deleteBooking(id) {
     const { error } = await supabase.from('bookings').delete().eq('id', id);
     if (error) showToast(error.message, 'error');
     else { showToast('Booking deleted'); loadBookings(); }
+}
+
+// --- Inspection Report modal ---
+let currentReportBookingId = null;
+
+function openReportModal(bookingId) {
+    currentReportBookingId = bookingId;
+    const booking = allBookings.find(b => b.id === bookingId);
+    const report = allReports.find(r => r.booking_id === bookingId);
+    if (!booking || !report) { showToast('Report not found', 'error'); return; }
+
+    const recLabels = { 'recommended': 'Recommended', 'caution': 'Proceed with Caution', 'not-recommended': 'Not Recommended' };
+    const recColors = { 'recommended': '#27AE60', 'caution': '#D4A843', 'not-recommended': '#E74C3C' };
+    const s = report.stats || {};
+    const fd = report.full_data || {};
+    const insName = (fd.booking && fd.booking.inspectorName) || '—';
+    const insRegion = (fd.booking && fd.booking.inspectorRegion) || '';
+
+    document.getElementById('reportModalBody').innerHTML = `
+        <div style="background:var(--bg);padding:14px;border-radius:8px;margin-bottom:14px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.88rem">
+                <div><strong>Reference:</strong> ${booking.reference || '—'}</div>
+                <div><strong>Submitted:</strong> ${new Date(report.submitted_at).toLocaleString()}</div>
+                <div><strong>Vehicle:</strong> ${booking.vehicle_year || ''} ${booking.vehicle_make || ''} ${booking.vehicle_model || ''}</div>
+                <div><strong>Inspector:</strong> ${insName}${insRegion ? ' · ' + insRegion : ''}</div>
+                <div><strong>Client:</strong> ${booking.client_name || '—'}</div>
+                <div><strong>Location:</strong> ${booking.seller_location || '—'}</div>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:14px">
+            <div style="flex:1;background:var(--bg);padding:14px;border-radius:8px;text-align:center">
+                <div style="font-size:0.75rem;color:var(--text-light);text-transform:uppercase">Overall Score</div>
+                <div style="font-size:2rem;font-weight:700;color:var(--primary)">${report.score ?? '—'}/10</div>
+            </div>
+            <div style="flex:2;background:${recColors[report.recommendation] || '#888'};padding:14px;border-radius:8px;color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center">
+                <div style="font-size:0.75rem;opacity:0.85;text-transform:uppercase">Recommendation</div>
+                <div style="font-size:1.2rem;font-weight:700">${recLabels[report.recommendation] || '—'}</div>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+            <div style="background:#E8F8EE;padding:10px;border-radius:6px;text-align:center"><div style="font-size:1.4rem;font-weight:700;color:#27AE60">${s.good || 0}</div><div style="font-size:0.7rem;color:var(--text-light)">GOOD</div></div>
+            <div style="background:#FEF5E7;padding:10px;border-radius:6px;text-align:center"><div style="font-size:1.4rem;font-weight:700;color:#D4A843">${s.fair || 0}</div><div style="font-size:0.7rem;color:var(--text-light)">FAIR</div></div>
+            <div style="background:#FDECEC;padding:10px;border-radius:6px;text-align:center"><div style="font-size:1.4rem;font-weight:700;color:#E74C3C">${s.poor || 0}</div><div style="font-size:0.7rem;color:var(--text-light)">POOR</div></div>
+            <div style="background:#ECEFF1;padding:10px;border-radius:6px;text-align:center"><div style="font-size:1.4rem;font-weight:700;color:#7F8C8D">${s.na || 0}</div><div style="font-size:0.7rem;color:var(--text-light)">N/A</div></div>
+        </div>
+
+        ${(s.poor_items && s.poor_items.length) ? `
+        <div style="background:#FDECEC;padding:12px;border-radius:8px;margin-bottom:12px;border-left:3px solid #E74C3C">
+            <strong style="color:#E74C3C;font-size:0.85rem">Issues Found:</strong>
+            <ul style="margin:6px 0 0 18px;font-size:0.85rem">${s.poor_items.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>` : ''}
+
+        ${report.key_issues ? `<div style="margin-bottom:12px"><h4 style="margin:0 0 4px">Key Issues</h4><p style="font-size:0.88rem;white-space:pre-wrap;color:var(--text-light)">${report.key_issues}</p></div>` : ''}
+        ${report.repair_costs ? `<div style="margin-bottom:12px"><h4 style="margin:0 0 4px">Estimated Repair Costs</h4><p style="font-size:0.88rem;white-space:pre-wrap;color:var(--text-light)">${report.repair_costs}</p></div>` : ''}
+        ${report.buyer_advice ? `<div style="margin-bottom:12px"><h4 style="margin:0 0 4px">Inspector's Advice</h4><p style="font-size:0.88rem;white-space:pre-wrap;color:var(--text-light)">${report.buyer_advice}</p></div>` : ''}
+    `;
+
+    document.getElementById('reportModal').classList.add('open');
+}
+
+function closeReportModal() {
+    document.getElementById('reportModal').classList.remove('open');
+    currentReportBookingId = null;
+}
+
+function printReport() {
+    const body = document.getElementById('reportModalBody').innerHTML;
+    const booking = allBookings.find(b => b.id === currentReportBookingId);
+    const ref = booking ? booking.reference : 'report';
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>ViewNam Report ${ref}</title>
+        <style>body{font-family:Inter,Arial,sans-serif;padding:24px;max-width:780px;margin:0 auto;color:#1A1A2E}
+        h1{color:#0B3D2E}h4{margin:0 0 4px}
+        :root{--bg:#F5F6F7;--text-light:#7F8C8D;--primary:#0B3D2E}</style>
+        </head><body><h1>ViewNam Inspection Report</h1>${body}
+        <p style="text-align:center;color:#95A5A6;font-size:0.75rem;margin-top:24px">&copy; ${new Date().getFullYear()} ViewNam. Confidential.</p>
+        <script>window.onload=()=>window.print();<\/script></body></html>`);
+    w.document.close();
+}
+
+function forwardReportWhatsApp() {
+    const booking = allBookings.find(b => b.id === currentReportBookingId);
+    const report = allReports.find(r => r.booking_id === currentReportBookingId);
+    if (!booking || !report) return;
+
+    const recLabels = { 'recommended': 'RECOMMENDED', 'caution': 'PROCEED WITH CAUTION', 'not-recommended': 'NOT RECOMMENDED' };
+    const s = report.stats || {};
+    const msg = [
+        `*ViewNam Inspection Report*`,
+        `Ref: ${booking.reference || 'N/A'}`,
+        ``,
+        `*Vehicle:* ${booking.vehicle_year || ''} ${booking.vehicle_make || ''} ${booking.vehicle_model || ''}`,
+        ``,
+        `*Score:* ${report.score ?? '—'} / 10`,
+        `*Recommendation:* ${recLabels[report.recommendation] || 'N/A'}`,
+        ``,
+        `*Results:* ${s.good || 0} Good | ${s.fair || 0} Fair | ${s.poor || 0} Poor`,
+        (s.poor_items && s.poor_items.length) ? `\n*Issues Found:*\n${s.poor_items.map(p => '  - ' + p).join('\n')}` : '',
+        report.key_issues ? `\n*Key Issues:*\n${report.key_issues}` : '',
+        report.repair_costs ? `\n*Est. Repair Costs:*\n${report.repair_costs}` : '',
+        report.buyer_advice ? `\n*Inspector's Advice:*\n${report.buyer_advice}` : '',
+        ``,
+        `— ViewNam`,
+    ].filter(Boolean).join('\n');
+
+    const phone = (booking.client_phone || '').replace(/[^0-9]/g, '');
+    const url = phone
+        ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
+        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
 }
 
 // --- Price modal ---

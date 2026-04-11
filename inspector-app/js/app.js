@@ -180,8 +180,22 @@
     }
 
     // --- Checklist Rendering ---
+    // Maps booking service values (from landing page/admin) to checklist section service keys
+    const SERVICE_MAP = {
+        'full-package': 'full',
+        'visual-inspection': 'visual',
+        'mechanical-diagnostics': 'mechanical',
+        'test-drive': 'testdrive',
+        // legacy short codes (back-compat)
+        'full': 'full',
+        'visual': 'visual',
+        'mechanical': 'mechanical',
+        'testdrive': 'testdrive',
+    };
+
     function getActiveSections() {
-        const svcs = state.booking.services || ['full'];
+        const raw = state.booking.services || ['full'];
+        const svcs = raw.map(s => SERVICE_MAP[s] || s);
         if (svcs.includes('full')) return CHECKLIST_SECTIONS;
         return CHECKLIST_SECTIONS.filter(s => s.service.some(svc => svcs.includes(svc)));
     }
@@ -719,55 +733,108 @@
         return div.innerHTML;
     }
 
-    // --- WhatsApp Share ---
-    $('shareWhatsAppBtn').addEventListener('click', () => {
+    // --- Submit report to ViewNam admin dashboard (Supabase) ---
+    $('shareWhatsAppBtn').addEventListener('click', async () => {
         saveSummary();
         autoSave();
 
+        const btn = $('shareWhatsAppBtn');
+        const originalHTML = btn.innerHTML;
+
+        if (typeof supabase === 'undefined' || !supabase) {
+            showToast('Cannot send — no internet connection. Try again later.');
+            return;
+        }
+
         const b = state.booking;
-        const recLabels = { 'recommended': 'RECOMMENDED', 'caution': 'PROCEED WITH CAUTION', 'not-recommended': 'NOT RECOMMENDED' };
+        if (!b.refNumber) {
+            showToast('Missing booking reference — cannot submit.');
+            return;
+        }
 
         // Count ratings
         const sections = getActiveSections();
-        let good = 0, fair = 0, poor = 0;
+        let good = 0, fair = 0, poor = 0, na = 0;
         const poorItems = [];
         sections.forEach(s => s.groups.forEach(g => {
             g.items.forEach(item => {
                 const r = state.ratings[item.id];
                 if (r === 'good') good++;
                 else if (r === 'fair') fair++;
-                else if (r === 'poor') {
-                    poor++;
-                    poorItems.push(item.name);
-                }
+                else if (r === 'poor') { poor++; poorItems.push(item.name); }
+                else if (r === 'na') na++;
             });
         }));
 
-        const msg = [
-            `*ViewNam Inspection Report*`,
-            `Ref: ${b.refNumber || 'N/A'}`,
-            ``,
-            `*Vehicle:* ${b.vYear || ''} ${b.vMake || ''} ${b.vModel || ''}`,
-            `*Reg:* ${b.vReg || 'N/A'}`,
-            `*Odometer:* ${b.vOdo || 'N/A'} km`,
-            ``,
-            `*Score:* ${state.summary.score || '—'} / 10`,
-            `*Recommendation:* ${recLabels[state.summary.recommendation] || 'N/A'}`,
-            ``,
-            `*Results:* ${good} Good | ${fair} Fair | ${poor} Poor`,
-            poor > 0 ? `\n*Issues Found:*\n${poorItems.map(p => `  - ${p}`).join('\n')}` : '',
-            state.summary.keyIssues ? `\n*Key Issues:*\n${state.summary.keyIssues}` : '',
-            state.summary.repairCosts ? `\n*Est. Repair Costs:*\n${state.summary.repairCosts}` : '',
-            state.summary.buyerAdvice ? `\n*Inspector's Advice:*\n${state.summary.buyerAdvice}` : '',
-            ``,
-            `_Full report with photos available on request._`,
-            `— ViewNam Inspector: ${b.inspectorName || ''}`,
-        ].filter(Boolean).join('\n');
+        btn.disabled = true;
+        btn.innerHTML = 'Sending...';
+        btn.style.opacity = '0.7';
 
-        // Send to ViewNam admin — they forward to client (protects client privacy)
-        const ADMIN_WA = '264813214813';
-        const url = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`;
-        window.open(url, '_blank');
+        try {
+            // Find booking by reference to get its ID
+            const { data: bookingRow, error: lookupErr } = await supabase
+                .from('bookings')
+                .select('id')
+                .eq('reference', b.refNumber)
+                .maybeSingle();
+
+            if (lookupErr || !bookingRow) {
+                console.error('Booking lookup failed:', lookupErr);
+                showToast('Booking not found on server. Report not sent.');
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                btn.style.opacity = '';
+                return;
+            }
+
+            const reportPayload = {
+                booking_id: bookingRow.id,
+                score: state.summary.score ? Number(state.summary.score) : null,
+                recommendation: state.summary.recommendation || null,
+                key_issues: state.summary.keyIssues || null,
+                repair_costs: state.summary.repairCosts || null,
+                buyer_advice: state.summary.buyerAdvice || null,
+                stats: { good, fair, poor, na, poor_items: poorItems },
+                full_data: {
+                    booking: b,
+                    ratings: state.ratings,
+                    notes: state.notes,
+                    sectionNotes: state.sectionNotes,
+                    summary: state.summary,
+                    // photos excluded from full_data to avoid oversized JSON; they stay in localStorage
+                },
+            };
+
+            // Upsert on booking_id so re-submits overwrite
+            const { error: reportErr } = await supabase
+                .from('reports')
+                .upsert(reportPayload, { onConflict: 'booking_id' });
+
+            if (reportErr) {
+                console.error('Report submit failed:', reportErr);
+                showToast('Could not send report. Saved locally — try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                btn.style.opacity = '';
+                return;
+            }
+
+            // Mark booking completed
+            await supabase
+                .from('bookings')
+                .update({ status: 'completed', completed_at: new Date().toISOString() })
+                .eq('id', bookingRow.id);
+
+            btn.innerHTML = 'Sent to ViewNam';
+            btn.style.background = '#27AE60';
+            showToast('Report sent to ViewNam admin');
+        } catch (e) {
+            console.error('Report send error:', e);
+            showToast('Could not send report. Try again.');
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+            btn.style.opacity = '';
+        }
     });
 
     // --- Save / Load (localStorage) ---
@@ -905,9 +972,15 @@
         }
         if ($('sellerPhone')) $('sellerPhone').value = state.booking.sellerPhone;
 
-        // Pre-select services based on what client booked
+        // Pre-select services based on what client booked — and lock them (inspector cannot change)
         document.querySelectorAll('input[name="svc"]').forEach(cb => {
             cb.checked = servicesList.includes(cb.value);
+            cb.disabled = true;
+            const chip = cb.closest('.chip');
+            if (chip) {
+                chip.style.pointerEvents = 'none';
+                chip.style.opacity = cb.checked ? '1' : '0.45';
+            }
         });
 
         // Show client notes if any (as a read-only notice)
