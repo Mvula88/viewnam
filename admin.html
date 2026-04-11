@@ -604,21 +604,60 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
                 <label>Experience</label>
                 <textarea id="ai_experience" rows="2" placeholder="Mechanic, spare parts, auction buyer, etc."></textarea>
             </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Custom Commission Rate (%)</label>
-                    <input type="number" id="ai_commission" min="0" max="100" step="0.5" placeholder="Leave empty to use default">
+            <div class="field">
+                <label>Status</label>
+                <select id="ai_status">
+                    <option value="active">Active</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+
+            <div class="field" style="padding:16px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+                <label style="margin-bottom:10px">Payout Method</label>
+                <div style="display:flex;gap:8px;margin-bottom:14px">
+                    <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;background:#fff;font-size:0.85rem;font-weight:500">
+                        <input type="radio" name="ai_payout_type" value="percentage" checked onchange="togglePayoutType()">
+                        <span>Commission %</span>
+                    </label>
+                    <label style="flex:1;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;background:#fff;font-size:0.85rem;font-weight:500">
+                        <input type="radio" name="ai_payout_type" value="fixed" onchange="togglePayoutType()">
+                        <span>Fixed Amounts</span>
+                    </label>
                 </div>
-                <div class="field">
-                    <label>Status</label>
-                    <select id="ai_status">
-                        <option value="active">Active</option>
-                        <option value="approved">Approved</option>
-                        <option value="pending">Pending</option>
-                        <option value="suspended">Suspended</option>
-                    </select>
+
+                <div id="percentageBlock">
+                    <label style="font-size:0.8rem">Commission Rate (%)</label>
+                    <input type="number" id="ai_commission" min="0" max="100" step="0.5" placeholder="Leave empty to use default">
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">Inspector gets (price × [100 - this%]). You keep the rest.</p>
+                </div>
+
+                <div id="fixedBlock" style="display:none">
+                    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:10px">Set exact N$ amount the inspector gets per service (regardless of booking price):</p>
+                    <div class="field-row">
+                        <div class="field" style="margin-bottom:8px">
+                            <label style="font-size:0.75rem">Full Package (N$)</label>
+                            <input type="number" id="ai_fixed_full" min="0" step="50" placeholder="e.g. 1400">
+                        </div>
+                        <div class="field" style="margin-bottom:8px">
+                            <label style="font-size:0.75rem">Visual Inspection (N$)</label>
+                            <input type="number" id="ai_fixed_visual" min="0" step="50" placeholder="e.g. 600">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field" style="margin-bottom:0">
+                            <label style="font-size:0.75rem">Mechanical + Diagnostics (N$)</label>
+                            <input type="number" id="ai_fixed_mech" min="0" step="50" placeholder="e.g. 550">
+                        </div>
+                        <div class="field" style="margin-bottom:0">
+                            <label style="font-size:0.75rem">Test Drive (N$)</label>
+                            <input type="number" id="ai_fixed_testdrive" min="0" step="50" placeholder="e.g. 500">
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="field">
                 <label>Login PIN (4-6 digits)</label>
                 <input type="text" id="ai_pin" placeholder="e.g. 1234" maxlength="6">
@@ -727,6 +766,13 @@ function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
 }
 
+// Toggle payout type (percentage vs fixed)
+function togglePayoutType() {
+    const type = document.querySelector('input[name="ai_payout_type"]:checked').value;
+    document.getElementById('percentageBlock').style.display = type === 'percentage' ? 'block' : 'none';
+    document.getElementById('fixedBlock').style.display = type === 'fixed' ? 'block' : 'none';
+}
+
 // Toast notification
 let toastTimer = null;
 function showToast(message, type = 'success') {
@@ -780,6 +826,45 @@ function getInspectorRate(inspectorId) {
     return defaultCommission;
 }
 
+function getInspector(inspectorId) {
+    return allInspectors.find(i => i.id === inspectorId);
+}
+
+// Calculate payout based on inspector's payout method (percentage or fixed)
+function computePayout(price, inspectorId, services) {
+    price = parseFloat(price) || 0;
+    const inspector = getInspector(inspectorId);
+    const usesFixed = inspector && inspector.payout_type === 'fixed' && inspector.payout_fixed;
+
+    if (usesFixed) {
+        // Sum fixed amounts for booked services
+        let totalPayout = 0;
+        (services || []).forEach(s => {
+            const amt = parseFloat(inspector.payout_fixed[s]);
+            if (!isNaN(amt)) totalPayout += amt;
+        });
+        // Cap payout at price (never pay more than client paid)
+        if (totalPayout > price) totalPayout = price;
+        const platformFee = price - totalPayout;
+        return {
+            payout_type: 'fixed',
+            commission_rate: null,
+            platform_fee: Math.round(platformFee * 100) / 100,
+            inspector_payout: Math.round(totalPayout * 100) / 100
+        };
+    } else {
+        const rate = getInspectorRate(inspectorId);
+        const fee = (price * rate) / 100;
+        return {
+            payout_type: 'percentage',
+            commission_rate: rate,
+            platform_fee: Math.round(fee * 100) / 100,
+            inspector_payout: Math.round((price - fee) * 100) / 100
+        };
+    }
+}
+
+// Legacy function kept for backward compatibility in places that still use it
 function calculateFees(price, rate) {
     const fee = (price * rate) / 100;
     return {
@@ -1045,10 +1130,11 @@ function renderBookings() {
         const status = b.status || 'new';
 
         const paidByClient = b.payment_status === 'paid';
+        const feeLabel = b.commission_rate ? `Your fee (${b.commission_rate}%)` : 'Your fee (fixed)';
         const moneySection = b.price ? `
             <div class="bc-money">
                 <div class="bc-money-row total"><span class="lbl">Total</span><span class="val">N$${fmt(b.price)}</span></div>
-                <div class="bc-money-row fee"><span class="lbl">Your fee (${b.commission_rate || defaultCommission}%)</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
+                <div class="bc-money-row fee"><span class="lbl">${feeLabel}</span><span class="val">N$${fmt(b.platform_fee)}</span></div>
                 <div class="bc-money-row payout"><span class="lbl">Inspector</span><span class="val">N$${fmt(b.inspector_payout)}</span></div>
                 <div class="bc-money-status">
                     ${paidByClient ? '<span class="pay-yes">✓ Client paid</span>' : '<span class="pay-no">⚠ Awaiting payment</span>'}
@@ -1145,11 +1231,10 @@ async function assignInspector(bookingId, inspectorId) {
     const booking = allBookings.find(b => b.id === bookingId);
     const updates = { assigned_inspector: inspectorId, status: 'assigned' };
 
-    // Recalculate fees based on this inspector's commission
+    // Recalculate fees based on this inspector's payout method
     if (booking && booking.price) {
-        const rate = getInspectorRate(inspectorId);
-        const fees = calculateFees(parseFloat(booking.price), rate);
-        updates.commission_rate = rate;
+        const fees = computePayout(booking.price, inspectorId, booking.services || []);
+        updates.commission_rate = fees.commission_rate;
         updates.platform_fee = fees.platform_fee;
         updates.inspector_payout = fees.inspector_payout;
     }
@@ -1241,10 +1326,10 @@ function updatePricePreview() {
     }
     const bookingId = document.getElementById('pm_bookingId').value;
     const booking = allBookings.find(b => b.id === bookingId);
-    const rate = getInspectorRate(booking ? booking.assigned_inspector : null);
-    const fees = calculateFees(price, rate);
+    const fees = computePayout(price, booking ? booking.assigned_inspector : null, booking ? (booking.services || []) : []);
 
-    document.getElementById('pm_rate').textContent = rate + '%';
+    const rateLabel = fees.payout_type === 'fixed' ? 'Fixed amount' : (fees.commission_rate + '%');
+    document.getElementById('pm_rate').textContent = rateLabel;
     document.getElementById('pm_fee').textContent = 'N$' + fmt(fees.platform_fee);
     document.getElementById('pm_payout').textContent = 'N$' + fmt(fees.inspector_payout);
     document.getElementById('pm_preview').style.display = 'block';
@@ -1258,12 +1343,11 @@ async function savePrice() {
     if (!price || isNaN(price)) { showToast('Enter a valid price', 'error'); return; }
 
     const booking = allBookings.find(b => b.id === bookingId);
-    const rate = getInspectorRate(booking ? booking.assigned_inspector : null);
-    const fees = calculateFees(price, rate);
+    const fees = computePayout(price, booking ? booking.assigned_inspector : null, booking ? (booking.services || []) : []);
 
     const { error } = await supabase.from('bookings').update({
         price: price,
-        commission_rate: rate,
+        commission_rate: fees.commission_rate,
         platform_fee: fees.platform_fee,
         inspector_payout: fees.inspector_payout
     }).eq('id', bookingId);
@@ -1325,7 +1409,22 @@ function renderInspectors() {
         const completedJobs = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').length;
         const activeJobs = allBookings.filter(b => b.assigned_inspector === i.id && (b.status === 'assigned' || b.status === 'in-progress')).length;
         const totalEarned = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').reduce((s,b) => s + (parseFloat(b.inspector_payout) || 0), 0);
-        const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% custom` : `${defaultCommission}% default`;
+
+        // Build payout display
+        let payoutDisplay = '';
+        if (i.payout_type === 'fixed' && i.payout_fixed) {
+            const parts = [];
+            if (i.payout_fixed['full-package']) parts.push(`Full: N$${fmt(i.payout_fixed['full-package'])}`);
+            if (i.payout_fixed['visual-inspection']) parts.push(`Visual: N$${fmt(i.payout_fixed['visual-inspection'])}`);
+            if (i.payout_fixed['mechanical-diagnostics']) parts.push(`Mech: N$${fmt(i.payout_fixed['mechanical-diagnostics'])}`);
+            if (i.payout_fixed['test-drive']) parts.push(`Drive: N$${fmt(i.payout_fixed['test-drive'])}`);
+            payoutDisplay = `<p class="muted" style="font-size:0.78rem;line-height:1.7">${parts.join(' &middot; ') || 'No amounts set'}</p>`;
+        } else {
+            const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% custom` : `${defaultCommission}% default`;
+            payoutDisplay = `<p><span class="commission-tag">${commissionDisplay}</span></p>`;
+        }
+
+        const payoutHeader = i.payout_type === 'fixed' ? 'Fixed Payouts' : 'Commission Rate';
         const initials = (i.name || '?').split(' ').map(n => n.charAt(0)).slice(0, 2).join('').toUpperCase();
 
         return `
@@ -1346,8 +1445,8 @@ function renderInspectors() {
                     <p>${i.phone}</p>
                     ${i.email ? `<p class="muted">${i.email}</p>` : ''}
                     ${phone ? `<p style="margin-top:6px"><a class="wa-link" href="https://wa.me/${phone}" target="_blank">Open WhatsApp</a></p>` : ''}
-                    <h4 style="margin-top:14px">Commission Rate</h4>
-                    <p><span class="commission-tag">${commissionDisplay}</span></p>
+                    <h4 style="margin-top:14px">${payoutHeader}</h4>
+                    ${payoutDisplay}
                     ${i.pin_hash ? `<p class="muted" style="margin-top:6px">🔒 PIN set</p>` : '<p class="muted" style="margin-top:6px;color:var(--poor)">⚠ No PIN set</p>'}
                 </div>
                 <div class="ic-col">
@@ -1406,6 +1505,8 @@ function openAddInspector() {
     document.getElementById('inspectorModalTitle').textContent = 'Add Inspector';
     document.getElementById('addInspectorForm').reset();
     document.getElementById('ai_id').value = '';
+    document.querySelector('input[name="ai_payout_type"][value="percentage"]').checked = true;
+    togglePayoutType();
     document.getElementById('addInspectorModal').classList.add('open');
 }
 
@@ -1424,6 +1525,19 @@ function editInspector(id) {
     document.getElementById('ai_status').value = i.status || 'active';
     document.getElementById('ai_pin').value = '';
     document.getElementById('ai_pin').placeholder = i.pin_hash ? 'PIN already set — leave blank to keep' : 'Set a 4-6 digit PIN';
+
+    // Set payout type
+    const payoutType = i.payout_type || 'percentage';
+    document.querySelector(`input[name="ai_payout_type"][value="${payoutType}"]`).checked = true;
+    togglePayoutType();
+
+    // Pre-fill fixed amounts if any
+    const fixed = i.payout_fixed || {};
+    document.getElementById('ai_fixed_full').value = fixed['full-package'] || '';
+    document.getElementById('ai_fixed_visual').value = fixed['visual-inspection'] || '';
+    document.getElementById('ai_fixed_mech').value = fixed['mechanical-diagnostics'] || '';
+    document.getElementById('ai_fixed_testdrive').value = fixed['test-drive'] || '';
+
     document.getElementById('addInspectorModal').classList.add('open');
 }
 
@@ -1440,6 +1554,19 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
     const id = document.getElementById('ai_id').value;
     const commissionVal = document.getElementById('ai_commission').value;
     const pinValue = document.getElementById('ai_pin').value;
+    const payoutType = document.querySelector('input[name="ai_payout_type"]:checked').value;
+
+    // Build fixed payout object from fields
+    const fixedFull = parseFloat(document.getElementById('ai_fixed_full').value);
+    const fixedVisual = parseFloat(document.getElementById('ai_fixed_visual').value);
+    const fixedMech = parseFloat(document.getElementById('ai_fixed_mech').value);
+    const fixedTestdrive = parseFloat(document.getElementById('ai_fixed_testdrive').value);
+
+    const payoutFixed = {};
+    if (!isNaN(fixedFull)) payoutFixed['full-package'] = fixedFull;
+    if (!isNaN(fixedVisual)) payoutFixed['visual-inspection'] = fixedVisual;
+    if (!isNaN(fixedMech)) payoutFixed['mechanical-diagnostics'] = fixedMech;
+    if (!isNaN(fixedTestdrive)) payoutFixed['test-drive'] = fixedTestdrive;
 
     const data = {
         name: document.getElementById('ai_name').value,
@@ -1448,8 +1575,10 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         town: document.getElementById('ai_town').value,
         region: document.getElementById('ai_region').value,
         experience: document.getElementById('ai_experience').value || null,
-        commission_rate: commissionVal !== '' ? parseFloat(commissionVal) : null,
         status: document.getElementById('ai_status').value,
+        payout_type: payoutType,
+        commission_rate: payoutType === 'percentage' && commissionVal !== '' ? parseFloat(commissionVal) : null,
+        payout_fixed: payoutType === 'fixed' && Object.keys(payoutFixed).length > 0 ? payoutFixed : null,
     };
 
     // Only update PIN if user entered a new one (hash it)
