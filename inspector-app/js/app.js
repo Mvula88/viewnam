@@ -986,11 +986,11 @@
         // Show client notes if any (as a read-only notice)
         if (state.booking.clientNotes) {
             const notesEl = document.createElement('div');
-            notesEl.className = 'form-card';
-            notesEl.style.cssText = 'background:#FEF5E7;border-left:3px solid var(--secondary);padding:14px 16px;';
+            notesEl.className = 'info-card';
+            notesEl.style.cssText = 'background:var(--secondary-light);border-left:3px solid var(--secondary);color:var(--text)';
             notesEl.innerHTML = `
-                <h3 class="form-card-title" style="color:#A77512">Client Notes</h3>
-                <p style="font-size:0.9rem;color:var(--text);line-height:1.5">${state.booking.clientNotes}</p>
+                <h3 style="color:var(--secondary-dark)">Client Notes</h3>
+                <p>${state.booking.clientNotes}</p>
             `;
             const bookingScreen = $('screenBooking').querySelector('.screen-content');
             bookingScreen.insertBefore(notesEl, bookingScreen.children[2]);
@@ -999,13 +999,13 @@
         // Show location as info note (inspector needs to know where to go)
         if (state.booking.sellerLocation || state.booking.askingPrice) {
             const locEl = document.createElement('div');
-            locEl.className = 'form-card';
-            locEl.style.cssText = 'background:#E8F5E9;border-left:3px solid var(--primary);padding:14px 16px;';
+            locEl.className = 'info-card';
+            locEl.style.cssText = 'background:var(--primary-light);border-left:3px solid var(--primary);color:var(--text)';
             locEl.innerHTML = `
-                <h3 class="form-card-title" style="color:var(--primary)">Job Info</h3>
-                ${state.booking.sellerLocation ? `<p style="font-size:0.9rem;margin-bottom:4px"><strong>Location:</strong> ${state.booking.sellerLocation}</p>` : ''}
-                ${state.booking.sellerPhone ? `<p style="font-size:0.9rem;margin-bottom:4px"><strong>Seller contact:</strong> ${state.booking.sellerPhone}</p>` : ''}
-                ${state.booking.askingPrice ? `<p style="font-size:0.9rem"><strong>Asking price:</strong> N$${state.booking.askingPrice}</p>` : ''}
+                <h3 style="color:var(--primary)">Job Info</h3>
+                ${state.booking.sellerLocation ? `<p><strong>Location:</strong> ${state.booking.sellerLocation}</p>` : ''}
+                ${state.booking.sellerPhone ? `<p><strong>Seller contact:</strong> ${state.booking.sellerPhone}</p>` : ''}
+                ${state.booking.askingPrice ? `<p><strong>Asking price:</strong> N$${state.booking.askingPrice}</p>` : ''}
             `;
             const bookingScreen = $('screenBooking').querySelector('.screen-content');
             bookingScreen.insertBefore(locEl, bookingScreen.children[2]);

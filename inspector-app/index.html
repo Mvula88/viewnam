@@ -9,6 +9,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0B3D2E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -21,7 +24,7 @@
                 <button class="back-btn" id="backBtn" style="display:none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
-                <img src="../images/ViewNam logo.png" alt="ViewNam" style="height:32px;filter:brightness(0) invert(1);">
+                <img src="../images/ViewNam logo.png" alt="ViewNam" style="height:30px;filter:brightness(0) invert(1);">
             </div>
             <div class="topbar-right">
                 <div class="progress-pill" id="progressPill">
@@ -37,9 +40,9 @@
         <div class="screen active" id="screenStart">
             <div class="screen-content">
                 <div class="start-hero">
-                    <div class="start-logo"><img src="../images/ViewNam logo.png" alt="ViewNam" style="height:48px;"></div>
+                    <div class="start-logo"><img src="../images/ViewNam logo.png" alt="ViewNam" style="height:52px;"></div>
                     <h1>Vehicle Inspection</h1>
-                    <p>Digital checklist for field inspectors</p>
+                    <p>Professional digital checklist for field inspectors</p>
                 </div>
 
                 <!-- Saved Inspections -->
@@ -65,7 +68,7 @@
                     <h3 class="form-card-title">Inspection Info</h3>
                     <div class="field">
                         <label>Reference Number</label>
-                        <input type="text" id="refNumber" placeholder="e.g. VN-ABC123" readonly style="background:#f5f5f5">
+                        <input type="text" id="refNumber" placeholder="e.g. VN-ABC123" readonly>
                     </div>
                     <div class="field">
                         <label>Inspector Name</label>
@@ -83,7 +86,7 @@
                             <label class="chip"><input type="checkbox" name="svc" value="mechanical-diagnostics"> Mechanical + Diagnostics</label>
                             <label class="chip"><input type="checkbox" name="svc" value="test-drive"> Test Drive</label>
                         </div>
-                        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">Pre-selected based on what the client booked</p>
+                        <p style="font-size:0.76rem;color:var(--text-muted);margin-top:10px;font-style:italic">Pre-selected based on what the client booked — cannot be changed</p>
                     </div>
                 </div>
 
