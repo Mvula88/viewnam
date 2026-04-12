@@ -103,9 +103,19 @@
     padding-left: 20px;
     border-left: 1px solid rgba(212,168,67,0.25);
   }
-  .right img {
-    width: 160px;
-    filter: brightness(0) invert(1);
+  .logo-tile {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-tile img {
+    width: 150px;
+    height: auto;
+    display: block;
   }
   .badge {
     display: inline-flex;
@@ -173,7 +183,9 @@
       <p class="sub">A ViewNam inspector visits the seller, runs a full report, and tells you the truth — so you never buy blind again.</p>
     </div>
     <div class="right">
-      <img src="../images/ViewNam logo.png" alt="ViewNam">
+      <div class="logo-tile">
+        <img src="../images/ViewNam logo.png" alt="ViewNam">
+      </div>
       <div class="badge"><span class="badge-dot"></span>Trusted in Namibia</div>
     </div>
   </div>
@@ -186,7 +198,7 @@
     <span class="sep"></span>
     <span class="item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
-      viewnam.vercel.app
+      www.viewnam.com
     </span>
   </div>
 </body>
