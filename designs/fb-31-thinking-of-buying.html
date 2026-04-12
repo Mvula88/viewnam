@@ -6,64 +6,48 @@
 <title>FB 31 — Thinking Of Buying</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE;--rust:#C0392B}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
   body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none;z-index:3}
 
-  /* Base dot grain (stays on top of photo bleed for texture consistency) */
-  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none;z-index:2}
+  /* Photo column — contained to the right half, fades softly on its LEFT edge only */
+  .photo{position:absolute;top:0;right:0;width:52%;height:100%;z-index:1;pointer-events:none;
+         -webkit-mask-image:linear-gradient(to left, rgba(0,0,0,1) 70%, rgba(0,0,0,0.4) 92%, rgba(0,0,0,0) 100%);
+         mask-image:linear-gradient(to left, rgba(0,0,0,1) 70%, rgba(0,0,0,0.4) 92%, rgba(0,0,0,0) 100%)}
+  .photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0.55;mix-blend-mode:luminosity;filter:contrast(1.08)}
+  /* Brand tint over the photo so it reads as "atmosphere", not a stock image */
+  .photo::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg, rgba(6,42,31,0.85) 0%, rgba(6,42,31,0.35) 25%, rgba(6,42,31,0.1) 100%)}
 
-  /* Photo anchored to the top-right, spanning roughly the upper-right quadrant.
-     Double-axis radial fade so every edge dissolves smoothly into the green
-     — no visible borders anywhere. */
-  .bleed{position:absolute;top:-60px;right:-60px;width:70%;height:88%;z-index:1;pointer-events:none;
-         -webkit-mask-image:radial-gradient(ellipse at 75% 25%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 92%);
-         mask-image:radial-gradient(ellipse at 75% 25%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.35) 70%, rgba(0,0,0,0) 92%)}
-  .bleed img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;opacity:0.55;mix-blend-mode:luminosity;filter:contrast(1.05)}
+  .ghost{position:absolute;top:-50px;left:-30px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:400px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:2}
 
-  /* Soft green tint to keep brand cohesion — matches the mask shape */
-  .tint{position:absolute;top:-60px;right:-60px;width:70%;height:88%;background:
-        radial-gradient(ellipse at 75% 25%, rgba(6,42,31,0.35) 0%, rgba(6,42,31,0.2) 50%, rgba(6,42,31,0) 85%);
-        z-index:2;pointer-events:none}
+  .wrap{position:relative;z-index:4;padding:90px 100px;height:100%;display:flex;flex-direction:column}
 
-  .ghost{position:absolute;top:-60px;right:-70px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:400px;line-height:0.82;color:rgba(212,168,67,0.06);letter-spacing:-14px;pointer-events:none;z-index:3}
-
-  .wrap{position:relative;z-index:4;padding:78px 90px;height:100%;display:flex;flex-direction:column}
-
-  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:34px}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:70px}
   .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
   .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--gold);letter-spacing:0.5px}
 
-  .hero{flex:1;display:flex;flex-direction:column;max-width:760px}
-  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:78px;line-height:0.95;letter-spacing:-2.2px;color:#fff;margin-bottom:8px;text-shadow:0 2px 20px rgba(0,0,0,0.3)}
+  /* Text lives on the LEFT half — its own clean column, no overlap with image */
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:540px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:84px;line-height:0.96;letter-spacing:-2.4px;color:#fff;margin-bottom:8px}
   h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
-  .sub{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:30px;color:var(--gold);margin-bottom:22px;letter-spacing:-0.3px}
-  .sep{width:60px;height:2px;background:var(--gold);margin-bottom:22px}
-  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;line-height:1.55;color:rgba(245,239,222,0.88);margin-bottom:22px;max-width:560px}
-
-  .truth-label{font-family:'Inter',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-  .truth{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#fff;line-height:1.3;letter-spacing:-0.4px;margin-bottom:18px;max-width:560px;text-shadow:0 2px 12px rgba(0,0,0,0.35)}
-  .truth em{font-style:italic;color:var(--gold);font-weight:700}
-
-  .issues{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
-  .issues li{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:20px;color:#fff;display:flex;align-items:center;gap:14px;letter-spacing:-0.2px;text-shadow:0 2px 10px rgba(0,0,0,0.35)}
-  .issues li::before{content:'';width:11px;height:11px;background:var(--rust);border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(192,57,43,0.22)}
-
-  .promise{font-family:'Playfair Display',serif;font-weight:700;font-size:21px;color:#fff;line-height:1.35;margin-bottom:4px;max-width:560px;letter-spacing:-0.3px;text-shadow:0 2px 10px rgba(0,0,0,0.35)}
+  .sub{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:32px;color:var(--gold);margin-bottom:28px;letter-spacing:-0.3px}
+  .sep{width:60px;height:2px;background:var(--gold);margin-bottom:28px}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;line-height:1.5;color:rgba(245,239,222,0.85);margin-bottom:32px}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+  .promise{font-family:'Playfair Display',serif;font-weight:700;font-size:26px;color:#fff;line-height:1.3;letter-spacing:-0.4px;margin-bottom:6px}
   .promise em{font-style:italic;color:var(--gold);font-weight:700}
-  .warn{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:22px;color:var(--gold);margin-top:2px;text-shadow:0 2px 10px rgba(0,0,0,0.35)}
+  .warn{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:28px;color:var(--gold)}
 
-  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:28px}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:auto}
   .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
   .mark img{height:56px;display:block}
   .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
-  <div class="bleed">
+  <div class="photo">
     <img src="https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?w=1200&q=85&auto=format&fit=crop" alt="" crossorigin="anonymous">
   </div>
-  <div class="tint"></div>
-  <div class="grain"></div>
   <div class="ghost">Buying?</div>
 
   <div class="wrap">
@@ -77,7 +61,6 @@
       <div class="sub">Avoid costly mistakes.</div>
       <div class="sep"></div>
       <div class="lede">Good. You're already ahead of most buyers — because you're reading this <em>before</em> you've paid.</div>
-
       <div class="promise">One inspection can save you <em>thousands.</em></div>
       <div class="warn">Don't risk it.</div>
     </div>
