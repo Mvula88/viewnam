@@ -7,6 +7,7 @@
 <title>ViewNam — Design Studio</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{--primary:#0B3D2E;--secondary:#D4A843;--bg:#F5F6FA;--card:#fff;--border:#E2E8F0;--text:#1A1A2E;--text-light:#5A5A6E}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -210,6 +211,7 @@ function renderDesigns() {
                 </div>
                 <div class="design-actions">
                     <a href="${d.file}" target="_blank" class="btn-view">Open Full Size</a>
+                    <button class="btn-download" onclick="downloadDesign(${JSON.stringify(d).replace(/"/g, '&quot;')}, this)">Download PNG</button>
                 </div>
             </div>
         </div>`;
@@ -217,6 +219,83 @@ function renderDesigns() {
 }
 
 renderDesigns();
+
+// --- Download design as PNG at native resolution ---
+async function downloadDesign(d, btn) {
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Rendering...';
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'wait';
+
+    const [w, h] = d.size.split('x').map(Number);
+
+    // Create a hidden, full-size iframe so the design renders at native resolution
+    const frame = document.createElement('iframe');
+    frame.src = d.file;
+    frame.style.cssText = `position:fixed;top:-10000px;left:-10000px;width:${w}px;height:${h}px;border:0;`;
+    document.body.appendChild(frame);
+
+    try {
+        // Wait for the iframe to fully load
+        await new Promise((resolve, reject) => {
+            frame.onload = resolve;
+            frame.onerror = reject;
+            setTimeout(reject, 15000); // 15s safety timeout
+        });
+
+        // Wait a short moment for fonts and images inside the iframe
+        const innerDoc = frame.contentDocument;
+        if (innerDoc.fonts && innerDoc.fonts.ready) {
+            await innerDoc.fonts.ready;
+        }
+        // Let any inline images (logo) settle
+        const images = Array.from(innerDoc.images || []);
+        await Promise.all(images.map(img => img.complete ? Promise.resolve() : new Promise(r => {
+            img.onload = img.onerror = r;
+        })));
+        await new Promise(r => setTimeout(r, 300));
+
+        // Render via html2canvas against the iframe body
+        const canvas = await html2canvas(innerDoc.body, {
+            width: w,
+            height: h,
+            windowWidth: w,
+            windowHeight: h,
+            backgroundColor: null,
+            useCORS: true,
+            allowTaint: true,
+            scale: 1,
+            logging: false,
+        });
+
+        // Trigger download
+        const link = document.createElement('a');
+        const safeTitle = d.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/g, '');
+        link.download = `viewnam-${safeTitle}-${w}x${h}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        btn.textContent = 'Downloaded ✓';
+        btn.style.background = '#27AE60';
+        btn.style.color = '#fff';
+    } catch (e) {
+        console.error('Download failed:', e);
+        btn.textContent = 'Failed — retry';
+        btn.style.background = '#E74C3C';
+        btn.style.color = '#fff';
+    } finally {
+        document.body.removeChild(frame);
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.style.opacity = '';
+            btn.style.cursor = '';
+        }, 2400);
+    }
+}
 </script>
 </body>
 </html>
