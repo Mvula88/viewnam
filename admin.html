@@ -604,6 +604,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
                 <label>Experience</label>
                 <textarea id="ai_experience" rows="2" placeholder="Mechanic, spare parts, auction buyer, etc."></textarea>
             </div>
+
+            <div class="field" style="padding:16px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+                <label style="margin-bottom:6px">Brand Expertise</label>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:10px">Select brands this inspector is strong with. Bookings for these brands will prioritise this inspector.</p>
+                <div id="ai_brand_chips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+            </div>
             <div class="field">
                 <label>Status</label>
                 <select id="ai_status">
@@ -1140,7 +1146,6 @@ function renderBookings() {
     }
 
     const activeInspectors = allInspectors.filter(i => i.status === 'active' || i.status === 'approved');
-    const inspectorOpts = activeInspectors.map(i => `<option value="${i.id}">${i.name} (${i.town})</option>`).join('');
 
     const statusLabelMap = {new:'New',confirmed:'Confirmed',assigned:'Assigned','in-progress':'In Progress',completed:'Completed',cancelled:'Cancelled'};
 
@@ -1227,8 +1232,7 @@ function renderBookings() {
                         <option value="cancelled" ${status==='cancelled'?'selected':''}>Cancelled</option>
                     </select>
                     <select class="inspector-select" onchange="assignInspector('${b.id}', this.value)">
-                        <option value="">Assign inspector...</option>
-                        ${inspectorOpts}
+                        ${buildInspectorOpts(b, activeInspectors)}
                     </select>
                 </div>
                 <div class="bc-footer-actions">
@@ -1615,6 +1619,10 @@ function renderInspectors() {
                 <div class="ic-col">
                     <h4>Experience</h4>
                     <p class="muted">${i.experience || 'No experience info provided.'}</p>
+                    <h4 style="margin-top:14px">Brand Expertise</h4>
+                    ${(i.brand_expertise && i.brand_expertise.length)
+                        ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${i.brand_expertise.map(b => `<span style="display:inline-block;padding:3px 8px;background:#E8F1ED;color:var(--primary);border-radius:100px;font-size:0.72rem;font-weight:600;border:1px solid rgba(11,61,46,0.15)">${b}</span>`).join('')}</div>`
+                        : '<p class="muted" style="font-size:0.8rem">No brands specified — treated as general.</p>'}
                 </div>
             </div>
             <div class="ic-footer">
@@ -1648,6 +1656,109 @@ async function deleteInspector(id) {
     else { showToast('Inspector deleted'); loadInspectors(); }
 }
 
+// --- Car brand list used for inspector expertise + booking matching ---
+const CAR_BRANDS = [
+    'Toyota', 'Volkswagen', 'Nissan', 'Ford', 'Mazda', 'BMW', 'Mercedes-Benz',
+    'Audi', 'Hyundai', 'Kia', 'Mitsubishi', 'Isuzu', 'Honda', 'Chevrolet',
+    'Land Rover', 'Mahindra', 'Suzuki', 'Renault', 'Jeep', 'Volvo'
+];
+
+// Normalize a free-text vehicle make against the canonical brand list
+function normalizeBrand(raw) {
+    if (!raw) return null;
+    const s = raw.trim().toLowerCase();
+    const aliases = {
+        'vw': 'Volkswagen',
+        'volks wagen': 'Volkswagen',
+        'merc': 'Mercedes-Benz',
+        'mercedes': 'Mercedes-Benz',
+        'benz': 'Mercedes-Benz',
+        'land-rover': 'Land Rover',
+        'landrover': 'Land Rover',
+        'range rover': 'Land Rover',
+        'bmw': 'BMW',
+    };
+    if (aliases[s]) return aliases[s];
+    const match = CAR_BRANDS.find(b => b.toLowerCase() === s || s.startsWith(b.toLowerCase()) || b.toLowerCase().startsWith(s));
+    return match || null;
+}
+
+function renderBrandChips(selected) {
+    const box = document.getElementById('ai_brand_chips');
+    const set = new Set(selected || []);
+    box.innerHTML = CAR_BRANDS.map(brand => {
+        const on = set.has(brand);
+        return `<label class="brand-chip${on ? ' on' : ''}" data-brand="${brand}"
+            style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid ${on ? 'var(--primary)' : 'var(--border)'};border-radius:100px;font-size:0.8rem;font-weight:${on ? '600' : '500'};cursor:pointer;background:${on ? 'var(--primary)' : '#fff'};color:${on ? '#fff' : 'var(--text-light)'};user-select:none;transition:all 0.15s">
+            <input type="checkbox" value="${brand}" ${on ? 'checked' : ''} style="display:none">
+            ${brand}
+        </label>`;
+    }).join('');
+    box.querySelectorAll('.brand-chip').forEach(el => {
+        el.addEventListener('click', () => {
+            const cb = el.querySelector('input');
+            cb.checked = !cb.checked;
+            const on = cb.checked;
+            el.style.background = on ? 'var(--primary)' : '#fff';
+            el.style.color = on ? '#fff' : 'var(--text-light)';
+            el.style.borderColor = on ? 'var(--primary)' : 'var(--border)';
+            el.style.fontWeight = on ? '600' : '500';
+        });
+    });
+}
+
+function getSelectedBrands() {
+    return Array.from(document.querySelectorAll('#ai_brand_chips input:checked')).map(cb => cb.value);
+}
+
+// Build the Assign Inspector dropdown, ranked:
+// 1. same town + brand expert  2. same town  3. brand expert  4. everyone else
+function buildInspectorOpts(booking, activeInspectors) {
+    const bookingBrand = normalizeBrand(booking.vehicle_make);
+    const bookingTown = (booking.seller_location || '').trim().toLowerCase();
+    const assignedId = booking.assigned_inspector;
+
+    const scored = activeInspectors.map(i => {
+        const sameTown = bookingTown && i.town && i.town.trim().toLowerCase().includes(bookingTown);
+        const brandMatch = bookingBrand && (i.brand_expertise || []).includes(bookingBrand);
+        let tier;
+        if (sameTown && brandMatch) tier = 0;
+        else if (sameTown) tier = 1;
+        else if (brandMatch) tier = 2;
+        else tier = 3;
+        return { i, tier, sameTown, brandMatch };
+    }).sort((a, b) => a.tier - b.tier || a.i.name.localeCompare(b.i.name));
+
+    const tierLabels = {
+        0: bookingBrand ? `Best match — ${bookingBrand} expert in ${booking.seller_location}` : `Same town: ${booking.seller_location}`,
+        1: `Same town: ${booking.seller_location}`,
+        2: `${bookingBrand} experts (other towns)`,
+        3: 'Other inspectors'
+    };
+
+    // Group by tier and emit <optgroup>
+    const groups = {};
+    scored.forEach(s => {
+        if (!groups[s.tier]) groups[s.tier] = [];
+        groups[s.tier].push(s);
+    });
+
+    let html = `<option value="">Assign inspector...</option>`;
+    Object.keys(groups).sort().forEach(tier => {
+        const items = groups[tier];
+        if (!items.length) return;
+        const label = tierLabels[tier] || '';
+        html += `<optgroup label="${label}">`;
+        html += items.map(({ i, brandMatch }) => {
+            const star = (tier === '0' || tier === 0) ? '★ ' : (brandMatch ? '◆ ' : '');
+            const selected = assignedId === i.id ? 'selected' : '';
+            return `<option value="${i.id}" ${selected}>${star}${i.name} (${i.town})</option>`;
+        }).join('');
+        html += `</optgroup>`;
+    });
+    return html;
+}
+
 // --- Add/Edit Inspector Modal ---
 function openAddInspector() {
     document.getElementById('inspectorModalTitle').textContent = 'Add Inspector';
@@ -1655,6 +1766,7 @@ function openAddInspector() {
     document.getElementById('ai_id').value = '';
     document.querySelector('input[name="ai_payout_type"][value="percentage"]').checked = true;
     togglePayoutType();
+    renderBrandChips([]);
     document.getElementById('addInspectorModal').classList.add('open');
 }
 
@@ -1685,6 +1797,9 @@ function editInspector(id) {
     document.getElementById('ai_fixed_visual').value = fixed['visual-inspection'] || '';
     document.getElementById('ai_fixed_mech').value = fixed['mechanical-diagnostics'] || '';
     document.getElementById('ai_fixed_testdrive').value = fixed['test-drive'] || '';
+
+    // Brand expertise
+    renderBrandChips(i.brand_expertise || []);
 
     document.getElementById('addInspectorModal').classList.add('open');
 }
@@ -1727,6 +1842,7 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         payout_type: payoutType,
         commission_rate: payoutType === 'percentage' && commissionVal !== '' ? parseFloat(commissionVal) : null,
         payout_fixed: payoutType === 'fixed' && Object.keys(payoutFixed).length > 0 ? payoutFixed : null,
+        brand_expertise: getSelectedBrands(),
     };
 
     // Only update PIN if user entered a new one (hash it)
