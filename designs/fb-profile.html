@@ -12,34 +12,25 @@
     height: 1080px;
     overflow: hidden;
     font-family: 'Inter', sans-serif;
-    background: #0B3D2E;
-    color: #FFFFFF;
+    background: #FFFFFF;
+    color: #0B3D2E;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  /* Radial gold glow behind the mark */
+
+  /* Very subtle tinted background so the white doesn't feel bare on FB feed */
   body::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(212,168,67,0.22) 0%, transparent 55%);
-    pointer-events: none;
-  }
-  /* Fine dot texture */
-  body::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(rgba(212,168,67,0.08) 1.5px, transparent 1.5px);
-    background-size: 36px 36px;
-    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 45%, #F4F8F6 0%, #FFFFFF 65%);
   }
 
-  /* Safe circle guide — Facebook crops to a circle.
-     FB's circle inscribes the square, so everything critical stays inside
-     a ~880px circle (centred). This wrapper is that safe zone. */
+  /* Safe zone — Facebook crops a circle inscribed in the square.
+     Everything critical must stay inside a ~880px circle centred. */
   .safe {
     position: relative;
     z-index: 2;
@@ -51,60 +42,42 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 28px;
+    padding: 40px;
   }
 
-  /* Ring around the logo for crest feel */
-  .ring {
-    width: 520px;
-    height: 520px;
-    border: 6px solid rgba(212,168,67,0.35);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-  .ring::before {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    border: 2px solid rgba(212,168,67,0.15);
-    border-radius: 50%;
+  .logo {
+    width: 640px;
+    height: auto;
+    display: block;
   }
 
-  .logo-mark {
-    width: 360px;
-    filter: brightness(0) invert(1);
-  }
-
-  .wordmark {
-    font-size: 72px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    line-height: 1;
-    margin-top: 4px;
-  }
-  .wordmark .nam {
-    color: #D4A843;
+  .divider {
+    width: 120px;
+    height: 3px;
+    background: #D4A843;
+    border-radius: 2px;
+    margin: 36px 0 28px;
   }
 
   .tagline {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.65);
+    font-size: 40px;
+    font-weight: 800;
+    color: #0B3D2E;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    max-width: 700px;
+  }
+
+  .tagline .accent {
+    color: #D4A843;
   }
 </style>
 </head>
 <body>
   <div class="safe">
-    <div class="ring">
-      <img class="logo-mark" src="../images/ViewNam logo.png" alt="ViewNam">
-    </div>
-    <div class="wordmark">View<span class="nam">Nam</span></div>
-    <div class="tagline">We check cars before you buy</div>
+    <img class="logo" src="../images/ViewNam logo.png" alt="ViewNam">
+    <div class="divider"></div>
+    <div class="tagline">We Check Cars<br><span class="accent">Before You Buy</span></div>
   </div>
 </body>
 </html>
