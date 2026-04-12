@@ -2,72 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 13 — From Your Couch</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 13 — Stay Home</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px;display:flex;flex-direction:column}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(212,168,67,0.12) 0%,transparent 55%);pointer-events:none}
-  .wrap{position:relative;z-index:1;flex:1;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:18px}
-  h1{font-size:86px;font-weight:900;line-height:0.96;letter-spacing:-3px;margin-bottom:22px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:26px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:46px;max-width:820px;line-height:1.4}
-  .compare{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-content:center}
-  .col{padding:34px 30px;border-radius:18px;display:flex;flex-direction:column;gap:14px}
-  .col .top{font-size:14px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
-  .col h3{font-size:30px;font-weight:900;line-height:1.1;letter-spacing:-0.8px}
-  .col ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:4px}
-  .col li{font-size:17px;font-weight:500;line-height:1.4;padding-left:26px;position:relative}
-  .col.bad{background:rgba(192,57,43,0.1);border:1.5px solid rgba(192,57,43,0.4)}
-  .col.bad .top{color:#E06654}
-  .col.bad h3{color:#fff}
-  .col.bad li{color:rgba(255,255,255,0.75)}
-  .col.bad li::before{content:'✗';position:absolute;left:0;color:#C0392B;font-weight:900;font-size:18px}
-  .col.good{background:rgba(212,168,67,0.12);border:1.5px solid rgba(212,168,67,0.45)}
-  .col.good .top{color:#D4A843}
-  .col.good h3{color:#fff}
-  .col.good li{color:rgba(255,255,255,0.9)}
-  .col.good li::before{content:'✓';position:absolute;left:0;color:#D4A843;font-weight:900;font-size:18px}
-  .footer{margin-top:30px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:26px;font-weight:800;letter-spacing:-0.5px}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:-50px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:380px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:60px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:104px;line-height:0.94;letter-spacing:-3px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:32px 0 36px}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;line-height:1.5;color:rgba(245,239,222,0.82);max-width:800px}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:auto}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
+  <div class="ghost">Home.</div>
   <div class="wrap">
-    <div class="k">Save The Trip</div>
-    <h1>Check the car.<br><span class="a">From your couch.</span></h1>
-    <div class="sub">Buying a car in another town? Don't burn a day driving there just to find out it's rubbish.</div>
-    <div class="compare">
-      <div class="col bad">
-        <div class="top">Old Way</div>
-        <h3>You drive 300km.</h3>
-        <ul>
-          <li>N$600 on petrol</li>
-          <li>Whole day gone</li>
-          <li>Still can't spot hidden issues</li>
-          <li>Seller pressures you to pay</li>
-        </ul>
-      </div>
-      <div class="col good">
-        <div class="top">ViewNam</div>
-        <h3>We drive. You decide.</h3>
-        <ul>
-          <li>One booking, minutes</li>
-          <li>Full inspection by a local pro</li>
-          <li>Photos, report, verdict — to your phone</li>
-          <li>You decide — no pressure</li>
-        </ul>
-      </div>
+    <div class="masthead">
+      <div><div class="cat">Save The Trip</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Don't drive 300km<br>to find out it's rubbish.</i></div>
+    </div>
+    <div class="hero">
+      <h1>We drive.<br><span class="it">You decide.</span></h1>
+      <div class="sep"></div>
+      <div class="lede">Buying a car in another town? A local ViewNam inspector checks it for you. <em>Photos, report, verdict — straight to your phone.</em></div>
     </div>
     <div class="footer">
-      <div class="cta">Stay home. <span class="a">Get the full truth.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

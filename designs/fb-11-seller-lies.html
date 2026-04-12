@@ -2,46 +2,49 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 11 — Seller Lies</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 11 — Lies You've Heard</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
-  .k::before{content:'💬';margin-right:10px}
-  h1{font-size:72px;font-weight:900;line-height:0.98;letter-spacing:-2.5px;margin-bottom:14px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.75);margin-bottom:42px;max-width:800px;line-height:1.4}
-  .lies{flex:1;display:flex;flex-direction:column;gap:18px;justify-content:center}
-  .lie{display:flex;align-items:center;gap:24px;padding:24px 30px;background:rgba(255,255,255,0.04);border-radius:16px;border-left:4px solid #C0392B;position:relative}
-  .lie .quote{font-size:22px;font-weight:700;color:rgba(255,255,255,0.88);flex:1;letter-spacing:-0.3px;line-height:1.35}
-  .lie .quote::before{content:'"';color:#D4A843;font-size:32px;font-weight:900;margin-right:6px}
-  .lie .quote::after{content:'"';color:#D4A843;font-size:32px;font-weight:900;margin-left:3px}
-  .lie .tag{padding:8px 16px;background:rgba(192,57,43,0.2);border:1.5px solid #C0392B;color:#F1B4AC;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
-  .footer{margin-top:36px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:24px;font-weight:800;letter-spacing:-0.5px}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:-60px;right:-50px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:480px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:50px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:82px;line-height:0.98;letter-spacing:-2.2px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:26px 0 36px}
+  .quotes{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px}
+  .q{font-family:'Playfair Display',serif;font-style:italic;font-size:32px;line-height:1.35;color:rgba(245,239,222,0.92);letter-spacing:-0.4px;padding-left:26px;border-left:2px solid var(--gold);max-width:860px}
+  .q::before{content:'"';color:var(--gold);font-size:42px;font-weight:900;margin-right:6px;line-height:0}
+  .q::after{content:'"';color:var(--gold);font-size:42px;font-weight:900;margin-left:3px;line-height:0}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:40px}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
+  <div class="ghost">Said.</div>
   <div class="wrap">
-    <div class="k">Things Sellers Say</div>
-    <h1>Four lies you've probably<br><span class="a">already heard.</span></h1>
-    <div class="sub">If the seller has said any of these, ask us to check before you pay.</div>
-    <div class="lies">
-      <div class="lie"><div class="quote">One owner, very well taken care of.</div><div class="tag">Unverified</div></div>
-      <div class="lie"><div class="quote">Never been in an accident.</div><div class="tag">Check NaTIS</div></div>
-      <div class="lie"><div class="quote">The aircon just needs a little gas.</div><div class="tag">Usually not</div></div>
-      <div class="lie"><div class="quote">Papers are at home, I'll bring them later.</div><div class="tag">Red flag</div></div>
+    <div class="masthead">
+      <div><div class="cat">Things Sellers Say</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Four sentences to<br>never take at face value.</i></div>
+    </div>
+    <h1>Four sentences<br>worth <span class="it">verifying.</span></h1>
+    <div class="sep"></div>
+    <div class="quotes">
+      <div class="q">One owner, very well taken care of.</div>
+      <div class="q">Never been in an accident.</div>
+      <div class="q">The aircon just needs a little gas.</div>
+      <div class="q">Papers are at home, I'll bring them later.</div>
     </div>
     <div class="footer">
-      <div class="cta">Don't take their word. <span class="a">Get a second opinion.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

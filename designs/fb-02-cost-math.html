@@ -2,32 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 02 — Cost Math</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 02 — The Real Math</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;display:flex;flex-direction:column}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .title{padding:80px 80px 40px;position:relative;z-index:1}
-  .title .k{font-size:16px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:18px}
-  .title h1{font-size:58px;font-weight:900;line-height:1.05;letter-spacing:-1.5px}
-  .title h1 .a{color:#D4A843}
-  .split{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative;z-index:1;padding:0 60px}
-  .box{padding:44px 30px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-  .box .label{font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
-  .box .amt{font-weight:900;line-height:0.95;letter-spacing:-3px;margin-bottom:18px}
-
-
-  <div class="vs">VS</div>
-    <div class="box big">
-      <div class="label">Next Month</div>
-      <div class="amt">N$50,000+</div>
-      <div class="desc">Hidden repairs you only discover after you paid.</div>
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;bottom:-70px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:380px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:60px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:88px;line-height:0.96;letter-spacing:-2.4px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:24px 0 40px}
+  .split{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:center;position:relative}
+  .side{padding:10px 30px}
+  .side .lbl{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);margin-bottom:14px;letter-spacing:0.3px}
+  .side .amt{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.9;letter-spacing:-3px;color:#fff;margin-bottom:16px}
+  .side .amt.warn{color:#E0796A;font-style:italic}
+  .side .desc{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;line-height:1.4;color:rgba(245,239,222,0.68);max-width:300px}
+  .vs{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:44px;color:var(--gold);letter-spacing:-1px}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:50px}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
+</style>
+</head>
+<body>
+  <div class="ghost">vs.</div>
+  <div class="wrap">
+    <div class="masthead">
+      <div><div class="cat">The Real Math</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>One small spend today.<br>One large bill avoided.</i></div>
     </div>
-  </div>
-  <div class="footer">
-    <div class="cta">Pay for the inspection. <span class="a">Not the regret.</span></div>
-    <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+    <h1>Pay the small bill.<br><span class="it">Or the large one.</span></h1>
+    <div class="sep"></div>
+    <div class="split">
+      <div class="side">
+        <div class="lbl">Today</div>
+        <div class="amt">N$950</div>
+        <div class="desc">A single ViewNam inspection.</div>
+      </div>
+      <div class="vs">vs.</div>
+      <div class="side">
+        <div class="lbl">Next month</div>
+        <div class="amt warn">N$50,000+</div>
+        <div class="desc">Hidden repairs, discovered after you paid.</div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
+    </div>
   </div>
 </body>
 </html>

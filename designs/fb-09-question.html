@@ -2,33 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 09 — Engagement Question</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 09 — A House Without Looking Inside</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;display:flex;flex-direction:column;justify-content:center;padding:120px 100px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(212,168,67,0.15) 0%,transparent 55%);pointer-events:none}
-  .qmark{position:absolute;top:90px;right:90px;font-size:220px;line-height:1;color:rgba(212,168,67,0.2);font-weight:900;z-index:1}
-  .k{position:relative;z-index:2;font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:40px}
-  h1{position:relative;z-index:2;font-size:88px;font-weight:900;line-height:1.02;letter-spacing:-2.5px;margin-bottom:40px}
-  h1 .a{color:#D4A843}
-  .answer{position:relative;z-index:2;display:inline-block;padding:18px 34px;background:rgba(212,168,67,0.15);border:2px solid #D4A843;border-radius:100px;font-size:30px;font-weight:800;color:#F4D98C;letter-spacing:-0.3px;margin-bottom:50px}
-  .p{position:relative;z-index:2;font-size:28px;font-weight:600;line-height:1.4;max-width:820px;color:rgba(255,255,255,0.85);margin-bottom:40px;letter-spacing:-0.5px}
-  .tag{position:relative;z-index:2;font-size:22px;font-weight:700;color:#D4A843;margin-bottom:60px;letter-spacing:0.3px}
-  .tag::before{content:'👇';margin-right:10px;filter:grayscale(0.2)}
-  .brand{position:relative;z-index:2;display:flex;align-items:center;gap:14px}
-  .brand img{height:40px;background:#fff;padding:7px 12px;border-radius:7px}
-  .brand .url{font-size:17px;font-weight:700;color:#D4A843;letter-spacing:0.8px}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:80px;right:-20px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:560px;line-height:0.82;color:rgba(212,168,67,0.06);letter-spacing:-12px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:60px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:80px;line-height:1.02;letter-spacing:-1.8px;color:#fff;margin-bottom:14px}
+  h1 .a{color:var(--gold);font-weight:800}
+  .sep{width:60px;height:2px;background:var(--gold);margin:30px 0 34px}
+  .lede{font-family:'Playfair Display',serif;font-weight:400;font-size:26px;line-height:1.5;color:rgba(245,239,222,0.8);max-width:780px}
+  .lede em{font-style:italic;color:var(--gold);font-weight:700}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:auto}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
-  <div class="qmark">?</div>
-  <div class="k">Real Talk</div>
-  <h1>Would you buy a house<br>without <span class="a">looking inside?</span></h1>
-  <div class="answer">Obviously not.</div>
-  <div class="p">So why do so many Namibians buy a used car without a proper inspection — and then spend months fixing problems they could have avoided?</div>
-  <div class="tag">Tag someone who's about to buy a car.</div>
-  <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+  <div class="ghost">?</div>
+  <div class="wrap">
+    <div class="masthead">
+      <div><div class="cat">A Simple Question</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Tag a friend who is<br>about to buy a car.</i></div>
+    </div>
+    <div class="hero">
+      <h1>Would you buy a house<br>without <span class="a">looking inside?</span></h1>
+      <div class="sep"></div>
+      <div class="lede">Obviously not. So why buy a used car on the seller's word alone, and spend months fixing what nobody told you about? <em>The car deserves the same question.</em></div>
+    </div>
+    <div class="footer">
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
+    </div>
+  </div>
 </body>
 </html>

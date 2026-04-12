@@ -2,45 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 03 — 5 Red Flags</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 03 — Red Flags</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:70px 80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:18px}
-  .k::before{content:'🚩';margin-right:10px}
-  h1{font-size:70px;font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:40px}
-  h1 .a{color:#D4A843}
-  .list{flex:1;display:flex;flex-direction:column;gap:18px}
-  .item{display:flex;align-items:flex-start;gap:24px;padding:22px 28px;background:rgba(255,255,255,0.04);border-left:4px solid #D4A843;border-radius:12px}
-  .num{font-size:40px;font-weight:900;color:#D4A843;line-height:1;letter-spacing:-1px;min-width:48px}
-  .txt{flex:1}
-  .txt .h{font-size:26px;font-weight:800;line-height:1.15;margin-bottom:4px;letter-spacing:-0.5px}
-  .txt .d{font-size:16px;font-weight:500;color:rgba(255,255,255,0.7);line-height:1.35}
-  .footer{margin-top:32px;padding-top:26px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:22px;font-weight:800}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:-40px;right:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:400px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-12px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:50px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:82px;line-height:0.98;letter-spacing:-2.2px;color:#fff;margin-bottom:12px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:24px 0 36px}
+  .list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;border-top:1px solid rgba(212,168,67,0.18)}
+  .row{display:grid;grid-template-columns:64px 1fr;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid rgba(212,168,67,0.18)}
+  .row .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--gold);letter-spacing:-0.5px}
+  .row h3{font-family:'Playfair Display',serif;font-weight:700;font-size:28px;letter-spacing:-0.4px;color:#fff;line-height:1.2}
+  .row h3 .lite{color:rgba(245,239,222,0.55);font-style:italic;font-weight:400;font-size:20px;margin-left:8px}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:40px}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
+  <div class="ghost">Signs.</div>
   <div class="wrap">
-    <div class="k">Spot The Lies</div>
-    <h1>5 Red Flags Sellers<br>Hope You'll <span class="a">Miss.</span></h1>
+    <div class="masthead">
+      <div><div class="cat">Red Flags</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>What the polish is<br>trying to cover.</i></div>
+    </div>
+    <h1>Five things a seller<br><span class="it">hopes you'll miss.</span></h1>
+    <div class="sep"></div>
     <div class="list">
-      <div class="item"><div class="num">1</div><div class="txt"><div class="h">Fresh polish over old damage</div><div class="d">That suspicious wet-look shine? Often hiding paint work.</div></div></div>
-      <div class="item"><div class="num">2</div><div class="txt"><div class="h">"The aircon just needs gas"</div><div class="d">Usually means the compressor is dead. N$8,000+ to fix.</div></div></div>
-      <div class="item"><div class="num">3</div><div class="txt"><div class="h">No service book. No history.</div><div class="d">You're buying a car's secrets. Never a good deal.</div></div></div>
-      <div class="item"><div class="num">4</div><div class="txt"><div class="h">VIN doesn't match papers</div><div class="d">Major red flag. Could be stolen or rebuilt (Code 3).</div></div></div>
-      <div class="item"><div class="num">5</div><div class="txt"><div class="h">"Another buyer is coming now"</div><div class="d">Pressure tactic. A rushed decision is a wrong decision.</div></div></div>
+      <div class="row"><div class="n">i.</div><h3>Fresh polish over old damage</h3></div>
+      <div class="row"><div class="n">ii.</div><h3>"The aircon just needs gas"</h3></div>
+      <div class="row"><div class="n">iii.</div><h3>No service book</h3></div>
+      <div class="row"><div class="n">iv.</div><h3>VIN that doesn't match the papers</h3></div>
+      <div class="row"><div class="n">v.</div><h3>"Another buyer is coming now"</h3></div>
     </div>
     <div class="footer">
-      <div class="cta">We catch what you miss. <span class="a">Every time.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

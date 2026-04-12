@@ -2,33 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 07 — Buyer First</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 07 — For The Buyer</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;display:flex;flex-direction:column;justify-content:center;padding:100px 90px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(212,168,67,0.18) 0%,transparent 60%),radial-gradient(circle at 80% 80%,rgba(212,168,67,0.12) 0%,transparent 50%);pointer-events:none}
-  .quote{position:absolute;top:80px;left:90px;font-size:160px;line-height:1;color:rgba(212,168,67,0.18);font-weight:900;font-family:serif;z-index:1}
-  .k{position:relative;z-index:2;font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:30px}
-  h1{position:relative;z-index:2;font-size:120px;font-weight:900;line-height:0.92;letter-spacing:-4px;margin-bottom:36px}
-  h1 .small{font-size:62px;font-weight:800;color:rgba(255,255,255,0.65);letter-spacing:-1.5px;display:block;margin-bottom:-8px}
-  h1 .big{color:#D4A843}
-  .rule{position:relative;z-index:2;width:120px;height:4px;background:#D4A843;margin-bottom:36px;border-radius:2px}
-  .sub{position:relative;z-index:2;font-size:32px;font-weight:600;line-height:1.3;max-width:820px;color:rgba(255,255,255,0.85);margin-bottom:20px;letter-spacing:-0.5px}
-  .p{position:relative;z-index:2;font-size:22px;font-weight:500;color:rgba(255,255,255,0.65);line-height:1.5;max-width:780px;margin-bottom:50px}
-  .brand{position:relative;z-index:2;display:flex;align-items:center;gap:16px}
-  .brand img{height:44px;background:#fff;padding:8px 14px;border-radius:8px}
-  .brand .url{font-size:18px;font-weight:700;color:#D4A843;letter-spacing:0.8px}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:-60px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:520px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-18px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:70px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:128px;line-height:0.92;letter-spacing:-3.5px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:32px 0 34px}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;line-height:1.45;color:rgba(245,239,222,0.82);max-width:780px}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:auto}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
-  <div class="quote">"</div>
-  <div class="k">Who We Work For</div>
-  <h1><span class="small">We work for</span><span class="big">the buyer.</span></h1>
-  <div class="rule"></div>
-  <div class="sub">The seller didn't hire us. You did.</div>
-  <div class="p">That's why we tell you the truth about the car — even when it means telling you to walk away. No kickbacks. No hidden deals. Just one inspector, one honest report, one side to work for: <strong style="color:#fff">yours.</strong></div>
-  <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+  <div class="ghost">"</div>
+  <div class="wrap">
+    <div class="masthead">
+      <div><div class="cat">Who We Work For</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>No kickbacks.<br>No hidden deals.</i></div>
+    </div>
+    <div class="hero">
+      <h1>We work for<br>the <span class="it">buyer.</span></h1>
+      <div class="sep"></div>
+      <div class="lede">The seller didn't hire us. <em>You did.</em><br>That's why we tell you the truth — even when it means walking away.</div>
+    </div>
+    <div class="footer">
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
+    </div>
+  </div>
 </body>
 </html>

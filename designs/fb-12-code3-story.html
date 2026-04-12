@@ -2,49 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 12 — Code 3 Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 12 — He Almost Bought It</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(192,57,43,0.15) 0%,transparent 55%);pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
-  h1{font-size:72px;font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:38px}
-  h1 .a{color:#D4A843}
-  .story{flex:1;display:flex;flex-direction:column;gap:20px;padding:40px 44px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(212,168,67,0.2);border-radius:18px;margin-bottom:20px}
-  .story .p{font-size:23px;font-weight:500;line-height:1.5;color:rgba(255,255,255,0.85);letter-spacing:-0.2px}
-  .story .p strong{color:#fff;font-weight:700}
-  .story .p .warn{color:#E06654;font-weight:700}
-  .story .p .win{color:#D4A843;font-weight:700}
-  .divider{display:flex;align-items:center;gap:14px;margin:6px 0}
-  .divider .line{flex:1;height:1px;background:rgba(212,168,67,0.3)}
-  .divider .word{font-size:14px;font-weight:800;letter-spacing:3px;color:#D4A843;text-transform:uppercase}
-  .stamp{align-self:flex-start;padding:10px 20px;background:#C0392B;color:#fff;border-radius:8px;font-size:16px;font-weight:900;letter-spacing:2px;text-transform:uppercase;transform:rotate(-2deg);margin-top:8px}
-  .footer{padding-top:18px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:22px;font-weight:800;letter-spacing:-0.4px;max-width:620px;line-height:1.25}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;bottom:-80px;right:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:440px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:54px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:92px;line-height:0.96;letter-spacing:-2.5px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:26px 0 40px}
+  .story{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px}
+  .para{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:26px;line-height:1.5;color:rgba(245,239,222,0.85);max-width:880px;letter-spacing:-0.2px}
+  .para b{font-style:normal;font-weight:700;color:#fff}
+  .para .a{color:var(--gold);font-weight:700;font-style:italic}
+  .pill{display:inline-block;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#E0796A;padding:6px 14px;border:1px solid rgba(224,121,106,0.45);border-radius:100px;margin-top:10px;align-self:flex-start}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:auto}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
+  <div class="ghost">Code 3</div>
   <div class="wrap">
-    <div class="k">A Real Scenario</div>
-    <h1>He almost bought<br>a <span class="a">Code 3 BMW.</span></h1>
+    <div class="masthead">
+      <div><div class="cat">A Real Scenario</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>The car he almost<br>bought for N$175,000.</i></div>
+    </div>
+    <h1>He almost bought<br>a <span class="it">Code 3 BMW.</span></h1>
+    <div class="sep"></div>
     <div class="story">
-      <div class="p">The car looked <strong>clean</strong>. The seller was <strong>friendly</strong>. The price was <strong>N$175,000 — a steal.</strong></div>
-      <div class="divider"><div class="line"></div><div class="word">then</div><div class="line"></div></div>
-      <div class="p">Our inspector pulled the NaTIS printout. Code 3. <span class="warn">Previously written off, structurally repaired.</span> The frame had been straightened.</div>
-      <div class="divider"><div class="line"></div><div class="word">result</div><div class="line"></div></div>
-      <div class="p"><span class="win">He walked away.</span> Kept his N$175,000. Found a clean car two weeks later.</div>
-      <div class="stamp">Report said: walk away</div>
+      <div class="para">The car looked <b>clean.</b> The seller was <b>friendly.</b> The price was a <b>steal.</b></div>
+      <div class="para">Our inspector pulled the NaTIS. Code 3 — <span class="a">previously written off, structurally repaired.</span> The frame had been straightened.</div>
+      <div class="para"><b>He walked away.</b> Kept his N$175,000. Found a clean car two weeks later.</div>
+      <div class="pill">Report: walk away</div>
     </div>
     <div class="footer">
-      <div class="cta">One inspection. <span class="a">A lifetime of regret avoided.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

@@ -2,46 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 18 — Checks Buyers Skip</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 18 — Before You Pay</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:18px}
-  h1{font-size:72px;font-weight:900;line-height:0.98;letter-spacing:-2.3px;margin-bottom:14px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.78);margin-bottom:40px;max-width:820px;line-height:1.4}
-  .list{flex:1;display:flex;flex-direction:column;gap:14px;justify-content:center}
-  .item{display:flex;align-items:center;gap:24px;padding:20px 28px;background:rgba(255,255,255,0.04);border-radius:16px;border:1.5px solid rgba(212,168,67,0.18)}
-  .icon{width:54px;height:54px;min-width:54px;background:rgba(212,168,67,0.15);border:1.5px solid #D4A843;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
-  .body{flex:1}
-  .body .h{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:4px;letter-spacing:-0.4px}
-  .body .d{font-size:15px;font-weight:500;color:rgba(255,255,255,0.68);line-height:1.4}
-  .footer{margin-top:36px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:22px;font-weight:800;letter-spacing:-0.4px;line-height:1.25}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;bottom:-80px;right:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:400px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:50px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:82px;line-height:0.98;letter-spacing:-2.2px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:26px 0 36px}
+  .list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;border-top:1px solid rgba(212,168,67,0.18)}
+  .row{display:grid;grid-template-columns:64px 1fr;gap:24px;align-items:baseline;padding:22px 0;border-bottom:1px solid rgba(212,168,67,0.18)}
+  .row .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--gold)}
+  .row h3{font-family:'Playfair Display',serif;font-weight:700;font-size:26px;letter-spacing:-0.3px;color:#fff;line-height:1.2;margin-bottom:3px}
+  .row p{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:rgba(245,239,222,0.62);line-height:1.4}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:40px}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
 </style>
 </head>
 <body>
+  <div class="ghost">Five.</div>
   <div class="wrap">
-    <div class="k">Most Buyers Skip These</div>
-    <h1>5 checks to do<br><span class="a">before you pay.</span></h1>
-    <div class="sub">Save this post. Even if you never book us — these checks alone will protect you.</div>
+    <div class="masthead">
+      <div><div class="cat">Before You Pay</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Save this post.<br>It will save you money.</i></div>
+    </div>
+    <h1>Five checks<br>most buyers <span class="it">skip.</span></h1>
+    <div class="sep"></div>
     <div class="list">
-      <div class="item"><div class="icon">🔎</div><div class="body"><div class="h">Cold start the engine yourself</div><div class="d">If it's been pre-warmed, ask why. Hidden issues usually show on cold start.</div></div></div>
-      <div class="item"><div class="icon">📄</div><div class="body"><div class="h">See the NaTIS printout</div><div class="d">Not a copy. The original. Check for Code 2, 3, or 4.</div></div></div>
-      <div class="item"><div class="icon">🔢</div><div class="body"><div class="h">Match 3 VINs</div><div class="d">Dashboard, engine bay, door sticker — all three must match the papers.</div></div></div>
-      <div class="item"><div class="icon">🛢️</div><div class="body"><div class="h">Pull the oil dipstick</div><div class="d">Milky = head gasket. Black paste = neglect. Clean amber = cared for.</div></div></div>
-      <div class="item"><div class="icon">🛣️</div><div class="body"><div class="h">Test drive alone (if possible)</div><div class="d">A chatty seller is distracting you from strange noises.</div></div></div>
+      <div class="row"><div class="n">i.</div><div><h3>Cold start the engine yourself</h3><p>If it's pre-warmed, ask why. Problems show on cold start.</p></div></div>
+      <div class="row"><div class="n">ii.</div><div><h3>See the NaTIS printout</h3><p>Not a copy. The original. Check for Code 2, 3, or 4.</p></div></div>
+      <div class="row"><div class="n">iii.</div><div><h3>Match three VINs</h3><p>Dashboard. Engine bay. Door sticker. All must match the papers.</p></div></div>
+      <div class="row"><div class="n">iv.</div><div><h3>Pull the oil dipstick</h3><p>Milky means head gasket. Black paste means neglect.</p></div></div>
+      <div class="row"><div class="n">v.</div><div><h3>Test drive alone, if possible</h3><p>A chatty seller is distracting you from strange noises.</p></div></div>
     </div>
     <div class="footer">
-      <div class="cta">Or just let us do all of this <span class="a">and more.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>
