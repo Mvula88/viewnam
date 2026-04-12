@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>ViewNam — Facebook Profile Photo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0B3D2E;
+    color: #FFFFFF;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Radial gold glow behind the mark */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(212,168,67,0.22) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  /* Fine dot texture */
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(212,168,67,0.08) 1.5px, transparent 1.5px);
+    background-size: 36px 36px;
+    pointer-events: none;
+  }
+
+  /* Safe circle guide — Facebook crops to a circle.
+     FB's circle inscribes the square, so everything critical stays inside
+     a ~880px circle (centred). This wrapper is that safe zone. */
+  .safe {
+    position: relative;
+    z-index: 2;
+    width: 880px;
+    height: 880px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 28px;
+  }
+
+  /* Ring around the logo for crest feel */
+  .ring {
+    width: 520px;
+    height: 520px;
+    border: 6px solid rgba(212,168,67,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .ring::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border: 2px solid rgba(212,168,67,0.15);
+    border-radius: 50%;
+  }
+
+  .logo-mark {
+    width: 360px;
+    filter: brightness(0) invert(1);
+  }
+
+  .wordmark {
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .wordmark .nam {
+    color: #D4A843;
+  }
+
+  .tagline {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+  }
+</style>
+</head>
+<body>
+  <div class="safe">
+    <div class="ring">
+      <img class="logo-mark" src="../images/ViewNam logo.png" alt="ViewNam">
+    </div>
+    <div class="wordmark">View<span class="nam">Nam</span></div>
+    <div class="tagline">We check cars before you buy</div>
+  </div>
+</body>
+</html>

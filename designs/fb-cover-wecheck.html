@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>ViewNam — Facebook Cover (We Check)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 820px;
+    height: 312px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0B3D2E;
+    color: #FFFFFF;
+    position: relative;
+  }
+  /* Subtle texture and glow for depth */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(212,168,67,0.07) 1px, transparent 1px);
+    background-size: 26px 26px;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 95% 20%, rgba(212,168,67,0.18) 0%, transparent 40%),
+      radial-gradient(circle at 5% 110%, rgba(212,168,67,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Safe content zone — FB cuts ~24px top/bottom on mobile.
+     Keep everything inside safe=padding. */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    padding: 36px 48px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .left {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: #D4A843;
+    margin-bottom: 10px;
+  }
+  .kicker::before {
+    content: '';
+    width: 22px;
+    height: 2px;
+    background: #D4A843;
+  }
+
+  .headline {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -1.8px;
+    margin-bottom: 14px;
+  }
+  .headline .accent {
+    color: #D4A843;
+  }
+
+  .sub {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.72);
+    max-width: 430px;
+  }
+
+  .right {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding-left: 20px;
+    border-left: 1px solid rgba(212,168,67,0.25);
+  }
+  .right img {
+    width: 160px;
+    filter: brightness(0) invert(1);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(212,168,67,0.15);
+    border: 1px solid rgba(212,168,67,0.35);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #D4A843;
+  }
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: #27AE60;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #27AE60;
+  }
+
+  /* Contact strip */
+  .strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: #D4A843;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    z-index: 2;
+  }
+  .strip .item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0B3D2E;
+    letter-spacing: 0.2px;
+  }
+  .strip .item svg {
+    width: 14px;
+    height: 14px;
+  }
+  .strip .sep {
+    width: 4px;
+    height: 4px;
+    background: #0B3D2E;
+    border-radius: 50%;
+    opacity: 0.45;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="left">
+      <div class="kicker">Independent Vehicle Inspections</div>
+      <h1 class="headline">We check cars<br><span class="accent">before you buy.</span></h1>
+      <p class="sub">A ViewNam inspector visits the seller, runs a full report, and tells you the truth — so you never buy blind again.</p>
+    </div>
+    <div class="right">
+      <img src="../images/ViewNam logo.png" alt="ViewNam">
+      <div class="badge"><span class="badge-dot"></span>Trusted in Namibia</div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <span class="item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 5a2 2 0 012-2h3l2 5-2.5 1.5a11 11 0 006 6L13 13l5 2v3a2 2 0 01-2 2A16 16 0 013 5z"/></svg>
+      +264 81 321 4813
+    </span>
+    <span class="sep"></span>
+    <span class="item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
+      viewnam.vercel.app
+    </span>
+  </div>
+</body>
+</html>
