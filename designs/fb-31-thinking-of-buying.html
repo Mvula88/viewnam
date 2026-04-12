@@ -9,28 +9,23 @@
   :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
   body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
 
-  /* Hero photo on the right — rendered as a CSS background for reliability.
-     A radial green gradient on top dissolves the edges into the dark-green
-     canvas so the photo has no visible rectangle. */
-  .photo{position:absolute;top:0;right:0;width:54%;height:100%;z-index:1;
-    background-image:url('../images/inspection.jpg');
-    background-size:cover;
-    background-position:40% center;
-    background-repeat:no-repeat}
-  .photo::after{content:'';position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(ellipse 70% 85% at 60% 50%,
+  /* Photo layer — simplest possible. Plain img, no background, no mask. */
+  .photo-img{position:absolute;top:0;right:0;width:54%;height:100%;object-fit:cover;object-position:40% center;display:block;z-index:1}
+
+  /* Gradient overlay AFTER the image in the DOM so it stacks above without z-index games */
+  .fade{position:absolute;top:0;right:0;width:54%;height:100%;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse 72% 82% at 60% 50%,
       rgba(6,42,31,0) 0%,
       rgba(6,42,31,0) 28%,
-      rgba(6,42,31,0.25) 55%,
-      rgba(6,42,31,0.7) 80%,
+      rgba(6,42,31,0.3) 55%,
+      rgba(6,42,31,0.75) 80%,
       rgba(6,42,31,1) 100%)}
 
-  /* Dot grain stays on top of everything for consistent brand texture */
-  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none;z-index:3}
+  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none;z-index:4}
 
-  .ghost{position:absolute;top:-60px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:420px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:2}
+  .ghost{position:absolute;top:-60px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:420px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:3}
 
-  .wrap{position:relative;z-index:4;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .wrap{position:relative;z-index:5;padding:90px 100px;height:100%;display:flex;flex-direction:column}
 
   .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:60px}
   .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
@@ -54,7 +49,8 @@
 </style>
 </head>
 <body>
-  <div class="photo"></div>
+  <img class="photo-img" src="../images/inspection.jpg" alt="">
+  <div class="fade"></div>
   <div class="grain"></div>
   <div class="ghost">Buying?</div>
 
