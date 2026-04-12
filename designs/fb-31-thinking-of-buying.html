@@ -9,21 +9,14 @@
   :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
   body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
 
-  /* Hero photo on the right. All edges dissolve into the dark-green
-     background via layered gradient overlays — left scrim for the
-     text boundary, top/bottom scrims so the picture emerges from
-     the green rather than sitting in a rectangle. */
-  .photo{position:absolute;top:0;right:0;width:54%;height:100%;z-index:1;overflow:hidden}
+  /* Hero photo on the right. Radial mask makes all edges transparent so
+     the picture dissolves into the green background — no rectangle. */
+  .photo{position:absolute;top:0;right:0;width:54%;height:100%;z-index:1;overflow:hidden;
+    -webkit-mask-image:radial-gradient(ellipse 75% 85% at 65% 50%, #000 35%, rgba(0,0,0,0.6) 65%, transparent 100%);
+    mask-image:radial-gradient(ellipse 75% 85% at 65% 50%, #000 35%, rgba(0,0,0,0.6) 65%, transparent 100%)}
   .photo img{width:100%;height:100%;object-fit:cover;object-position:40% center;display:block;filter:contrast(1.04) saturate(0.92)}
-  /* Layered gradient overlays — each handles one edge of the photo */
-  .photo .vignette{position:absolute;inset:0;z-index:2;pointer-events:none;
-    background:
-      linear-gradient(90deg, rgba(6,42,31,1) 0%, rgba(6,42,31,0.7) 22%, rgba(6,42,31,0) 55%),
-      linear-gradient(180deg, rgba(6,42,31,1) 0%, rgba(6,42,31,0.5) 10%, rgba(6,42,31,0) 25%),
-      linear-gradient(0deg, rgba(6,42,31,1) 0%, rgba(6,42,31,0.5) 10%, rgba(6,42,31,0) 28%),
-      linear-gradient(270deg, rgba(6,42,31,0.7) 0%, rgba(6,42,31,0.15) 20%, rgba(6,42,31,0) 50%)}
-  /* Subtle green tint for palette cohesion */
-  .photo::after{content:'';position:absolute;inset:0;background:rgba(6,42,31,0.18);mix-blend-mode:multiply;z-index:1;pointer-events:none}
+  /* Subtle green tint for palette cohesion — only slight, doesn't darken */
+  .photo::after{content:'';position:absolute;inset:0;background:rgba(6,42,31,0.18);mix-blend-mode:multiply;pointer-events:none}
 
   /* Dot grain stays on top of everything for consistent brand texture */
   .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none;z-index:3}
@@ -56,7 +49,6 @@
 <body>
   <div class="photo">
     <img src="../images/thinking.jpg" alt="">
-    <div class="vignette"></div>
   </div>
   <div class="grain"></div>
   <div class="ghost">Buying?</div>
