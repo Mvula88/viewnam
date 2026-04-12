@@ -2,49 +2,89 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 19 — What Sellers Hide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 19 — The Fee Below the Price</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 100% 0%,rgba(212,168,67,0.12) 0%,transparent 45%);pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
-  .k::before{content:'🔍';margin-right:10px}
-  h1{font-size:74px;font-weight:900;line-height:0.98;letter-spacing:-2.5px;margin-bottom:16px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.78);margin-bottom:42px;max-width:820px;line-height:1.4}
-  .grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:center}
-  .card{padding:24px 26px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(212,168,67,0.2);border-radius:16px;position:relative}
-  .card .eye{position:absolute;top:18px;right:20px;font-size:20px;opacity:0.4}
-  .card .h{font-size:20px;font-weight:800;line-height:1.2;margin-bottom:6px;letter-spacing:-0.3px;padding-right:28px}
-  .card .d{font-size:14px;font-weight:500;color:rgba(255,255,255,0.65);line-height:1.45}
-  .card .cost{margin-top:12px;font-size:14px;font-weight:800;color:#E06654;letter-spacing:0.3px}
-  .footer{margin-top:36px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1.25;max-width:640px}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{
+    --ink:#12221B;--green:#0B3D2E;--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE;--paper:#FBF7EA;--rust:#8B2D26;
+    --rule:rgba(11,61,46,0.14);
+  }
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);position:relative}
+  body::before{content:'';position:absolute;inset:0;background:
+    radial-gradient(circle at 85% 15%, rgba(139,45,38,0.05) 0%, transparent 45%),
+    radial-gradient(circle at 15% 90%, rgba(212,168,67,0.05) 0%, transparent 40%);
+    pointer-events:none}
+  .wrap{position:relative;z-index:2;padding:80px 90px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:44px}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--green);letter-spacing:0.5px}
+  .idx b{font-weight:700;font-style:normal;letter-spacing:2.5px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--ink);opacity:0.55}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:92px;line-height:0.96;letter-spacing:-2.4px;color:var(--green);margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--rust)}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;line-height:1.4;color:var(--ink);opacity:0.75;max-width:680px;margin-bottom:44px}
+  .sep{width:60px;height:2px;background:var(--gold);margin-bottom:30px}
+  .list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;border-top:1px solid var(--rule)}
+  .row{display:grid;grid-template-columns:80px 1fr auto;gap:24px;align-items:center;padding:22px 0;border-bottom:1px solid var(--rule)}
+  .row .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:36px;color:var(--gold);letter-spacing:-1px}
+  .row .body h3{font-family:'Playfair Display',serif;font-weight:700;font-size:24px;letter-spacing:-0.4px;color:var(--ink);line-height:1.2;margin-bottom:2px}
+  .row .body p{font-size:14px;font-weight:500;line-height:1.45;color:var(--ink);opacity:0.6;max-width:520px}
+  .row .cost{font-family:'Inter',sans-serif;font-weight:800;font-size:18px;color:var(--rust);letter-spacing:-0.4px;text-align:right;white-space:nowrap}
+  .row .cost small{display:block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink);opacity:0.45;margin-top:2px}
+  .footer{margin-top:32px;display:flex;justify-content:space-between;align-items:flex-end;border-top:2px solid var(--ink);padding-top:22px}
+  .mark{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--green);letter-spacing:4px}
+  .mark span{color:var(--gold)}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink);opacity:0.55}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="k">Hidden In Plain Sight</div>
-    <h1>What sellers <span class="a">won't</span><br>mention on the test drive.</h1>
-    <div class="sub">These are the issues we find most often — and the ones that hurt buyers the most.</div>
-    <div class="grid">
-      <div class="card"><span class="eye">👁</span><div class="h">Slipping gearbox</div><div class="d">Revs climb but acceleration doesn't follow. Especially in automatics.</div><div class="cost">Repair: N$18,000+</div></div>
-      <div class="card"><span class="eye">👁</span><div class="h">Blown head gasket</div><div class="d">Oil cap has white milky residue. Engine runs hot. Gets worse fast.</div><div class="cost">Repair: N$25,000+</div></div>
-      <div class="card"><span class="eye">👁</span><div class="h">Worn CV joints</div><div class="d">Clicking sound on tight turns. Snapped CV = stranded vehicle.</div><div class="cost">Repair: N$4,500+</div></div>
-      <div class="card"><span class="eye">👁</span><div class="h">Dead A/C compressor</div><div class="d">"Just needs gas" — almost always means the compressor is gone.</div><div class="cost">Repair: N$9,000+</div></div>
-      <div class="card"><span class="eye">👁</span><div class="h">Rust under the carpet</div><div class="d">Flood damage lives under the mats. Electronics quietly corrode.</div><div class="cost">Repair: unpredictable</div></div>
-      <div class="card"><span class="eye">👁</span><div class="h">Chassis straightened</div><div class="d">Panel gaps don't line up. Car pulls to one side. Insurance red flag.</div><div class="cost">Repair: impossible</div></div>
+    <div class="masthead">
+      <div>
+        <div class="cat">The Unmentioned</div>
+        <div style="height:10px"></div>
+        <div class="idx"><b>N° 19</b> &nbsp;·&nbsp; <i>Buyer's Dossier</i></div>
+      </div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:260px"><i>"Everything's fine — it just needs a service."</i></div>
+    </div>
+    <h1>The fee below<br>the asking <span class="it">price.</span></h1>
+    <div class="sep"></div>
+    <div class="lede">Six quiet faults we find on almost every inspection — and what the seller is hoping you never ask.</div>
+    <div class="list">
+      <div class="row">
+        <div class="n">i.</div>
+        <div class="body"><h3>A slipping gearbox</h3><p>Revs climb, speed doesn't follow. Automatic boxes make the confession loudest.</p></div>
+        <div class="cost">N$18,000+<small>To repair</small></div>
+      </div>
+      <div class="row">
+        <div class="n">ii.</div>
+        <div class="body"><h3>Head gasket, compromised</h3><p>White residue on the oil cap. A small sign. A very large bill.</p></div>
+        <div class="cost">N$25,000+<small>To repair</small></div>
+      </div>
+      <div class="row">
+        <div class="n">iii.</div>
+        <div class="body"><h3>CV joints on notice</h3><p>A click on every tight corner. Often the last warning before you're stranded.</p></div>
+        <div class="cost">N$4,500+<small>To repair</small></div>
+      </div>
+      <div class="row">
+        <div class="n">iv.</div>
+        <div class="body"><h3>"Aircon just needs a regas"</h3><p>An almost-universal translation: the compressor has died.</p></div>
+        <div class="cost">N$9,000+<small>To repair</small></div>
+      </div>
+      <div class="row">
+        <div class="n">v.</div>
+        <div class="body"><h3>Rust, under the carpet</h3><p>Flood damage chooses the floor pan. And then, in time, the electrics.</p></div>
+        <div class="cost">Unpredictable<small>To repair</small></div>
+      </div>
+      <div class="row">
+        <div class="n">vi.</div>
+        <div class="body"><h3>A chassis, straightened</h3><p>Panel gaps disagree with themselves. No amount of paint repairs a frame.</p></div>
+        <div class="cost">Structural<small>Walk away</small></div>
+      </div>
     </div>
     <div class="footer">
-      <div class="cta">We find them. <span class="a">So you don't pay for them.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark">VIEW<span>NAM</span></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

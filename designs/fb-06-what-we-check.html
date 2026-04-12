@@ -2,51 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 06 — What We Check</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<title>FB 06 — 150+ Checks</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
-  h1{font-size:72px;font-weight:900;line-height:0.98;letter-spacing:-2.2px;margin-bottom:18px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.75);margin-bottom:48px;max-width:780px;line-height:1.4}
-  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-content:center}
-  .tag{padding:22px 20px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(212,168,67,0.2);border-radius:12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.2s}
-  .tag .ico{font-size:30px}
-  .tag .t{font-size:17px;font-weight:700;letter-spacing:-0.3px}
-  .footer{margin-top:46px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:26px;font-weight:800;letter-spacing:-0.5px}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{
+    --ink:#12221B;--green:#0B3D2E;--green-dark:#062A1F;--gold:#D4A843;--cream:#F5EFDE;--paper:#FBF7EA;
+    --rule:rgba(11,61,46,0.12);
+  }
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);position:relative}
+  /* subtle paper noise */
+  body::before{content:'';position:absolute;inset:0;background-image:
+    radial-gradient(circle at 20% 10%, rgba(11,61,46,0.03) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(212,168,67,0.06) 0%, transparent 45%);
+    pointer-events:none;z-index:0}
+  /* gold vertical rule */
+  .v-rule{position:absolute;top:80px;bottom:80px;left:60px;width:2px;background:linear-gradient(180deg,var(--gold) 0%,transparent 100%);z-index:1}
+  .wrap{position:relative;z-index:2;padding:80px 100px 80px 120px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:48px}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:18px;color:var(--green);letter-spacing:0.5px}
+  .idx b{font-weight:700;font-style:normal;letter-spacing:2px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--ink);opacity:0.55}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.95;letter-spacing:-2px;color:var(--green);margin-bottom:8px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--ink)}
+  .lede{font-size:18px;font-weight:500;line-height:1.5;color:var(--ink);opacity:0.72;max-width:620px;margin-bottom:56px;padding-left:2px}
+  .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);align-content:center}
+  .cell{background:var(--paper);padding:26px 22px;display:flex;flex-direction:column;gap:12px;min-height:130px}
+  .cell:hover{background:var(--cream)}
+  .cell .icon{width:32px;height:32px;color:var(--green);stroke-width:1.6;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .cell .lbl{font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-0.2px;line-height:1.2}
+  .cell .num{position:absolute;top:10px;right:14px;font-family:'Playfair Display',serif;font-size:11px;font-style:italic;color:var(--green);opacity:0.5}
+  .cell{position:relative}
+  .footer{margin-top:56px;display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--rule);padding-top:24px}
+  .mark{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--green);letter-spacing:4px}
+  .mark span{color:var(--gold)}
+  .url{font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink);opacity:0.6}
+  .big-num{position:absolute;right:60px;top:90px;font-family:'Playfair Display',serif;font-weight:900;font-size:280px;line-height:1;color:var(--green);opacity:0.06;letter-spacing:-10px;z-index:0;pointer-events:none}
 </style>
 </head>
 <body>
+  <div class="v-rule"></div>
+  <div class="big-num">150</div>
   <div class="wrap">
-    <div class="k">Nothing Skipped</div>
-    <h1>150+ Checks.<br><span class="a">Every Inspection.</span></h1>
-    <div class="sub">A ViewNam inspector doesn't miss what your eye can't see.</div>
+    <div class="masthead">
+      <div>
+        <div class="cat">The Inspection</div>
+        <div style="height:10px"></div>
+        <div class="idx"><b>N° 06</b> &nbsp;·&nbsp; <i>Vol. I</i></div>
+      </div>
+      <div class="idx" style="text-align:right;opacity:0.5"><i>Known by heart,<br>checked by hand.</i></div>
+    </div>
+    <h1>One hundred<br>and fifty <span class="it">+ checks.</span><br>Every visit.</h1>
+    <div class="lede">A ViewNam inspection is deliberate, not performative. Twelve key domains. Dozens of sub-points each. Every one recorded with a photograph.</div>
     <div class="grid">
-      <div class="tag"><div class="ico">🛠️</div><div class="t">Engine</div></div>
-      <div class="tag"><div class="ico">🚗</div><div class="t">Body & Paint</div></div>
-      <div class="tag"><div class="ico">🔧</div><div class="t">Suspension</div></div>
-      <div class="tag"><div class="ico">🛞</div><div class="t">Tires & Rims</div></div>
-      <div class="tag"><div class="ico">⚙️</div><div class="t">Transmission</div></div>
-      <div class="tag"><div class="ico">🛑</div><div class="t">Brakes</div></div>
-      <div class="tag"><div class="ico">⚡</div><div class="t">Electrics</div></div>
-      <div class="tag"><div class="ico">❄️</div><div class="t">Air Conditioning</div></div>
-      <div class="tag"><div class="ico">📄</div><div class="t">NaTIS & Papers</div></div>
-      <div class="tag"><div class="ico">🔍</div><div class="t">VIN Match</div></div>
-      <div class="tag"><div class="ico">🛣️</div><div class="t">Test Drive</div></div>
-      <div class="tag"><div class="ico">📸</div><div class="t">Full Photo Report</div></div>
+      <div class="cell"><span class="num">01</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 11h14M7 11V8a2 2 0 012-2h6a2 2 0 012 2v3M9 11v6a2 2 0 002 2h2a2 2 0 002-2v-6M12 6V3"/></svg><div class="lbl">Engine & Cold Start</div></div>
+      <div class="cell"><span class="num">02</span><svg class="icon" viewBox="0 0 24 24"><path d="M3 17l6-12 3 5 3-7 6 14H3z"/></svg><div class="lbl">Body & Paintwork</div></div>
+      <div class="cell"><span class="num">03</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 13l2-4h10l2 4M5 13v4a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-4M5 13h14"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg><div class="lbl">Suspension & Alignment</div></div>
+      <div class="cell"><span class="num">04</span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg><div class="lbl">Tyres & Wheels</div></div>
+      <div class="cell"><span class="num">05</span><svg class="icon" viewBox="0 0 24 24"><path d="M4 9h16v10H4zM8 9V6a4 4 0 018 0v3"/><circle cx="12" cy="14" r="1.5"/></svg><div class="lbl">Transmission</div></div>
+      <div class="cell"><span class="num">06</span><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM12 3v18M3 12h18"/></svg><div class="lbl">Brakes & Discs</div></div>
+      <div class="cell"><span class="num">07</span><svg class="icon" viewBox="0 0 24 24"><path d="M5 6l3 3M19 6l-3 3M5 18l3-3M19 18l-3-3M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/></svg><div class="lbl">Electrics & ECU</div></div>
+      <div class="cell"><span class="num">08</span><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v18M7 7l10 10M17 7L7 17"/></svg><div class="lbl">Air Conditioning</div></div>
+      <div class="cell"><span class="num">09</span><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v4h4"/><path d="M9 12h6M9 16h4"/></svg><div class="lbl">NaTIS & Papers</div></div>
+      <div class="cell"><span class="num">10</span><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></svg><div class="lbl">VIN Verification</div></div>
+      <div class="cell"><span class="num">11</span><svg class="icon" viewBox="0 0 24 24"><path d="M3 12c3-6 15-6 18 0-3 6-15 6-18 0z"/><circle cx="12" cy="12" r="3"/></svg><div class="lbl">Road Test</div></div>
+      <div class="cell"><span class="num">12</span><svg class="icon" viewBox="0 0 24 24"><path d="M4 7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/><circle cx="12" cy="13" r="4"/></svg><div class="lbl">Photo Report</div></div>
     </div>
     <div class="footer">
-      <div class="cta">One visit. <span class="a">One honest report.</span></div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark">VIEW<span>NAM</span></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>

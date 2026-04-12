@@ -2,54 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>FB 15 — Imports</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 15 — The Import Question</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
-  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:18px}
-  .k::before{content:'🌍';margin-right:10px}
-  h1{font-size:78px;font-weight:900;line-height:0.98;letter-spacing:-2.5px;margin-bottom:20px}
-  h1 .a{color:#D4A843}
-  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.78);margin-bottom:42px;max-width:820px;line-height:1.4}
-  .flags{display:flex;gap:14px;margin-bottom:30px;flex-wrap:wrap}
-  .flag{padding:14px 20px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(212,168,67,0.35);border-radius:100px;font-size:16px;font-weight:700;letter-spacing:0.2px;display:flex;align-items:center;gap:10px}
-  .flag .emo{font-size:22px}
-  .risks{flex:1;display:flex;flex-direction:column;gap:14px;padding:30px 34px;background:rgba(192,57,43,0.1);border:1.5px solid rgba(192,57,43,0.35);border-radius:18px}
-  .risks .h{font-size:20px;font-weight:800;color:#E06654;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
-  .risks .item{font-size:20px;font-weight:600;color:rgba(255,255,255,0.9);padding-left:32px;position:relative;line-height:1.3}
-  .risks .item::before{content:'⚠';position:absolute;left:0;top:0;color:#E06654;font-size:22px}
-  .risks .item .d{font-size:15px;font-weight:500;color:rgba(255,255,255,0.6);display:block;margin-top:4px}
-  .footer{margin-top:28px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
-  .cta{font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;max-width:600px}
-  .cta .a{color:#D4A843}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
-  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+  :root{
+    --ink:#0B1A12;--green:#0B3D2E;--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE;--paper:#FBF7EA;--rust:#8B2D26;
+  }
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  /* grain */
+  body::before{content:'';position:absolute;inset:0;background-image:
+    radial-gradient(rgba(212,168,67,0.04) 1px, transparent 1px);
+    background-size:28px 28px;opacity:0.6;pointer-events:none}
+  /* large faded word in background */
+  .ghost{position:absolute;top:40px;left:-30px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:380px;line-height:0.85;color:rgba(212,168,67,0.05);letter-spacing:-12px;pointer-events:none;z-index:0;white-space:nowrap}
+  .wrap{position:relative;z-index:2;padding:80px 90px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:center;margin-bottom:56px}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  .idx b{font-weight:700;font-style:normal;letter-spacing:2.5px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.94;letter-spacing:-2.5px;color:#fff;margin-bottom:18px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:24px;line-height:1.45;color:rgba(245,239,222,0.85);max-width:720px;margin-bottom:52px}
+  .sep{width:60px;height:2px;background:var(--gold);margin-bottom:30px}
+  .cards{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-content:center}
+  .card{padding:28px 22px;border:1px solid rgba(212,168,67,0.2);background:rgba(255,255,255,0.02);position:relative;display:flex;flex-direction:column;gap:14px}
+  .card .chapter{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:13px;color:var(--gold);letter-spacing:1px}
+  .card .chapter b{font-style:normal;font-weight:700;letter-spacing:2px}
+  .card h3{font-family:'Playfair Display',serif;font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-0.8px;color:#fff}
+  .card p{font-size:14px;font-weight:500;line-height:1.55;color:rgba(245,239,222,0.7)}
+  .card .origin{margin-top:auto;padding-top:14px;border-top:1px solid rgba(212,168,67,0.15);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(212,168,67,0.7)}
+  .footer{margin-top:46px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px}
+  .mark{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:4px}
+  .mark span{color:var(--gold)}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
+  .kicker-q{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:22px;color:var(--gold);max-width:420px;line-height:1.35;text-align:right}
 </style>
 </head>
 <body>
+  <div class="ghost">Import</div>
   <div class="wrap">
-    <div class="k">Buying An Import?</div>
-    <h1>That Japan import<br>has a <span class="a">story.</span></h1>
-    <div class="sub">Cars imported from Japan, South Africa or Dubai often hide history that locals can't easily verify.</div>
-    <div class="flags">
-      <div class="flag"><span class="emo">🇯🇵</span>Japan</div>
-      <div class="flag"><span class="emo">🇿🇦</span>South Africa</div>
-      <div class="flag"><span class="emo">🇦🇪</span>UAE</div>
-      <div class="flag"><span class="emo">🇬🇧</span>UK</div>
+    <div class="masthead">
+      <div>
+        <div class="cat">The Import Question</div>
+        <div style="height:10px"></div>
+        <div class="idx"><b>N° 15</b> &nbsp;·&nbsp; <i>A ViewNam feature</i></div>
+      </div>
+      <div class="kicker-q">"Low mileage. Clean body.<br>No service history."</div>
     </div>
-    <div class="risks">
-      <div class="h">Common import traps</div>
-      <div class="item">Rolled-back odometer<span class="d">That "80,000 km" Hiace often did 280,000 km overseas.</span></div>
-      <div class="item">Flood-damaged vehicles<span class="d">Rust under the carpets. Electronics start failing months later.</span></div>
-      <div class="item">Missing service history<span class="d">Parts due for replacement that nobody mentioned.</span></div>
+    <h1>Every import<br>arrives with <span class="it">a past.</span></h1>
+    <div class="sep"></div>
+    <div class="lede">Japan, South Africa, the UAE, the UK. The paperwork clears the port. The real history doesn't always travel with it.</div>
+    <div class="cards">
+      <div class="card">
+        <div class="chapter"><b>i.</b> <i>On the clock</i></div>
+        <h3>Mileage, reconsidered.</h3>
+        <p>The 80,000 km Hiace that actually did 280,000 abroad. We check against engine wear, pedal rubber, and seat bolster condition.</p>
+        <div class="origin">Common · Japan imports</div>
+      </div>
+      <div class="card">
+        <div class="chapter"><b>ii.</b> <i>Beneath the carpet</i></div>
+        <h3>Water remembers.</h3>
+        <p>Flood salvage doesn't show on the surface. It shows in the floor pan six months later, when the electrics start failing one by one.</p>
+        <div class="origin">Common · Salvage auctions</div>
+      </div>
+      <div class="card">
+        <div class="chapter"><b>iii.</b> <i>The missing years</i></div>
+        <h3>A blank service book.</h3>
+        <p>No history isn't absence of problems. It's absence of proof. We assess what the paper trail forgot.</p>
+        <div class="origin">Common · All imports</div>
+      </div>
     </div>
     <div class="footer">
-      <div class="cta">We verify what the import docs don't tell you.</div>
-      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+      <div class="mark">VIEW<span>NAM</span></div>
+      <div class="url">www.viewnam.com</div>
     </div>
   </div>
 </body>
