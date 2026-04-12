@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>FB 01 — Shocking Stat</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
+  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(212,168,67,0.15) 0%,transparent 60%);pointer-events:none}
+  .kicker{position:relative;z-index:1;font-size:18px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:#D4A843;margin-bottom:40px}
+  .kicker::before{content:'';display:inline-block;width:40px;height:2px;background:#D4A843;vertical-align:middle;margin-right:16px}
+  .stat{position:relative;z-index:1;font-size:380px;font-weight:900;line-height:0.85;letter-spacing:-12px;color:#D4A843;margin-bottom:20px;text-shadow:0 8px 40px rgba(0,0,0,0.25)}
+  .of{position:relative;z-index:1;font-size:60px;font-weight:700;letter-spacing:-1px;margin-bottom:44px;color:rgba(255,255,255,0.8)}
+  .headline{position:relative;z-index:1;font-size:54px;font-weight:900;line-height:1.08;letter-spacing:-1.5px;text-align:center;max-width:880px;margin-bottom:24px}
+  .headline .accent{color:#D4A843}
+  .sub{position:relative;z-index:1;font-size:26px;font-weight:500;color:rgba(255,255,255,0.75);text-align:center;max-width:780px;line-height:1.4}
+  .brand{position:absolute;bottom:52px;left:0;right:0;text-align:center;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px}
+  .brand img{height:48px}
+  .brand .dot{width:5px;height:5px;background:#D4A843;border-radius:50%;opacity:0.6}
+  .brand .url{font-size:18px;font-weight:700;color:#D4A843;letter-spacing:1px}
+</style>
+</head>
+<body>
+  <div class="kicker">The Hidden Truth</div>
+  <div class="stat">7<span style="color:rgba(255,255,255,0.55);letter-spacing:-8px">/</span>10</div>
+  <div class="of">used cars in Namibia</div>
+  <div class="headline">have <span class="accent">hidden issues</span> the seller<br>won't tell you about.</div>
+  <div class="sub">ViewNam finds them — before you pay.</div>
+  <div class="brand"><img src="../images/ViewNam logo.png" alt="ViewNam" style="background:#fff;padding:8px 14px;border-radius:8px"><span class="dot"></span><span class="url">www.viewnam.com</span></div>
+</body>
+</html>

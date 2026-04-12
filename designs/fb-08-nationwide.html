@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>FB 08 — Nationwide Coverage</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
+  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(212,168,67,0.1) 0%,transparent 60%);pointer-events:none}
+  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
+  .k::before{content:'📍';margin-right:10px}
+  h1{font-size:76px;font-weight:900;line-height:0.98;letter-spacing:-2.5px;margin-bottom:18px}
+  h1 .a{color:#D4A843}
+  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.75);margin-bottom:46px;max-width:820px;line-height:1.4}
+  .map{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}
+  .city{padding:20px 22px;border:1.5px solid rgba(212,168,67,0.25);border-radius:100px;background:rgba(255,255,255,0.03);text-align:center;font-size:17px;font-weight:700;letter-spacing:-0.2px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .city::before{content:'';width:8px;height:8px;background:#D4A843;border-radius:50%;box-shadow:0 0 8px rgba(212,168,67,0.6)}
+  .city.hub{background:rgba(212,168,67,0.15);border-color:#D4A843;color:#F4D98C}
+  .more{padding:20px 22px;border:1.5px dashed rgba(212,168,67,0.35);border-radius:100px;text-align:center;font-size:16px;font-weight:600;color:rgba(255,255,255,0.65);letter-spacing:-0.2px}
+  .footer{margin-top:38px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
+  .cta{font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.2}
+  .cta .a{color:#D4A843}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
+  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="k">Nationwide Coverage</div>
+    <h1>Wherever the car is,<br><span class="a">we go there.</span></h1>
+    <div class="sub">Inspections across every major Namibian town. Your seller stays put — we come to them.</div>
+    <div class="map">
+      <div class="city hub">Windhoek</div>
+      <div class="city hub">Swakopmund</div>
+      <div class="city hub">Walvis Bay</div>
+      <div class="city">Oshakati</div>
+      <div class="city">Ondangwa</div>
+      <div class="city">Ongwediva</div>
+      <div class="city">Otjiwarongo</div>
+      <div class="city">Tsumeb</div>
+      <div class="city">Gobabis</div>
+      <div class="city">Rundu</div>
+      <div class="city">Katima Mulilo</div>
+      <div class="city">Keetmanshoop</div>
+      <div class="city">Mariental</div>
+      <div class="city">Lüderitz</div>
+      <div class="more">+ more on request</div>
+    </div>
+    <div class="footer">
+      <div class="cta">Can't come to you?<br><span class="a">We come to you.</span></div>
+      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+    </div>
+  </div>
+</body>
+</html>
