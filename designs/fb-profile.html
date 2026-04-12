@@ -2,59 +2,34 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<title>ViewNam — Facebook Profile Photo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,900&display=swap" rel="stylesheet">
+<title>ViewNam — Profile</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    width: 1080px;
-    height: 1080px;
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
-    background: #FFFFFF;
-    color: #0B3D2E;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative;display:flex;align-items:center;justify-content:center}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.05) 1px,transparent 1px);background-size:28px 28px;opacity:0.7;pointer-events:none}
+  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(212,168,67,0.14) 0%,transparent 55%);pointer-events:none}
 
-  /* Very subtle tinted background so the white doesn't feel bare on FB feed */
-  body::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 50% 45%, #F4F8F6 0%, #FFFFFF 65%);
-  }
+  /* Safe circle zone: everything inside 880x880 inscribed circle */
+  .safe{position:relative;z-index:2;width:880px;height:880px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:60px}
 
-  /* Safe zone — Facebook crops a circle inscribed in the square.
-     Everything critical must stay inside a ~880px circle centred. */
-  .safe {
-    position: relative;
-    z-index: 2;
-    width: 880px;
-    height: 880px;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 40px;
-  }
+  .tile{background:#fff;padding:40px 54px;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,0.28);display:inline-flex;align-items:center;justify-content:center}
+  .tile img{width:520px;height:auto;display:block}
 
-  .logo {
-    width: 720px;
-    height: auto;
-    display: block;
-  }
+  /* Subtle corner flourish inside the safe circle */
+  .flourish{position:absolute;font-family:'Playfair Display',serif;font-style:italic;font-weight:900;font-size:340px;line-height:0.8;color:rgba(212,168,67,0.07);letter-spacing:-10px;pointer-events:none;z-index:1}
+  .fl-top{top:110px;left:140px}
+  .fl-bot{bottom:110px;right:140px;transform:scale(-1,-1)}
 </style>
 </head>
 <body>
+  <div class="flourish fl-top">"</div>
+  <div class="flourish fl-bot">"</div>
   <div class="safe">
-    <img class="logo" src="../images/ViewNam logo.png" alt="ViewNam">
+    <div class="tile">
+      <img src="../images/ViewNam logo.png" alt="ViewNam">
+    </div>
   </div>
 </body>
 </html>

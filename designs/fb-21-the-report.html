@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 21 — The Report</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
+  .ghost{position:absolute;top:-50px;right:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:440px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-14px;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
+  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:50px}
+  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
+  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:88px;line-height:0.96;letter-spacing:-2.4px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  .sep{width:60px;height:2px;background:var(--gold);margin:26px 0 40px}
+  .list{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;border-top:1px solid rgba(212,168,67,0.18)}
+  .row{display:grid;grid-template-columns:80px 1fr auto;gap:26px;align-items:baseline;padding:22px 0;border-bottom:1px solid rgba(212,168,67,0.18)}
+  .row .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:30px;color:var(--gold)}
+  .row h3{font-family:'Playfair Display',serif;font-weight:700;font-size:26px;letter-spacing:-0.3px;color:#fff;line-height:1.2}
+  .row .tick{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:rgba(245,239,222,0.55)}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:40px}
+  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
+  .mark img{height:56px;display:block}
+  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
+</style>
+</head>
+<body>
+  <div class="ghost">Report.</div>
+  <div class="wrap">
+    <div class="masthead">
+      <div><div class="cat">The Deliverable</div></div>
+      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Delivered to your phone.<br>Yours to keep.</i></div>
+    </div>
+    <h1>What you actually<br><span class="it">receive.</span></h1>
+    <div class="sep"></div>
+    <div class="list">
+      <div class="row"><div class="n">i.</div><h3>Full written report</h3><div class="tick">Same day, possible</div></div>
+      <div class="row"><div class="n">ii.</div><h3>Photographs of every key area</h3><div class="tick">Body, engine, papers</div></div>
+      <div class="row"><div class="n">iii.</div><h3>NaTIS code & VIN verification</h3><div class="tick">Recorded & checked</div></div>
+      <div class="row"><div class="n">iv.</div><h3>Estimated repair costs, if any</h3><div class="tick">For your negotiation</div></div>
+      <div class="row"><div class="n">v.</div><h3>A clear verdict</h3><div class="tick">Buy · Negotiate · Walk</div></div>
+    </div>
+    <div class="footer">
+      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+      <div class="url">www.viewnam.com</div>
+    </div>
+  </div>
+</body>
+</html>
