@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>FB 12 — Code 3 Story</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
+  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(192,57,43,0.15) 0%,transparent 55%);pointer-events:none}
+  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
+  h1{font-size:72px;font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:38px}
+  h1 .a{color:#D4A843}
+  .story{flex:1;display:flex;flex-direction:column;gap:20px;padding:40px 44px;background:rgba(255,255,255,0.03);border:1.5px solid rgba(212,168,67,0.2);border-radius:18px;margin-bottom:20px}
+  .story .p{font-size:23px;font-weight:500;line-height:1.5;color:rgba(255,255,255,0.85);letter-spacing:-0.2px}
+  .story .p strong{color:#fff;font-weight:700}
+  .story .p .warn{color:#E06654;font-weight:700}
+  .story .p .win{color:#D4A843;font-weight:700}
+  .divider{display:flex;align-items:center;gap:14px;margin:6px 0}
+  .divider .line{flex:1;height:1px;background:rgba(212,168,67,0.3)}
+  .divider .word{font-size:14px;font-weight:800;letter-spacing:3px;color:#D4A843;text-transform:uppercase}
+  .stamp{align-self:flex-start;padding:10px 20px;background:#C0392B;color:#fff;border-radius:8px;font-size:16px;font-weight:900;letter-spacing:2px;text-transform:uppercase;transform:rotate(-2deg);margin-top:8px}
+  .footer{padding-top:18px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
+  .cta{font-size:22px;font-weight:800;letter-spacing:-0.4px;max-width:620px;line-height:1.25}
+  .cta .a{color:#D4A843}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
+  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="k">A Real Scenario</div>
+    <h1>He almost bought<br>a <span class="a">Code 3 BMW.</span></h1>
+    <div class="story">
+      <div class="p">The car looked <strong>clean</strong>. The seller was <strong>friendly</strong>. The price was <strong>N$175,000 — a steal.</strong></div>
+      <div class="divider"><div class="line"></div><div class="word">then</div><div class="line"></div></div>
+      <div class="p">Our inspector pulled the NaTIS printout. Code 3. <span class="warn">Previously written off, structurally repaired.</span> The frame had been straightened.</div>
+      <div class="divider"><div class="line"></div><div class="word">result</div><div class="line"></div></div>
+      <div class="p"><span class="win">He walked away.</span> Kept his N$175,000. Found a clean car two weeks later.</div>
+      <div class="stamp">Report said: walk away</div>
+    </div>
+    <div class="footer">
+      <div class="cta">One inspection. <span class="a">A lifetime of regret avoided.</span></div>
+      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+    </div>
+  </div>
+</body>
+</html>

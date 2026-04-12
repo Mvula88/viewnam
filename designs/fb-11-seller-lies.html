@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>FB 11 — Seller Lies</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
+  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px}
+  .k::before{content:'💬';margin-right:10px}
+  h1{font-size:72px;font-weight:900;line-height:0.98;letter-spacing:-2.5px;margin-bottom:14px}
+  h1 .a{color:#D4A843}
+  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.75);margin-bottom:42px;max-width:800px;line-height:1.4}
+  .lies{flex:1;display:flex;flex-direction:column;gap:18px;justify-content:center}
+  .lie{display:flex;align-items:center;gap:24px;padding:24px 30px;background:rgba(255,255,255,0.04);border-radius:16px;border-left:4px solid #C0392B;position:relative}
+  .lie .quote{font-size:22px;font-weight:700;color:rgba(255,255,255,0.88);flex:1;letter-spacing:-0.3px;line-height:1.35}
+  .lie .quote::before{content:'"';color:#D4A843;font-size:32px;font-weight:900;margin-right:6px}
+  .lie .quote::after{content:'"';color:#D4A843;font-size:32px;font-weight:900;margin-left:3px}
+  .lie .tag{padding:8px 16px;background:rgba(192,57,43,0.2);border:1.5px solid #C0392B;color:#F1B4AC;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+  .footer{margin-top:36px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
+  .cta{font-size:24px;font-weight:800;letter-spacing:-0.5px}
+  .cta .a{color:#D4A843}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
+  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="k">Things Sellers Say</div>
+    <h1>Four lies you've probably<br><span class="a">already heard.</span></h1>
+    <div class="sub">If the seller has said any of these, ask us to check before you pay.</div>
+    <div class="lies">
+      <div class="lie"><div class="quote">One owner, very well taken care of.</div><div class="tag">Unverified</div></div>
+      <div class="lie"><div class="quote">Never been in an accident.</div><div class="tag">Check NaTIS</div></div>
+      <div class="lie"><div class="quote">The aircon just needs a little gas.</div><div class="tag">Usually not</div></div>
+      <div class="lie"><div class="quote">Papers are at home, I'll bring them later.</div><div class="tag">Red flag</div></div>
+    </div>
+    <div class="footer">
+      <div class="cta">Don't take their word. <span class="a">Get a second opinion.</span></div>
+      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+    </div>
+  </div>
+</body>
+</html>

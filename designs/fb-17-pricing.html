@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>FB 17 — Pricing</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#0B3D2E;color:#fff;position:relative;padding:80px}
+  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none}
+  body::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(212,168,67,0.12) 0%,transparent 55%);pointer-events:none}
+  .wrap{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
+  .k{font-size:17px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:16px;text-align:center}
+  h1{font-size:72px;font-weight:900;line-height:0.98;letter-spacing:-2.3px;margin-bottom:14px;text-align:center}
+  h1 .a{color:#D4A843}
+  .sub{font-size:22px;font-weight:500;color:rgba(255,255,255,0.78);margin-bottom:48px;text-align:center;max-width:720px;margin-left:auto;margin-right:auto;line-height:1.4}
+  .grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-content:center}
+  .card{padding:28px 28px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(212,168,67,0.22);border-radius:18px;display:flex;flex-direction:column;gap:8px;position:relative}
+  .card .name{font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#fff}
+  .card .desc{font-size:15px;font-weight:500;color:rgba(255,255,255,0.68);line-height:1.4;margin-bottom:10px;min-height:40px}
+  .card .price{font-size:42px;font-weight:900;letter-spacing:-1.5px;color:#D4A843;line-height:1}
+  .card .price .c{font-size:18px;color:rgba(212,168,67,0.8);font-weight:700;letter-spacing:0;margin-left:4px}
+  .card.hero{background:rgba(212,168,67,0.14);border:2px solid #D4A843}
+  .card.hero::before{content:'MOST POPULAR';position:absolute;top:-12px;left:28px;background:#D4A843;color:#0B3D2E;font-size:11px;font-weight:900;letter-spacing:2px;padding:4px 10px;border-radius:4px}
+  .footer{margin-top:36px;padding-top:22px;border-top:1px solid rgba(212,168,67,0.25);display:flex;justify-content:space-between;align-items:center}
+  .cta{font-size:22px;font-weight:800;letter-spacing:-0.4px;line-height:1.25}
+  .cta .a{color:#D4A843}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:36px;background:#fff;padding:6px 11px;border-radius:6px}
+  .brand .url{font-size:15px;font-weight:700;color:#D4A843}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="k">Transparent Pricing</div>
+    <h1>Pick the check<br><span class="a">that fits your budget.</span></h1>
+    <div class="sub">Pay only for what you need. No hidden fees. No surprises on the invoice.</div>
+    <div class="grid">
+      <div class="card">
+        <div class="name">Visual Inspection</div>
+        <div class="desc">Body, interior, tyres, paperwork & NaTIS check.</div>
+        <div class="price">N$750<span class="c"></span></div>
+      </div>
+      <div class="card">
+        <div class="name">Mechanical + Diagnostics</div>
+        <div class="desc">Engine, transmission, OBD scan, under-the-car check.</div>
+        <div class="price">N$700<span class="c"></span></div>
+      </div>
+      <div class="card">
+        <div class="name">Test Drive</div>
+        <div class="desc">Road behaviour, gearbox, brakes, suspension live-test.</div>
+        <div class="price">N$650<span class="c"></span></div>
+      </div>
+      <div class="card hero">
+        <div class="name">Full Package</div>
+        <div class="desc">Everything above + full written report & photos.</div>
+        <div class="price">N$1,800<span class="c"></span></div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="cta">Know the car. <span class="a">Know the price.</span></div>
+      <div class="brand"><img src="../images/ViewNam logo.png" alt=""><span class="url">www.viewnam.com</span></div>
+    </div>
+  </div>
+</body>
+</html>
