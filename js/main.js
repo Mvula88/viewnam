@@ -250,28 +250,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Auto-calculate booking price from selected services
+    // Translate any legacy service IDs to current ones so old bookings still price correctly
+    function normalizeService(s) {
+        const aliases = {
+            'full-package': 'full-inspection',
+            'visual-inspection': 'basic-visual',
+            'mechanical-diagnostics': 'engine-mechanical',
+        };
+        return aliases[s] || s;
+    }
+
     function calculateBookingPrice(services) {
         if (!services || !services.length) return 0;
+        const list = services.map(normalizeService);
 
-        // Full Package is all-inclusive
-        if (services.includes('full-package')) return 1800;
+        // Full inspection is all-inclusive — overrides everything else
+        if (list.includes('full-inspection')) return 1500;
 
-        const prices = {
-            'visual-inspection': 750,
-            'mechanical-diagnostics': 700,
-        };
+        // Basic visual + Engine mechanical bundled = combo price (better than 600+600)
+        const hasVisual = list.includes('basic-visual');
+        const hasEngine = list.includes('engine-mechanical');
+        const hasTestDrive = list.includes('test-drive');
+        const hasPeaceOfMind = list.includes('peace-of-mind');
+        const hasComboFlag = list.includes('basic-engine-combo');
 
-        const hasOtherOnsiteService = services.some(s => s === 'visual-inspection' || s === 'mechanical-diagnostics');
         let total = 0;
 
-        services.forEach(s => {
-            if (s === 'test-drive') {
-                // N$300 if booked with another on-site service, else N$650
-                total += hasOtherOnsiteService ? 300 : 650;
-            } else if (prices[s]) {
-                total += prices[s];
-            }
-        });
+        if (hasComboFlag || (hasVisual && hasEngine)) {
+            total += 1000; // Basic + Engine combo
+        } else {
+            if (hasVisual) total += 600;
+            if (hasEngine) total += 600;
+        }
+
+        if (hasTestDrive) {
+            // Add-on price (+N$200) if combined with another on-site service, else standalone N$500
+            const hasOtherOnsite = hasVisual || hasEngine || hasComboFlag;
+            total += hasOtherOnsite ? 200 : 500;
+        }
+
+        if (hasPeaceOfMind) total += 350;
 
         return total;
     }

@@ -643,22 +643,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
                     <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:10px">Set exact N$ amount the inspector gets per service (regardless of booking price):</p>
                     <div class="field-row">
                         <div class="field" style="margin-bottom:8px">
-                            <label style="font-size:0.75rem">Full Package (N$)</label>
-                            <input type="number" id="ai_fixed_full" min="0" step="50" placeholder="e.g. 1400">
+                            <label style="font-size:0.75rem">Full Inspection (N$)</label>
+                            <input type="number" id="ai_fixed_full" min="0" step="50" placeholder="e.g. 1100">
                         </div>
                         <div class="field" style="margin-bottom:8px">
-                            <label style="font-size:0.75rem">Visual Inspection (N$)</label>
-                            <input type="number" id="ai_fixed_visual" min="0" step="50" placeholder="e.g. 600">
+                            <label style="font-size:0.75rem">Basic Visual (N$)</label>
+                            <input type="number" id="ai_fixed_visual" min="0" step="50" placeholder="e.g. 450">
+                        </div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field" style="margin-bottom:8px">
+                            <label style="font-size:0.75rem">Engine & Mechanical (N$)</label>
+                            <input type="number" id="ai_fixed_mech" min="0" step="50" placeholder="e.g. 450">
+                        </div>
+                        <div class="field" style="margin-bottom:8px">
+                            <label style="font-size:0.75rem">Test Drive (N$)</label>
+                            <input type="number" id="ai_fixed_testdrive" min="0" step="50" placeholder="e.g. 380">
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field" style="margin-bottom:0">
-                            <label style="font-size:0.75rem">Mechanical + Diagnostics (N$)</label>
-                            <input type="number" id="ai_fixed_mech" min="0" step="50" placeholder="e.g. 550">
+                            <label style="font-size:0.75rem">Basic + Engine Combo (N$)</label>
+                            <input type="number" id="ai_fixed_combo" min="0" step="50" placeholder="e.g. 750">
                         </div>
                         <div class="field" style="margin-bottom:0">
-                            <label style="font-size:0.75rem">Test Drive (N$)</label>
-                            <input type="number" id="ai_fixed_testdrive" min="0" step="50" placeholder="e.g. 500">
+                            <label style="font-size:0.75rem">Peace of Mind (N$)</label>
+                            <input type="number" id="ai_fixed_peace" min="0" step="50" placeholder="e.g. 250">
                         </div>
                     </div>
                 </div>
@@ -685,7 +695,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
         <div class="field">
             <label>Total Price (N$)</label>
             <div class="input-suffix">
-                <input type="number" id="pm_price" min="0" step="50" placeholder="1800">
+                <input type="number" id="pm_price" min="0" step="50" placeholder="1500">
             </div>
         </div>
         <div id="pm_preview" style="background:var(--bg);padding:14px;border-radius:8px;font-size:0.85rem;margin-bottom:12px;display:none">
@@ -853,16 +863,26 @@ function getInspector(inspectorId) {
 }
 
 // Calculate payout based on inspector's payout method (percentage or fixed)
+// Map legacy service IDs to current ones so old bookings still match new payout keys
+const SERVICE_ALIAS = {
+    'full-package': 'full-inspection',
+    'visual-inspection': 'basic-visual',
+    'mechanical-diagnostics': 'engine-mechanical'
+};
+function normalizeServiceId(s) { return SERVICE_ALIAS[s] || s; }
+
 function computePayout(price, inspectorId, services) {
     price = parseFloat(price) || 0;
     const inspector = getInspector(inspectorId);
     const usesFixed = inspector && inspector.payout_type === 'fixed' && inspector.payout_fixed;
 
     if (usesFixed) {
-        // Sum fixed amounts for booked services
+        // Sum fixed amounts for booked services — try current key first, fall back to legacy
         let totalPayout = 0;
-        (services || []).forEach(s => {
-            const amt = parseFloat(inspector.payout_fixed[s]);
+        (services || []).forEach(rawId => {
+            const cur = normalizeServiceId(rawId);
+            let amt = parseFloat(inspector.payout_fixed[cur]);
+            if (isNaN(amt)) amt = parseFloat(inspector.payout_fixed[rawId]); // legacy back-compat
             if (!isNaN(amt)) totalPayout += amt;
         });
         // Cap payout at price (never pay more than client paid)
@@ -1361,6 +1381,19 @@ function openReportModal(bookingId) {
     const insName = (fd.booking && fd.booking.inspectorName) || '—';
     const insRegion = (fd.booking && fd.booking.inspectorRegion) || '';
 
+    // NaTIS / document snapshot
+    const docs = s.docs || {};
+    const natis = docs.natis_status || '';
+    const natisLow = natis.toLowerCase();
+    let natisTone = { bg: '#E8F8EE', fg: '#1E8449', label: 'OK' };
+    if (natisLow.includes('code 2') || natisLow.includes('code 3') || natisLow.includes('code 4') || natisLow.includes('scrapped')) {
+        natisTone = { bg: '#FDECEC', fg: '#C0392B', label: 'HIGH RISK' };
+    } else if (natisLow.includes('rebuilt') || natisLow.includes('imported') || natisLow.includes('unknown') || natisLow.includes('not yet')) {
+        natisTone = { bg: '#FEF5E7', fg: '#B8860B', label: 'CAUTION' };
+    } else if (!natis) {
+        natisTone = { bg: '#ECEFF1', fg: '#7F8C8D', label: 'Not captured' };
+    }
+
     document.getElementById('reportModalBody').innerHTML = `
         <div style="background:var(--bg);padding:14px;border-radius:8px;margin-bottom:14px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.88rem">
@@ -1371,6 +1404,21 @@ function openReportModal(bookingId) {
                 <div><strong>Client:</strong> ${booking.client_name || '—'}</div>
                 <div><strong>Location:</strong> ${booking.seller_location || '—'}</div>
             </div>
+        </div>
+
+        <div style="background:${natisTone.bg};padding:14px 16px;border-radius:8px;margin-bottom:14px;border-left:4px solid ${natisTone.fg}">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+                <div>
+                    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:${natisTone.fg};font-weight:700;margin-bottom:4px">NaTIS Vehicle Status</div>
+                    <div style="font-size:1rem;font-weight:700;color:#1A1A2E">${natis || 'Not captured by inspector'}</div>
+                </div>
+                <span style="background:${natisTone.fg};color:#fff;padding:4px 12px;border-radius:100px;font-size:0.7rem;font-weight:700;letter-spacing:0.06em">${natisTone.label}</span>
+            </div>
+            ${(docs.previous_owners || docs.license_expiry) ? `
+            <div style="display:flex;gap:18px;margin-top:10px;padding-top:10px;border-top:1px dashed ${natisTone.fg}30;font-size:0.82rem;color:#1A1A2E">
+                ${docs.previous_owners ? `<div><strong>Previous owners:</strong> ${docs.previous_owners}</div>` : ''}
+                ${docs.license_expiry ? `<div><strong>Licence expiry:</strong> ${docs.license_expiry}</div>` : ''}
+            </div>` : ''}
         </div>
 
         <div style="display:flex;gap:12px;margin-bottom:14px">
@@ -1432,11 +1480,14 @@ function forwardReportWhatsApp() {
 
     const recLabels = { 'recommended': 'RECOMMENDED', 'caution': 'PROCEED WITH CAUTION', 'not-recommended': 'NOT RECOMMENDED' };
     const s = report.stats || {};
+    const docs = s.docs || {};
     const msg = [
         `*ViewNam Inspection Report*`,
         `Ref: ${booking.reference || 'N/A'}`,
         ``,
         `*Vehicle:* ${booking.vehicle_year || ''} ${booking.vehicle_make || ''} ${booking.vehicle_model || ''}`,
+        docs.natis_status ? `*NaTIS Status:* ${docs.natis_status}` : '',
+        docs.previous_owners ? `*Previous Owners:* ${docs.previous_owners}` : '',
         ``,
         `*Score:* ${report.score ?? '—'} / 10`,
         `*Recommendation:* ${recLabels[report.recommendation] || 'N/A'}`,
@@ -1562,14 +1613,24 @@ function renderInspectors() {
         const activeJobs = allBookings.filter(b => b.assigned_inspector === i.id && (b.status === 'assigned' || b.status === 'in-progress')).length;
         const totalEarned = allBookings.filter(b => b.assigned_inspector === i.id && b.status === 'completed').reduce((s,b) => s + (parseFloat(b.inspector_payout) || 0), 0);
 
-        // Build payout display
+        // Build payout display — read new keys with fallback to legacy keys for back-compat
         let payoutDisplay = '';
         if (i.payout_type === 'fixed' && i.payout_fixed) {
+            const pf = i.payout_fixed;
+            const get = (current, legacy) => pf[current] != null ? pf[current] : pf[legacy];
             const parts = [];
-            if (i.payout_fixed['full-package']) parts.push(`Full: N$${fmt(i.payout_fixed['full-package'])}`);
-            if (i.payout_fixed['visual-inspection']) parts.push(`Visual: N$${fmt(i.payout_fixed['visual-inspection'])}`);
-            if (i.payout_fixed['mechanical-diagnostics']) parts.push(`Mech: N$${fmt(i.payout_fixed['mechanical-diagnostics'])}`);
-            if (i.payout_fixed['test-drive']) parts.push(`Drive: N$${fmt(i.payout_fixed['test-drive'])}`);
+            const full = get('full-inspection', 'full-package');
+            const visual = get('basic-visual', 'visual-inspection');
+            const mech = get('engine-mechanical', 'mechanical-diagnostics');
+            const drive = pf['test-drive'];
+            const combo = pf['basic-engine-combo'];
+            const peace = pf['peace-of-mind'];
+            if (full != null) parts.push(`Full: N$${fmt(full)}`);
+            if (visual != null) parts.push(`Visual: N$${fmt(visual)}`);
+            if (mech != null) parts.push(`Engine: N$${fmt(mech)}`);
+            if (drive != null) parts.push(`Drive: N$${fmt(drive)}`);
+            if (combo != null) parts.push(`Combo: N$${fmt(combo)}`);
+            if (peace != null) parts.push(`Peace: N$${fmt(peace)}`);
             payoutDisplay = `<p class="muted" style="font-size:0.78rem;line-height:1.7">${parts.join(' &middot; ') || 'No amounts set'}</p>`;
         } else {
             const commissionDisplay = i.commission_rate != null ? `${i.commission_rate}% custom` : `${defaultCommission}% default`;
@@ -1791,12 +1852,15 @@ function editInspector(id) {
     document.querySelector(`input[name="ai_payout_type"][value="${payoutType}"]`).checked = true;
     togglePayoutType();
 
-    // Pre-fill fixed amounts if any
+    // Pre-fill fixed amounts if any (read new keys, fall back to legacy keys)
     const fixed = i.payout_fixed || {};
-    document.getElementById('ai_fixed_full').value = fixed['full-package'] || '';
-    document.getElementById('ai_fixed_visual').value = fixed['visual-inspection'] || '';
-    document.getElementById('ai_fixed_mech').value = fixed['mechanical-diagnostics'] || '';
+    const fxGet = (cur, legacy) => fixed[cur] != null ? fixed[cur] : (fixed[legacy] != null ? fixed[legacy] : '');
+    document.getElementById('ai_fixed_full').value = fxGet('full-inspection', 'full-package');
+    document.getElementById('ai_fixed_visual').value = fxGet('basic-visual', 'visual-inspection');
+    document.getElementById('ai_fixed_mech').value = fxGet('engine-mechanical', 'mechanical-diagnostics');
     document.getElementById('ai_fixed_testdrive').value = fixed['test-drive'] || '';
+    document.getElementById('ai_fixed_combo').value = fixed['basic-engine-combo'] || '';
+    document.getElementById('ai_fixed_peace').value = fixed['peace-of-mind'] || '';
 
     // Brand expertise
     renderBrandChips(i.brand_expertise || []);
@@ -1819,17 +1883,21 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
     const pinValue = document.getElementById('ai_pin').value;
     const payoutType = document.querySelector('input[name="ai_payout_type"]:checked').value;
 
-    // Build fixed payout object from fields
+    // Build fixed payout object from fields — uses new service IDs
     const fixedFull = parseFloat(document.getElementById('ai_fixed_full').value);
     const fixedVisual = parseFloat(document.getElementById('ai_fixed_visual').value);
     const fixedMech = parseFloat(document.getElementById('ai_fixed_mech').value);
     const fixedTestdrive = parseFloat(document.getElementById('ai_fixed_testdrive').value);
+    const fixedCombo = parseFloat(document.getElementById('ai_fixed_combo').value);
+    const fixedPeace = parseFloat(document.getElementById('ai_fixed_peace').value);
 
     const payoutFixed = {};
-    if (!isNaN(fixedFull)) payoutFixed['full-package'] = fixedFull;
-    if (!isNaN(fixedVisual)) payoutFixed['visual-inspection'] = fixedVisual;
-    if (!isNaN(fixedMech)) payoutFixed['mechanical-diagnostics'] = fixedMech;
+    if (!isNaN(fixedFull)) payoutFixed['full-inspection'] = fixedFull;
+    if (!isNaN(fixedVisual)) payoutFixed['basic-visual'] = fixedVisual;
+    if (!isNaN(fixedMech)) payoutFixed['engine-mechanical'] = fixedMech;
     if (!isNaN(fixedTestdrive)) payoutFixed['test-drive'] = fixedTestdrive;
+    if (!isNaN(fixedCombo)) payoutFixed['basic-engine-combo'] = fixedCombo;
+    if (!isNaN(fixedPeace)) payoutFixed['peace-of-mind'] = fixedPeace;
 
     const data = {
         name: document.getElementById('ai_name').value,

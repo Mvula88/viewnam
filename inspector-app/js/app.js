@@ -13,6 +13,7 @@
         ratings: {},      // { itemId: 'good'|'fair'|'poor'|'na' }
         notes: {},        // { itemId: 'note text' }
         photos: {},       // { itemId: ['dataurl', ...] }
+        fields: {},       // { itemId: <string|number> } — for select/number/date items
         sectionNotes: {}, // { sectionId: 'note text' }
         sectionPhotos: {},// { sectionId: ['dataurl', ...] }
         summary: {},
@@ -180,24 +181,36 @@
     }
 
     // --- Checklist Rendering ---
-    // Maps booking service values (from landing page/admin) to checklist section service keys
+    // Maps booking service values (from landing page/admin) to checklist section service keys.
+    // Some services (combo, full inspection) unlock multiple section keys.
     const SERVICE_MAP = {
-        'full-package': 'full',
-        'visual-inspection': 'visual',
-        'mechanical-diagnostics': 'mechanical',
-        'test-drive': 'testdrive',
-        // legacy short codes (back-compat)
-        'full': 'full',
-        'visual': 'visual',
-        'mechanical': 'mechanical',
-        'testdrive': 'testdrive',
+        // Current IDs
+        'full-inspection': ['full'],
+        'basic-visual': ['visual'],
+        'engine-mechanical': ['mechanical'],
+        'test-drive': ['testdrive'],
+        'basic-engine-combo': ['visual', 'mechanical'],
+        'peace-of-mind': ['visual'],
+        // Legacy IDs (kept so old bookings still load the right checklist)
+        'full-package': ['full'],
+        'visual-inspection': ['visual'],
+        'mechanical-diagnostics': ['mechanical'],
+        // Short codes (back-compat with very old data)
+        'full': ['full'],
+        'visual': ['visual'],
+        'mechanical': ['mechanical'],
+        'testdrive': ['testdrive'],
     };
 
     function getActiveSections() {
-        const raw = state.booking.services || ['full'];
-        const svcs = raw.map(s => SERVICE_MAP[s] || s);
-        if (svcs.includes('full')) return CHECKLIST_SECTIONS;
-        return CHECKLIST_SECTIONS.filter(s => s.service.some(svc => svcs.includes(svc)));
+        const raw = state.booking.services || ['full-inspection'];
+        const svcs = new Set();
+        raw.forEach(s => {
+            const mapped = SERVICE_MAP[s] || [s];
+            mapped.forEach(m => svcs.add(m));
+        });
+        if (svcs.has('full')) return CHECKLIST_SECTIONS;
+        return CHECKLIST_SECTIONS.filter(s => s.service.some(svc => svcs.has(svc)));
     }
 
     function getTotalItems() {
@@ -286,18 +299,37 @@
         const hasNote = !!state.notes[item.id];
         const hasPhotos = (state.photos[item.id] || []).length > 0;
 
+        // Alternate input for special item types (select/number/date)
+        let controlHtml;
+        if (item.type === 'select') {
+            const current = state.fields[item.id] || '';
+            const opts = ['<option value="">Select...</option>'].concat(
+                (item.options || []).map(o => `<option value="${o}"${current === o ? ' selected' : ''}>${o}</option>`)
+            ).join('');
+            controlHtml = `<select class="field-select" data-item="${item.id}" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:inherit;background:#fff;min-width:180px;max-width:100%">${opts}</select>`;
+        } else if (item.type === 'number') {
+            const current = state.fields[item.id] ?? '';
+            controlHtml = `<input type="number" inputmode="numeric" class="field-number" data-item="${item.id}" value="${current}" placeholder="—" style="width:96px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;font-family:inherit;text-align:center">`;
+        } else if (item.type === 'date') {
+            const current = state.fields[item.id] || '';
+            controlHtml = `<input type="date" class="field-date" data-item="${item.id}" value="${current}" style="padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:inherit">`;
+        } else {
+            controlHtml = `
+                <div class="rating-btns">
+                    <button class="rating-btn ${currentRating === 'good' ? 'selected-good' : ''}" data-rating="good">G</button>
+                    <button class="rating-btn ${currentRating === 'fair' ? 'selected-fair' : ''}" data-rating="fair">F</button>
+                    <button class="rating-btn ${currentRating === 'poor' ? 'selected-poor' : ''}" data-rating="poor">P</button>
+                    <button class="rating-btn ${currentRating === 'na' ? 'selected-na' : ''}" data-rating="na">N/A</button>
+                </div>`;
+        }
+
         el.innerHTML = `
             <div class="check-item-header">
                 <div>
                     <div class="check-item-title">${item.name}</div>
                     <div class="check-item-desc">${item.desc}</div>
                 </div>
-                <div class="rating-btns">
-                    <button class="rating-btn ${currentRating === 'good' ? 'selected-good' : ''}" data-rating="good">G</button>
-                    <button class="rating-btn ${currentRating === 'fair' ? 'selected-fair' : ''}" data-rating="fair">F</button>
-                    <button class="rating-btn ${currentRating === 'poor' ? 'selected-poor' : ''}" data-rating="poor">P</button>
-                    <button class="rating-btn ${currentRating === 'na' ? 'selected-na' : ''}" data-rating="na">N/A</button>
-                </div>
+                ${controlHtml}
             </div>
             <div class="check-item-extras">
                 <div class="item-actions">
@@ -315,6 +347,35 @@
                 <div class="item-photos">${renderItemPhotos(item.id)}</div>
             </div>
         `;
+
+        // Select / number / date field handlers (for special item types)
+        const fieldEl = el.querySelector('.field-select, .field-number, .field-date');
+        if (fieldEl) {
+            const commitField = () => {
+                const v = fieldEl.value;
+                if (v === '' || v == null) delete state.fields[item.id];
+                else state.fields[item.id] = v;
+
+                // Red-flag highlight for NaTIS status codes that warn the buyer
+                if (item.id === 'doc_natis_status') {
+                    const code = (v || '').toLowerCase();
+                    el.classList.remove('rated-good', 'rated-fair', 'rated-poor');
+                    if (code.includes('code 2') || code.includes('code 3') || code.includes('code 4') || code.includes('scrapped')) {
+                        el.classList.add('rated-poor');
+                    } else if (code.includes('rebuilt') || code.includes('imported') || code.includes('unknown')) {
+                        el.classList.add('rated-fair');
+                    } else if (code) {
+                        el.classList.add('rated-good');
+                    }
+                }
+
+                updateProgress();
+                renderSectionTabs();
+                autoSave();
+            };
+            fieldEl.addEventListener('change', commitField);
+            fieldEl.addEventListener('input', commitField);
+        }
 
         // Rating buttons
         el.querySelectorAll('.rating-btn').forEach(btn => {
@@ -526,7 +587,11 @@
         sections.forEach(s => s.groups.forEach(g => {
             g.items.forEach(item => {
                 total++;
-                if (state.ratings[item.id]) rated++;
+                if (item.type && item.type !== 'rating') {
+                    if (state.fields[item.id] != null && state.fields[item.id] !== '') rated++;
+                } else if (state.ratings[item.id]) {
+                    rated++;
+                }
             });
         }));
         progressCount.textContent = rated;
@@ -787,6 +852,13 @@
                 return;
             }
 
+            // NaTIS & document snapshot for the admin dashboard
+            const docs = {
+                natis_status: state.fields['doc_natis_status'] || null,
+                license_expiry: state.fields['doc_license_expiry'] || null,
+                previous_owners: state.fields['doc_prev_owners'] || null,
+            };
+
             const reportPayload = {
                 booking_id: bookingRow.id,
                 score: state.summary.score ? Number(state.summary.score) : null,
@@ -794,11 +866,12 @@
                 key_issues: state.summary.keyIssues || null,
                 repair_costs: state.summary.repairCosts || null,
                 buyer_advice: state.summary.buyerAdvice || null,
-                stats: { good, fair, poor, na, poor_items: poorItems },
+                stats: { good, fair, poor, na, poor_items: poorItems, docs },
                 full_data: {
                     booking: b,
                     ratings: state.ratings,
                     notes: state.notes,
+                    fields: state.fields,
                     sectionNotes: state.sectionNotes,
                     summary: state.summary,
                     // photos excluded from full_data to avoid oversized JSON; they stay in localStorage
@@ -859,6 +932,7 @@
             ratings: state.ratings,
             notes: state.notes,
             photos: state.photos,
+            fields: state.fields,
             sectionNotes: state.sectionNotes,
             sectionPhotos: state.sectionPhotos,
             summary: state.summary,
@@ -916,6 +990,7 @@
             ratings: data.ratings || {},
             notes: data.notes || {},
             photos: data.photos || {},
+            fields: data.fields || {},
             sectionNotes: data.sectionNotes || {},
             sectionPhotos: data.sectionPhotos || {},
             summary: data.summary || {},
