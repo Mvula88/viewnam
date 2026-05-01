@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const list = services.map(normalizeService);
 
         // Full inspection is all-inclusive — overrides everything else
-        if (list.includes('full-inspection')) return 1500;
+        if (list.includes('full-inspection')) return 1200;
 
         // Basic visual + Engine mechanical bundled = combo price (better than 600+600)
         const hasVisual = list.includes('basic-visual');
