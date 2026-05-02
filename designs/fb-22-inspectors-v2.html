@@ -27,11 +27,10 @@
   .accent{position:absolute;top:0;left:0;width:60%;height:100%;z-index:4;pointer-events:none}
   .accent svg{width:100%;height:100%;display:block}
 
-  /* Brand mark — natural aspect ratio, agency-style placement */
-  .shield{position:absolute;top:60px;right:60px;background:#fff;z-index:7;
-    border-radius:10px;padding:13px 20px;
-    box-shadow:0 4px 18px rgba(0,0,0,0.18)}
-  .shield img{height:44px;display:block}
+  /* Brand mark — placed cleanly on the photo, no container */
+  .shield{position:absolute;top:60px;right:60px;z-index:7;
+    filter:drop-shadow(0 2px 12px rgba(0,0,0,0.45))}
+  .shield img{height:54px;display:block}
 
   /* Content inside the green panel */
   .content{position:absolute;left:0;top:0;width:60%;height:100%;padding:100px 90px 90px;z-index:5;
