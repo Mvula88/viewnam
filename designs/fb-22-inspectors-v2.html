@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 22 v2 — The Inspectors</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
+
+  /* Hero photo fills canvas */
+  .photo{position:absolute;inset:0;background:url('../images/inspect.jpg') center/cover no-repeat;z-index:1}
+  .photo::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.45) 100%)}
+
+  /* Diagonal deep-green panel covering bottom-left ~ 70%, angled right edge */
+  .panel{position:absolute;left:0;bottom:0;width:70%;height:100%;background:var(--green-deep);
+    clip-path:polygon(0 0%, 88% 0%, 100% 100%, 0 100%);
+    z-index:2}
+  .panel::before{content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(212,168,67,0.05) 1px,transparent 1px);
+    background-size:28px 28px;opacity:0.7;
+    clip-path:polygon(0 0%, 88% 0%, 100% 100%, 0 100%)}
+
+  /* Gold accent line on the diagonal edge */
+  .accent{position:absolute;top:0;left:0;width:70%;height:100%;z-index:3;pointer-events:none}
+  .accent svg{width:100%;height:100%;display:block}
+
+  /* Logo shield top-right corner */
+  .shield{position:absolute;top:0;right:80px;width:140px;background:#fff;z-index:6;
+    border-radius:0 0 80px 80px;
+    padding:32px 22px 30px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+  .shield img{width:100%;display:block}
+
+  /* Content inside the green panel */
+  .content{position:absolute;left:0;top:0;width:70%;height:100%;padding:100px 90px 80px;z-index:5;
+    display:flex;flex-direction:column}
+
+  .cat{font-size:13px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:32px}
+  .cat::before{content:'';display:inline-block;width:32px;height:2px;background:var(--gold);vertical-align:middle;margin-right:14px;margin-top:-3px}
+
+  .hero{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.92;letter-spacing:-2.8px;color:#fff;margin-bottom:14px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+
+  .sep{width:60px;height:2px;background:var(--gold);margin:32px 0 30px}
+
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:24px;line-height:1.5;color:rgba(245,239,222,0.85);max-width:600px;margin-bottom:30px}
+  .lede b{color:#fff;font-weight:700;font-style:italic}
+
+  .creds{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .cred{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);padding:8px 16px;border:1px solid rgba(212,168,67,0.4);border-radius:100px;background:rgba(212,168,67,0.06)}
+
+  .url-row{position:absolute;bottom:36px;left:90px;font-size:11px;font-weight:700;letter-spacing:2.8px;text-transform:uppercase;color:rgba(245,239,222,0.7);z-index:6}
+</style>
+</head>
+<body>
+  <div class="photo"></div>
+  <div class="panel"></div>
+  <div class="accent">
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <line x1="880" y1="0" x2="1000" y2="1000" stroke="#D4A843" stroke-width="2.5" stroke-opacity="0.85"/>
+    </svg>
+  </div>
+  <div class="shield"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+
+  <div class="content">
+    <div class="cat">The People</div>
+    <div class="hero">
+      <h1>Real people.<br><span class="it">Real expertise.</span></h1>
+      <div class="sep"></div>
+      <div class="lede">Every ViewNam inspector is <b>vetted, trained, and based</b> in the town you're buying in. Brand specialists for BMW, VW, Toyota, Mercedes-Benz and more.</div>
+      <div class="creds">
+        <div class="cred">Trained</div>
+        <div class="cred">Vetted</div>
+        <div class="cred">Local</div>
+        <div class="cred">Brand-specialised</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="url-row">www.viewnam.com</div>
+</body>
+</html>

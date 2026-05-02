@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+<title>FB 31 v2 — Thinking Of Buying</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
+
+  /* Full-canvas hero photo */
+  .photo{position:absolute;inset:0;background:url('../images/inspection.jpg') center/cover no-repeat;z-index:1}
+  .photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.35) 100%)}
+
+  /* Diagonal deep-green panel — angled top edge slanting from upper-right down to lower-left */
+  .panel{position:absolute;left:0;bottom:0;width:78%;height:82%;background:var(--green-deep);
+    clip-path:polygon(0 18%, 100% 0%, 100% 100%, 0 100%);
+    z-index:2}
+  .panel::before{content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(212,168,67,0.05) 1px,transparent 1px);
+    background-size:28px 28px;opacity:0.7;
+    clip-path:polygon(0 18%, 100% 0%, 100% 100%, 0 100%)}
+
+  /* Thin gold accent line tracing the diagonal edge */
+  .accent{position:absolute;top:0;left:0;width:78%;height:82%;z-index:3;pointer-events:none}
+  .accent svg{width:100%;height:100%;display:block}
+
+  /* Logo shield top-right (Bank Windhoek style) */
+  .shield{position:absolute;top:0;right:80px;width:140px;background:#fff;z-index:6;
+    border-radius:0 0 80px 80px;
+    padding:32px 22px 30px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+  .shield img{width:100%;display:block}
+
+  /* Content sits on the green panel */
+  .content{position:absolute;left:0;bottom:0;width:78%;height:82%;padding:120px 90px 90px;z-index:5;
+    display:flex;flex-direction:column;justify-content:flex-end}
+
+  .cat{font-size:13px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:36px}
+  .cat::before{content:'';display:inline-block;width:32px;height:2px;background:var(--gold);vertical-align:middle;margin-right:14px;margin-top:-3px}
+
+  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:108px;line-height:0.92;letter-spacing:-3.2px;color:#fff;margin-bottom:18px}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+
+  .sub{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:38px;color:var(--cream);opacity:0.9;margin-bottom:34px;letter-spacing:-0.4px}
+
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:24px;line-height:1.5;color:rgba(245,239,222,0.85);max-width:680px;margin-bottom:24px}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+
+  .promise{font-family:'Playfair Display',serif;font-weight:700;font-size:30px;color:#fff;letter-spacing:-0.3px;line-height:1.25;max-width:640px}
+  .promise em{font-style:italic;color:var(--gold)}
+
+  /* Footer URL row */
+  .url-row{position:absolute;bottom:36px;right:60px;font-size:11px;font-weight:700;letter-spacing:2.8px;text-transform:uppercase;color:rgba(245,239,222,0.7);z-index:6}
+</style>
+</head>
+<body>
+  <div class="photo"></div>
+  <div class="panel"></div>
+  <div class="accent">
+    <svg viewBox="0 0 1000 800" preserveAspectRatio="none">
+      <line x1="0" y1="144" x2="1000" y2="0" stroke="#D4A843" stroke-width="2.5" stroke-opacity="0.85"/>
+    </svg>
+  </div>
+  <div class="shield"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
+
+  <div class="content">
+    <div class="cat">Before You Decide</div>
+    <h1>Thinking of<br>buying <span class="it">a car?</span></h1>
+    <div class="sub">Avoid costly mistakes.</div>
+    <div class="lede">You're already ahead of most buyers — because you're reading this <em>before</em> you've paid.</div>
+    <div class="promise">One inspection can save you <em>thousands.</em></div>
+  </div>
+
+  <div class="url-row">www.viewnam.com</div>
+</body>
+</html>
