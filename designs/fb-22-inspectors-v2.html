@@ -20,14 +20,20 @@
     background:radial-gradient(ellipse 90% 90% at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 75%, rgba(0,0,0,0.55) 100%);
     z-index:2;pointer-events:none}
 
-  /* Bottom-left text anchor — deep-green gradient that fades up & right */
+  /* Bottom-left text anchor — diagonal gradient PLUS a bottom band for body legibility */
   .anchor{position:absolute;inset:0;
-    background:linear-gradient(125deg,
-      rgba(6,42,31,0.94) 0%,
-      rgba(6,42,31,0.86) 22%,
-      rgba(6,42,31,0.55) 45%,
-      rgba(6,42,31,0.18) 65%,
-      rgba(6,42,31,0) 82%);
+    background:
+      linear-gradient(0deg,
+        rgba(6,42,31,0.86) 0%,
+        rgba(6,42,31,0.62) 18%,
+        rgba(6,42,31,0.28) 32%,
+        rgba(6,42,31,0) 46%),
+      linear-gradient(125deg,
+        rgba(6,42,31,0.94) 0%,
+        rgba(6,42,31,0.82) 22%,
+        rgba(6,42,31,0.45) 45%,
+        rgba(6,42,31,0.12) 65%,
+        rgba(6,42,31,0) 82%);
     z-index:3;pointer-events:none}
 
   /* Subtle film-grain dot pattern over everything for editorial feel */
@@ -51,12 +57,12 @@
   .cat{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:36px}
   .cat::before{content:'';display:inline-block;width:38px;height:1px;background:var(--gold);vertical-align:middle;margin-right:18px;margin-top:-4px}
 
-  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:108px;line-height:0.94;letter-spacing:-2.8px;color:#fff;margin-bottom:0;text-shadow:0 2px 24px rgba(0,0,0,0.35)}
-  h1 .it{font-style:italic;font-weight:700;color:#fff}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:108px;line-height:0.94;letter-spacing:-2.8px;color:#fff;margin-bottom:0;text-shadow:0 2px 24px rgba(0,0,0,0.45)}
+  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
 
   .rule{width:48px;height:1px;background:var(--gold);margin:42px 0 30px;opacity:0.95}
 
-  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:24px;line-height:1.55;color:rgba(245,239,222,0.92);max-width:620px;letter-spacing:-0.2px;text-shadow:0 1px 16px rgba(0,0,0,0.45)}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:25px;line-height:1.55;color:#fff;max-width:620px;letter-spacing:-0.2px;text-shadow:0 1px 14px rgba(0,0,0,0.65)}
 
   /* Bottom strip — meta tags + URL on a single line */
   .footer{position:absolute;bottom:54px;left:90px;right:90px;z-index:7;
