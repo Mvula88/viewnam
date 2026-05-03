@@ -3,78 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
-<title>FB 15 — The Import Question</title>
+<title>FB 15 — Imports</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  :root{
-    --ink:#0B1A12;--green:#0B3D2E;--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE;--paper:#FBF7EA;--rust:#8B2D26;
-  }
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
-  /* grain */
-  body::before{content:'';position:absolute;inset:0;background-image:
-    radial-gradient(rgba(212,168,67,0.04) 1px, transparent 1px);
-    background-size:28px 28px;opacity:0.6;pointer-events:none}
-  /* large faded word in background */
-  .ghost{position:absolute;top:40px;left:-30px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:380px;line-height:0.85;color:rgba(212,168,67,0.05);letter-spacing:-12px;pointer-events:none;z-index:0;white-space:nowrap}
-  .wrap{position:relative;z-index:2;padding:80px 90px;height:100%;display:flex;flex-direction:column}
-  .masthead{display:flex;justify-content:space-between;align-items:center;margin-bottom:56px}
-  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
-  .idx b{font-weight:700;font-style:normal;letter-spacing:2.5px}
-  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
-  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.94;letter-spacing:-2.5px;color:#fff;margin-bottom:18px}
-  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
-  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:24px;line-height:1.45;color:rgba(245,239,222,0.85);max-width:720px;margin-bottom:52px}
-  .sep{width:60px;height:2px;background:var(--gold);margin-bottom:30px}
-  .cards{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-content:center}
-  .card{padding:28px 22px;border:1px solid rgba(212,168,67,0.2);background:rgba(255,255,255,0.02);position:relative;display:flex;flex-direction:column;gap:14px}
-  .card .chapter{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:13px;color:var(--gold);letter-spacing:1px}
-  .card .chapter b{font-style:normal;font-weight:700;letter-spacing:2px}
-  .card h3{font-family:'Playfair Display',serif;font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-0.8px;color:#fff}
-  .card p{font-size:14px;font-weight:500;line-height:1.55;color:rgba(245,239,222,0.7)}
-  .card .origin{margin-top:auto;padding-top:14px;border-top:1px solid rgba(212,168,67,0.15);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(212,168,67,0.7)}
-  .footer{margin-top:46px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px}
-  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
-  .mark img{height:56px;display:block}
-  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
-  .kicker-q{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:22px;color:var(--gold);max-width:420px;line-height:1.35;text-align:right}
+  :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
+
+  .photo{position:absolute;inset:0;background:url('../images/inspection 2.jpg') center center / cover no-repeat;filter:saturate(0.96) contrast(1.06) brightness(1.06);z-index:1}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 95% 95% at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 78%, rgba(0,0,0,0.38) 100%);z-index:2;pointer-events:none}
+  .anchor{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,42,31,0.92) 0%,rgba(11,61,44,0.72) 18%,rgba(11,61,44,0.34) 32%,rgba(11,61,44,0) 46%),linear-gradient(125deg,rgba(11,61,44,0.94) 0%,rgba(11,61,44,0.82) 22%,rgba(11,61,44,0.45) 45%,rgba(11,61,44,0.12) 65%,rgba(11,61,44,0) 82%);z-index:3;pointer-events:none}
+  .shine{position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 22% 62%, rgba(28,110,82,0.32) 0%, rgba(28,110,82,0.12) 35%, rgba(28,110,82,0) 70%);z-index:4;pointer-events:none}
+  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1px, transparent 1px);background-size:32px 32px;opacity:0.55;z-index:5;pointer-events:none}
+
+  .shield{position:absolute;top:70px;right:70px;z-index:8;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.55))}
+  .shield img{height:66px;display:block}
+  .top-mast{position:absolute;top:88px;left:90px;z-index:7;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.4px;text-transform:uppercase;color:rgba(245,239,222,0.7)}
+  .top-mast .dot{color:var(--gold);margin:0 12px;opacity:0.8}
+
+  .content{position:absolute;left:90px;bottom:130px;right:120px;z-index:7;max-width:760px}
+  .cat{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:36px}
+  .cat::before{content:'';display:inline-block;width:38px;height:1px;background:var(--gold);vertical-align:middle;margin-right:18px;margin-top:-4px}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:96px;line-height:0.94;letter-spacing:-2.6px;color:#fff;margin-bottom:0;text-shadow:0 2px 24px rgba(0,0,0,0.45)}
+  h1 .it,h1 .a{font-style:italic;font-weight:700;color:var(--gold)}
+  h1 q{quotes:'\201C' '\201D';font-style:italic;font-weight:700}
+  h1 em{font-style:italic;font-weight:700;color:var(--gold)}
+  .rule{width:48px;height:1px;background:var(--gold);margin:42px 0 30px;opacity:0.95}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:25px;line-height:1.55;color:#fff;max-width:620px;letter-spacing:-0.2px;text-shadow:0 1px 14px rgba(0,0,0,0.65)}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+  .lede b{color:#fff;font-weight:700;font-style:italic}
+
+  .footer{position:absolute;bottom:54px;left:90px;right:90px;z-index:7;display:flex;justify-content:space-between;align-items:center}
+  .meta{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.8)}
+  .meta span{color:var(--gold);margin:0 12px;opacity:0.7}
+  .url{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.8)}
+
 </style>
 </head>
 <body>
-  <div class="ghost">Import</div>
-  <div class="wrap">
-    <div class="masthead">
-      <div>
-        <div class="cat">The Import Question</div>
-      </div>
-      <div class="kicker-q">"Low mileage. Clean body.<br>No service history."</div>
-    </div>
+  <div class="photo"></div>
+  <div class="vignette"></div>
+  <div class="anchor"></div>
+  <div class="shine"></div>
+  <div class="grain"></div>
+  <div class="shield"><img src="../images/ViewNam logo white.png" alt="ViewNam"></div>
+  <div class="top-mast">ViewNam <span class="dot">&middot;</span> Vehicle Inspection</div>
+  <div class="content">
+    <div class="cat">The Import Question</div>
     <h1>Every import<br>arrives with <span class="it">a past.</span></h1>
-    <div class="sep"></div>
-    <div class="lede">Japan, South Africa, the UAE, the UK. The paperwork clears the port. The real history doesn't always travel with it.</div>
-    <div class="cards">
-      <div class="card">
-        <div class="chapter"><b>i.</b> <i>On the clock</i></div>
-        <h3>Mileage, reconsidered.</h3>
-        <p>The 80,000 km Hiace that actually did 280,000 abroad. We check against engine wear, pedal rubber, and seat bolster condition.</p>
-        <div class="origin">Common · Japan imports</div>
-      </div>
-      <div class="card">
-        <div class="chapter"><b>ii.</b> <i>Beneath the carpet</i></div>
-        <h3>Water remembers.</h3>
-        <p>Flood salvage doesn't show on the surface. It shows in the floor pan six months later, when the electrics start failing one by one.</p>
-        <div class="origin">Common · Salvage auctions</div>
-      </div>
-      <div class="card">
-        <div class="chapter"><b>iii.</b> <i>Behind the paint</i></div>
-        <h3>Repaired, then exported.</h3>
-        <p>Japan's auction halls grade thousands of accident-damaged vehicles each month. Many are cosmetically restored and shipped. Structurally, not always.</p>
-        <div class="origin">Common · Japan imports</div>
-      </div>
-    </div>
-    <div class="footer">
-      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
-      <div class="url">www.viewnam.com</div>
-    </div>
+    <div class="rule"></div>
+    <div class="lede">Japan, South Africa, the UAE, the UK. The paperwork clears the port — <em>the real history doesn't always travel with it.</em></div>
+  </div>
+  <div class="footer">
+    <div class="meta">Imports <span>·</span> Verify the history</div>
+    <div class="url">www.viewnam.com</div>
   </div>
 </body>
 </html>

@@ -6,46 +6,65 @@
 <title>FB 05 — How It Works</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
-  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.04) 1px,transparent 1px);background-size:28px 28px;opacity:0.6;pointer-events:none}
-  .ghost{position:absolute;top:-40px;left:-40px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:460px;line-height:0.82;color:rgba(212,168,67,0.05);letter-spacing:-16px;pointer-events:none;z-index:0}
-  .wrap{position:relative;z-index:2;padding:90px 100px;height:100%;display:flex;flex-direction:column}
-  .masthead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:54px}
-  .cat{font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9}
-  .idx{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--gold);letter-spacing:0.5px}
-  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;line-height:0.95;letter-spacing:-2.6px;color:#fff;margin-bottom:14px}
-  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
-  .sep{width:60px;height:2px;background:var(--gold);margin:28px 0 46px}
-  .steps{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;border-top:1px solid rgba(212,168,67,0.18)}
-  .step{display:grid;grid-template-columns:80px 1fr;gap:26px;align-items:baseline;padding:26px 0;border-bottom:1px solid rgba(212,168,67,0.18)}
-  .step .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:36px;color:var(--gold)}
-  .step h3{font-family:'Playfair Display',serif;font-weight:700;font-size:32px;letter-spacing:-0.5px;color:#fff;line-height:1.2;margin-bottom:4px}
-  .step p{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:rgba(245,239,222,0.65);line-height:1.4}
-  .footer{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(212,168,67,0.2);padding-top:22px;margin-top:40px}
-  .mark{background:#fff;padding:10px 18px;border-radius:10px;display:inline-flex;align-items:center}
-  .mark img{height:56px;display:block}
-  .url{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
+  :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
+
+  .photo{position:absolute;inset:0;background:url('../images/inspection.jpg') 38% center / cover no-repeat;filter:saturate(0.96) contrast(1.06) brightness(1.06);z-index:1}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 95% 95% at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 78%, rgba(0,0,0,0.38) 100%);z-index:2;pointer-events:none}
+  .anchor{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,42,31,0.92) 0%,rgba(11,61,44,0.72) 18%,rgba(11,61,44,0.34) 32%,rgba(11,61,44,0) 46%),linear-gradient(125deg,rgba(11,61,44,0.94) 0%,rgba(11,61,44,0.82) 22%,rgba(11,61,44,0.45) 45%,rgba(11,61,44,0.12) 65%,rgba(11,61,44,0) 82%);z-index:3;pointer-events:none}
+  .shine{position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 22% 62%, rgba(28,110,82,0.32) 0%, rgba(28,110,82,0.12) 35%, rgba(28,110,82,0) 70%);z-index:4;pointer-events:none}
+  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1px, transparent 1px);background-size:32px 32px;opacity:0.55;z-index:5;pointer-events:none}
+
+  .shield{position:absolute;top:70px;right:70px;z-index:8;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.55))}
+  .shield img{height:66px;display:block}
+  .top-mast{position:absolute;top:88px;left:90px;z-index:7;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.4px;text-transform:uppercase;color:rgba(245,239,222,0.7)}
+  .top-mast .dot{color:var(--gold);margin:0 12px;opacity:0.8}
+
+  .content{position:absolute;left:90px;bottom:130px;right:120px;z-index:7;max-width:760px}
+  .cat{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:36px}
+  .cat::before{content:'';display:inline-block;width:38px;height:1px;background:var(--gold);vertical-align:middle;margin-right:18px;margin-top:-4px}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:96px;line-height:0.94;letter-spacing:-2.6px;color:#fff;margin-bottom:0;text-shadow:0 2px 24px rgba(0,0,0,0.45)}
+  h1 .it,h1 .a{font-style:italic;font-weight:700;color:var(--gold)}
+  h1 q{quotes:'\201C' '\201D';font-style:italic;font-weight:700}
+  h1 em{font-style:italic;font-weight:700;color:var(--gold)}
+  .rule{width:48px;height:1px;background:var(--gold);margin:42px 0 30px;opacity:0.95}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:25px;line-height:1.55;color:#fff;max-width:620px;letter-spacing:-0.2px;text-shadow:0 1px 14px rgba(0,0,0,0.65)}
+  .lede em{font-style:normal;font-weight:700;color:var(--gold)}
+  .lede b{color:#fff;font-weight:700;font-style:italic}
+
+  .footer{position:absolute;bottom:54px;left:90px;right:90px;z-index:7;display:flex;justify-content:space-between;align-items:center}
+  .meta{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.8)}
+  .meta span{color:var(--gold);margin:0 12px;opacity:0.7}
+  .url{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.8)}
+
+  .steps{display:flex;flex-direction:column;gap:8px;margin-top:30px;max-width:640px}
+  .step{display:grid;grid-template-columns:60px 1fr;gap:18px;align-items:baseline;padding:14px 0;border-top:1px solid rgba(212,168,67,0.28)}
+  .step:last-child{border-bottom:1px solid rgba(212,168,67,0.28)}
+  .step .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:28px;color:var(--gold)}
+  .step h3{font-family:'Playfair Display',serif;font-weight:700;font-size:24px;color:#fff;line-height:1.2;margin-bottom:3px;letter-spacing:-0.3px}
+  .step p{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:rgba(245,239,222,0.85);line-height:1.4}
 </style>
 </head>
 <body>
-  <div class="ghost">Simple.</div>
-  <div class="wrap">
-    <div class="masthead">
-      <div><div class="cat">The Process</div></div>
-      <div class="idx" style="text-align:right;opacity:0.55;max-width:240px"><i>Three steps from<br>unsure to confident.</i></div>
-    </div>
+  <div class="photo"></div>
+  <div class="vignette"></div>
+  <div class="anchor"></div>
+  <div class="shine"></div>
+  <div class="grain"></div>
+  <div class="shield"><img src="../images/ViewNam logo white.png" alt="ViewNam"></div>
+  <div class="top-mast">ViewNam <span class="dot">&middot;</span> Vehicle Inspection</div>
+  <div class="content">
+    <div class="cat">The Process</div>
     <h1>Simple. Safe.<br><span class="it">Smart.</span></h1>
-    <div class="sep"></div>
     <div class="steps">
-      <div class="step"><div class="n">i.</div><div><h3>You book online</h3><p>Two minutes. Tell us the car, the seller, the town.</p></div></div>
-      <div class="step"><div class="n">ii.</div><div><h3>Our inspector visits the seller</h3><p>A full, methodical check — same day where possible.</p></div></div>
-      <div class="step"><div class="n">iii.</div><div><h3>You get the honest report</h3><p>Photos, verdict, advice — delivered to your phone.</p></div></div>
+    <div class="step"><div class="n">i.</div><div><h3>You book online</h3><p>Two minutes. Tell us the car, the seller, the town.</p></div></div>
+    <div class="step"><div class="n">ii.</div><div><h3>Our inspector visits the seller</h3><p>A full, methodical check — same day where possible.</p></div></div>
+    <div class="step"><div class="n">iii.</div><div><h3>You get the honest report</h3><p>Photos, verdict, advice — straight to your phone.</p></div></div>
     </div>
-    <div class="footer">
-      <div class="mark"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
-      <div class="url">www.viewnam.com</div>
-    </div>
+  </div>
+  <div class="footer">
+    <div class="meta">Book <span>·</span> Inspect <span>·</span> Decide</div>
+    <div class="url">www.viewnam.com</div>
   </div>
 </body>
 </html>
