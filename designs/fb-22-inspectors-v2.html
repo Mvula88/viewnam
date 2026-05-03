@@ -9,55 +9,64 @@
   :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--gold:#D4A843;--cream:#F5EFDE}
   body{width:1080px;height:1080px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
 
-  /* Hero photo — right half, clipped along the diagonal so it crops at the gold accent line */
-  .photo{position:absolute;top:0;right:0;width:52%;height:100%;
-    background:url('../images/inspection.jpg') 25% center / cover no-repeat;
-    clip-path:polygon(23% 0, 100% 0, 100% 100%, 0 100%);
+  /* Hero photo — right side. Subtle cinematic grade, focus on the face. */
+  .photo{position:absolute;top:0;right:0;width:55%;height:100%;
+    background:url('../images/inspection.jpg') 38% center / cover no-repeat;
+    clip-path:polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+    filter:saturate(0.82) contrast(1.04) brightness(0.97);
     z-index:2}
 
-  /* Solid deep-green panel left, with hard diagonal edge cutting into the photo */
+  /* Soft tonal overlay — pulls the photo toward the brand palette without killing it */
+  .photo-grade{position:absolute;top:0;right:0;width:55%;height:100%;
+    clip-path:polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+    background:linear-gradient(135deg, rgba(6,42,31,0.22) 0%, rgba(6,42,31,0.05) 45%, rgba(6,42,31,0.28) 100%);
+    z-index:3;pointer-events:none}
+
+  /* Solid green panel left, with same diagonal so the two halves meet cleanly */
   .panel{position:absolute;left:0;top:0;width:60%;height:100%;background:var(--green-deep);
     clip-path:polygon(0 0, 100% 0, 80% 100%, 0 100%);
-    z-index:3}
+    z-index:4}
   .panel::before{content:'';position:absolute;inset:0;
     background-image:radial-gradient(rgba(212,168,67,0.05) 1px,transparent 1px);
-    background-size:28px 28px;opacity:0.7}
+    background-size:32px 32px;opacity:0.6}
 
-  .accent{position:absolute;top:0;left:0;width:60%;height:100%;z-index:4;pointer-events:none}
+  /* Hairline gold accent on the diagonal seam */
+  .accent{position:absolute;top:0;left:0;width:60%;height:100%;z-index:5;pointer-events:none}
   .accent svg{width:100%;height:100%;display:block}
 
-  /* Brand mark — using a pre-rendered white version of the logo for reliable rendering */
-  .shield{position:absolute;top:60px;right:60px;z-index:7;
-    filter:drop-shadow(0 2px 10px rgba(0,0,0,0.35))}
-  .shield img{height:58px;display:block}
+  /* Brand mark — confident size, generous corner margin */
+  .shield{position:absolute;top:64px;right:64px;z-index:8;
+    filter:drop-shadow(0 3px 14px rgba(0,0,0,0.45))}
+  .shield img{height:62px;display:block}
 
-  /* Content inside the green panel */
-  .content{position:absolute;left:0;top:0;width:60%;height:100%;padding:100px 90px 90px;z-index:5;
-    display:flex;flex-direction:column;justify-content:center;max-width:580px}
+  /* Content sits in the green panel — restrained hierarchy */
+  .content{position:absolute;left:0;top:0;width:60%;height:100%;
+    padding:120px 100px 110px;z-index:6;
+    display:flex;flex-direction:column;justify-content:center;max-width:620px}
 
-  .cat{font-size:13px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:32px}
-  .cat::before{content:'';display:inline-block;width:32px;height:2px;background:var(--gold);vertical-align:middle;margin-right:14px;margin-top:-3px}
+  .cat{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:42px}
+  .cat::before{content:'';display:inline-block;width:36px;height:1px;background:var(--gold);vertical-align:middle;margin-right:18px;margin-top:-4px}
 
-  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:84px;line-height:0.94;letter-spacing:-2.4px;color:#fff;margin-bottom:14px}
-  h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:96px;line-height:0.94;letter-spacing:-2.6px;color:#fff;margin-bottom:0}
+  h1 .it{font-style:italic;font-weight:700;color:#fff}
 
-  .sep{width:60px;height:2px;background:var(--gold);margin:28px 0 28px}
+  .rule{width:48px;height:1px;background:var(--gold);margin:44px 0 36px;opacity:0.9}
 
-  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;line-height:1.5;color:rgba(245,239,222,0.85);margin-bottom:30px}
-  .lede b{color:#fff;font-weight:700;font-style:italic}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:24px;line-height:1.55;color:rgba(245,239,222,0.82);max-width:520px;margin-bottom:32px;letter-spacing:-0.2px}
 
-  .creds{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-  .cred{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);padding:8px 14px;border:1px solid rgba(212,168,67,0.4);border-radius:100px;background:rgba(212,168,67,0.06)}
+  .meta{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.55)}
+  .meta span{color:var(--gold);margin:0 14px;opacity:0.7}
 
-  .url-row{position:absolute;bottom:36px;left:90px;font-size:11px;font-weight:700;letter-spacing:2.8px;text-transform:uppercase;color:rgba(245,239,222,0.7);z-index:6}
+  .url-row{position:absolute;bottom:54px;left:100px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3.2px;text-transform:uppercase;color:rgba(245,239,222,0.55);z-index:7}
 </style>
 </head>
 <body>
   <div class="photo"></div>
+  <div class="photo-grade"></div>
   <div class="panel"></div>
   <div class="accent">
     <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-      <line x1="1000" y1="0" x2="800" y2="1000" stroke="#D4A843" stroke-width="2.5" stroke-opacity="0.8"/>
+      <line x1="1000" y1="0" x2="800" y2="1000" stroke="#D4A843" stroke-width="2" stroke-opacity="0.7"/>
     </svg>
   </div>
   <div class="shield"><img src="../images/ViewNam logo white.png" alt="ViewNam"></div>
@@ -65,14 +74,9 @@
   <div class="content">
     <div class="cat">The People</div>
     <h1>Real people.<br><span class="it">Real expertise.</span></h1>
-    <div class="sep"></div>
-    <div class="lede">Every ViewNam inspector is <b>vetted, trained, and based</b> in the town you're buying in. Brand specialists for BMW, VW, Toyota, Mercedes-Benz and more.</div>
-    <div class="creds">
-      <div class="cred">Trained</div>
-      <div class="cred">Vetted</div>
-      <div class="cred">Local</div>
-      <div class="cred">Brand-specialised</div>
-    </div>
+    <div class="rule"></div>
+    <div class="lede">Every ViewNam inspector is vetted, trained, and based in the town you're buying in — brand specialists for BMW, VW, Toyota, Mercedes-Benz and more.</div>
+    <div class="meta">Trained <span>·</span> Vetted <span>·</span> Local <span>·</span> Brand-specialised</div>
   </div>
 
   <div class="url-row">www.viewnam.com</div>
