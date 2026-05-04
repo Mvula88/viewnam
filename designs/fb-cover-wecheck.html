@@ -3,39 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
-<title>ViewNam — Facebook Cover</title>
+<title>ViewNam — Facebook Cover (We Check)</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  :root{--green-deep:#062A1F;--gold:#D4A843;--cream:#F5EFDE}
-  body{width:820px;height:312px;overflow:hidden;font-family:'Inter',sans-serif;background:var(--green-deep);color:var(--cream);position:relative}
-  body::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.05) 1px,transparent 1px);background-size:24px 24px;opacity:0.55;pointer-events:none}
-  .ghost{position:absolute;top:-40px;right:-30px;font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:260px;line-height:0.82;color:rgba(212,168,67,0.06);letter-spacing:-10px;pointer-events:none;z-index:0}
-  .wrap{position:relative;z-index:2;padding:34px 42px 48px;height:100%;display:flex;align-items:center;gap:30px}
-  .left{flex:1.4}
-  .cat{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:0.9;margin-bottom:10px}
-  h1{font-family:'Playfair Display',serif;font-weight:800;font-size:50px;line-height:0.98;letter-spacing:-1.6px;color:#fff;margin-bottom:10px}
+  :root{--green-deep:#062A1F;--green-mid:#0B3D2C;--green-bright:#2EA876;--gold:#D4A843;--cream:#F5EFDE}
+  body{width:820px;height:312px;overflow:hidden;font-family:'Inter',sans-serif;background:#000;color:var(--cream);position:relative}
+
+  .photo{position:absolute;inset:0;background:url('../images/Background%20Images/pexels-cottonbro-4489707.jpg') 60% center / cover no-repeat;filter:saturate(0.96) contrast(1.06) brightness(1.06);z-index:1}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 95% 95% at 65% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 78%, rgba(0,0,0,0.38) 100%);z-index:2;pointer-events:none}
+  .anchor{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,42,31,0.95) 0%,rgba(11,61,44,0.85) 22%,rgba(11,61,44,0.50) 48%,rgba(11,61,44,0.15) 68%,rgba(11,61,44,0) 84%);z-index:3;pointer-events:none}
+  .shine{position:absolute;inset:0;background:radial-gradient(ellipse 38% 70% at 18% 55%, rgba(46,168,118,0.55) 0%, rgba(46,168,118,0.28) 32%, rgba(46,168,118,0) 70%);z-index:4;pointer-events:none}
+  .grain{position:absolute;inset:0;background-image:radial-gradient(rgba(212,168,67,0.06) 1px, transparent 1px);background-size:28px 28px;opacity:0.55;z-index:5;pointer-events:none}
+
+  .shield{position:absolute;top:30px;right:36px;z-index:8;filter:drop-shadow(0 3px 14px rgba(0,0,0,0.55))}
+  .shield img{height:40px;display:block}
+  .url-top{position:absolute;top:84px;right:36px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,239,222,0.7);z-index:7}
+
+  .content{position:absolute;left:46px;top:50%;transform:translateY(-50%);z-index:7;max-width:430px}
+  .cat{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .cat::before{content:'';display:inline-block;width:26px;height:1px;background:var(--gold);vertical-align:middle;margin-right:12px;margin-top:-3px}
+  h1{font-family:'Playfair Display',serif;font-weight:700;font-size:46px;line-height:0.96;letter-spacing:-1.4px;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,0.5)}
   h1 .it{font-style:italic;font-weight:700;color:var(--gold)}
-  .sep{width:42px;height:2px;background:var(--gold);margin:14px 0}
-  .lede{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;line-height:1.4;color:rgba(245,239,222,0.78);max-width:440px}
-  .right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-  .tile{background:#fff;padding:10px 16px;border-radius:10px;display:inline-flex;align-items:center}
-  .tile img{height:52px;display:block}
-  .url{font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,239,222,0.6)}
+  .rule{width:38px;height:1px;background:var(--gold);margin:18px 0 14px;opacity:0.95}
+  .lede{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:15px;line-height:1.45;color:#fff;max-width:380px;text-shadow:0 1px 12px rgba(0,0,0,0.55)}
 </style>
 </head>
 <body>
-  <div class="ghost">"</div>
-  <div class="wrap">
-    <div class="left">
-      <div class="cat">Independent Vehicle Inspections</div>
-      <h1>We check cars<br><span class="it">before you buy.</span></h1>
-      <div class="sep"></div>
-      <div class="lede">A ViewNam inspector visits the seller, runs the full check, and tells you the truth.</div>
-    </div>
-    <div class="right">
-      <div class="tile"><img src="../images/ViewNam logo.png" alt="ViewNam"></div>
-      <div class="url">www.viewnam.com</div>
-    </div>
+  <div class="photo"></div>
+  <div class="vignette"></div>
+  <div class="anchor"></div>
+  <div class="shine"></div>
+  <div class="grain"></div>
+
+  <div class="shield"><img src="../images/ViewNam logo white.png" alt="ViewNam"></div>
+  <div class="url-top">www.viewnam.com</div>
+
+  <div class="content">
+    <div class="cat">Independent Vehicle Inspections</div>
+    <h1>We check cars<br><span class="it">before you buy.</span></h1>
+    <div class="rule"></div>
+    <div class="lede">A ViewNam inspector visits the seller, runs the full check, and tells you the truth.</div>
   </div>
 </body>
 </html>
