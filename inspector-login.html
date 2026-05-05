@@ -331,11 +331,6 @@ function fmt(n) {
     return new Intl.NumberFormat('en-NA', { maximumFractionDigits: 0 }).format(n);
 }
 
-async function sha256Hex(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 async function login() {
     const phone = document.getElementById('loginPhone').value.replace(/\s/g, '');
     const pin = document.getElementById('loginPin').value;
@@ -348,23 +343,27 @@ async function login() {
     }
 
     try {
-        const pinHash = await sha256Hex(pin);
-        const { data, error } = await supabase
-            .from('inspectors')
-            .select('*')
-            .eq('phone', phone)
-            .eq('pin_hash', pinHash)
-            .in('status', ['active', 'approved'])
-            .single();
-
-        if (error || !data) {
-            errorEl.textContent = 'Invalid phone number or PIN. Contact ViewNam if you need help.';
+        const { data, error } = await supabase.rpc('inspector_login', { _phone: phone, _pin: pin });
+        if (error) throw error;
+        if (!data || !data.ok) {
+            if (data && data.reason === 'locked') {
+                const until = new Date(data.until);
+                errorEl.textContent = `Locked. Try again after ${until.toLocaleTimeString()}.`;
+            } else {
+                errorEl.textContent = 'Invalid phone number or PIN. Contact ViewNam if you need help.';
+            }
             errorEl.classList.add('show');
             return;
         }
 
-        currentInspector = data;
-        sessionStorage.setItem('viewnam_inspector', JSON.stringify(data));
+        // Persist session token; fetch full inspector record via inspectors_public
+        sessionStorage.setItem('viewnam_inspector_token', data.token);
+        sessionStorage.setItem('viewnam_inspector_token_exp', String(new Date(data.expires_at).getTime()));
+        sessionStorage.setItem('viewnam_inspector_id', data.inspector_id);
+
+        const { data: inspector } = await supabase.from('inspectors_public').select('*').eq('id', data.inspector_id).single();
+        currentInspector = inspector || { id: data.inspector_id, name: data.name };
+        sessionStorage.setItem('viewnam_inspector', JSON.stringify(currentInspector));
         showDashboard();
     } catch (e) {
         errorEl.textContent = 'Login error. Try again.';
@@ -398,7 +397,7 @@ async function showDashboard() {
     document.getElementById('pExperience').textContent = currentInspector.experience || '—';
 
     // Load default commission for display
-    const { data: settings } = await supabase.from('settings').select('value').eq('key', 'default_commission_rate').single();
+    const { data: settings } = await supabase.from('public_settings').select('value').eq('key', 'default_commission_rate').maybeSingle();
     if (settings) defaultCommission = parseFloat(settings.value) || 15;
     const rate = currentInspector.commission_rate != null ? currentInspector.commission_rate : defaultCommission;
     const isCustom = currentInspector.commission_rate != null;
@@ -407,9 +406,16 @@ async function showDashboard() {
     loadJobs();
 }
 
-function logout() {
+async function logout() {
+    const tok = sessionStorage.getItem('viewnam_inspector_token');
+    if (tok && supabase) {
+        try { await supabase.rpc('inspector_logout', { _token: tok }); } catch (_) {}
+    }
     currentInspector = null;
     sessionStorage.removeItem('viewnam_inspector');
+    sessionStorage.removeItem('viewnam_inspector_token');
+    sessionStorage.removeItem('viewnam_inspector_token_exp');
+    sessionStorage.removeItem('viewnam_inspector_id');
     document.getElementById('loginScreen').style.display = '';
     document.getElementById('appLayout').classList.remove('active');
     document.getElementById('mobileMenuBtn').style.display = 'none';
@@ -477,15 +483,17 @@ function renderStats() {
 }
 
 function buildChecklistUrl(j) {
+    // Stash all rendered jobs in sessionStorage keyed by id; inspector-app reads the right
+    // one by id. Only the booking id + ref are in the URL — sensitive seller data stays
+    // out of the URL bar and Referer headers.
+    try {
+        const jobs = JSON.parse(sessionStorage.getItem('viewnam_jobs') || '{}');
+        jobs[j.id] = j;
+        sessionStorage.setItem('viewnam_jobs', JSON.stringify(jobs));
+    } catch (_) {}
     const params = new URLSearchParams({
+        id: j.id || '',
         ref: j.reference || '',
-        make: j.vehicle_make || '',
-        model: j.vehicle_model || '',
-        year: j.vehicle_year || '',
-        location: j.seller_location || '',
-        seller: j.seller_contact || '',
-        asking: j.asking_price || '',
-        notes: j.notes || '',
         services: (j.services || []).join(','),
     });
     return 'inspector-app/index.html?' + params.toString();
@@ -583,9 +591,29 @@ function renderEarnings() {
     }).join('');
 }
 
+async function inspectorRpc(fn, args) {
+    const tok = sessionStorage.getItem('viewnam_inspector_token');
+    const exp = parseInt(sessionStorage.getItem('viewnam_inspector_token_exp') || '0', 10);
+    if (!tok || !exp || exp < Date.now()) {
+        alert('Your session has expired. Please sign in again.');
+        logout();
+        return null;
+    }
+    const { data, error } = await supabase.rpc(fn, { _token: tok, ...args });
+    if (error) {
+        if (String(error.message || '').includes('unauthorized') || String(error.message || '').includes('session_expired')) {
+            alert('Your session has expired. Please sign in again.');
+            logout();
+            return null;
+        }
+        return null;
+    }
+    return data;
+}
+
 async function startInspection(id, encodedUrl) {
-    const { error } = await supabase.from('bookings').update({ status: 'in-progress' }).eq('id', id);
-    if (error) { showToast(error.message, 'error'); return; }
+    const result = await inspectorRpc('inspector_update_booking_status', { _booking_id: id, _status: 'in-progress' });
+    if (!result || !result.ok) { showToast('Could not start inspection', 'error'); return; }
     showToast('Inspection started');
     window.open(decodeURIComponent(encodedUrl), '_blank');
     loadJobs();
@@ -593,11 +621,8 @@ async function startInspection(id, encodedUrl) {
 
 async function completeInspection(id) {
     if (!confirm('Mark this inspection as completed? Make sure your report is ready.')) return;
-    const { error } = await supabase.from('bookings').update({
-        status: 'completed',
-        completed_at: new Date().toISOString()
-    }).eq('id', id);
-    if (error) showToast(error.message, 'error');
+    const result = await inspectorRpc('inspector_update_booking_status', { _booking_id: id, _status: 'completed' });
+    if (!result || !result.ok) showToast('Could not complete', 'error');
     else { showToast('Inspection completed'); loadJobs(); }
 }
 

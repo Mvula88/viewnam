@@ -735,10 +735,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-config.js"></script>
 <script>
-// --- Login gate (PIN hashed with SHA-256, hash stored in Supabase) ---
-async function sha256Hex(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+// --- Login gate (token-based, server-verified PIN with lockout) ---
+const ADMIN_IDLE_MINUTES = 30;
+let adminIdleTimer = null;
+
+function adminToken() {
+    const tok = sessionStorage.getItem('viewnam_admin_token');
+    const exp = parseInt(sessionStorage.getItem('viewnam_admin_token_exp') || '0', 10);
+    if (!tok || !exp || exp < Date.now()) return null;
+    return tok;
+}
+
+function bumpAdminIdle() {
+    sessionStorage.setItem('viewnam_admin_last_active', String(Date.now()));
+    if (adminIdleTimer) clearTimeout(adminIdleTimer);
+    adminIdleTimer = setTimeout(() => {
+        if (sessionStorage.getItem('viewnam_admin_token')) {
+            alert('You have been signed out due to inactivity.');
+            logoutAdmin();
+        }
+    }, ADMIN_IDLE_MINUTES * 60 * 1000);
 }
 
 async function checkAdminPwd() {
@@ -748,12 +764,19 @@ async function checkAdminPwd() {
     if (!pwd || !supabase) return;
 
     try {
-        const hash = await sha256Hex(pwd);
-        const { data } = await supabase.from('settings').select('value').eq('key', 'admin_pin_hash').single();
-        if (data && data.value === hash) {
-            sessionStorage.setItem('viewnam_admin', '1');
+        const { data, error } = await supabase.rpc('admin_login', { _pin: pwd });
+        if (error) throw error;
+        if (data && data.ok) {
+            sessionStorage.setItem('viewnam_admin_token', data.token);
+            sessionStorage.setItem('viewnam_admin_token_exp', String(new Date(data.expires_at).getTime()));
             document.getElementById('loginGate').style.display = 'none';
+            bumpAdminIdle();
+        } else if (data && data.reason === 'locked') {
+            const until = new Date(data.until);
+            errorEl.textContent = `Locked. Try again after ${until.toLocaleTimeString()}.`;
+            errorEl.classList.add('show');
         } else {
+            errorEl.textContent = 'Wrong PIN.';
             errorEl.classList.add('show');
         }
     } catch (e) {
@@ -764,19 +787,61 @@ async function checkAdminPwd() {
 document.getElementById('adminPwd').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') checkAdminPwd();
 });
-if (sessionStorage.getItem('viewnam_admin') === '1') {
+if (adminToken()) {
     document.getElementById('loginGate').style.display = 'none';
+    bumpAdminIdle();
 }
-function logoutAdmin() {
-    sessionStorage.removeItem('viewnam_admin');
+async function logoutAdmin() {
+    const tok = sessionStorage.getItem('viewnam_admin_token');
+    if (tok && supabase) {
+        try { await supabase.rpc('admin_logout', { _token: tok }); } catch (_) {}
+    }
+    sessionStorage.removeItem('viewnam_admin_token');
+    sessionStorage.removeItem('viewnam_admin_token_exp');
+    sessionStorage.removeItem('viewnam_admin_last_active');
     location.reload();
+}
+
+// Reset idle timer on any user interaction
+['click', 'keydown', 'mousemove', 'touchstart'].forEach(ev => {
+    document.addEventListener(ev, () => {
+        if (adminToken()) bumpAdminIdle();
+    }, { passive: true });
+});
+
+// Helper used by all admin write operations — handles unauthorized errors centrally
+async function adminRpc(fn, args) {
+    const tok = adminToken();
+    if (!tok) {
+        alert('Your session has expired. Please sign in again.');
+        location.reload();
+        return null;
+    }
+    const { data, error } = await supabase.rpc(fn, { _token: tok, ...args });
+    if (error) {
+        if (String(error.message || '').includes('unauthorized') || String(error.message || '').includes('session_expired')) {
+            alert('Your session has expired. Please sign in again.');
+            logoutAdmin();
+            return null;
+        }
+        console.error('adminRpc error:', fn, error);
+        return null;
+    }
+    return data;
 }
 </script>
 
 <script>
 const serviceLabels = {
-    'full-package':'Full Package','visual-inspection':'Visual Inspection',
-    'mechanical-diagnostics':'Mechanical + Diagnostics','test-drive':'Test Drive',
+    'full-inspection':'Full Inspection',
+    'basic-visual':'Basic Visual Check',
+    'engine-mechanical':'Engine & Mechanical',
+    'test-drive':'Test Drive Check',
+    'basic-engine-combo':'Basic + Engine Combo',
+    'peace-of-mind':'Peace of Mind Check',
+    'full-package':'Full Inspection',
+    'visual-inspection':'Basic Visual Check',
+    'mechanical-diagnostics':'Engine & Mechanical',
 };
 
 let allBookings = [];
@@ -830,7 +895,7 @@ function showToast(message, type = 'success') {
 // SETTINGS
 // =====================
 async function loadSettings() {
-    const { data } = await supabase.from('settings').select('*').eq('key', 'default_commission_rate').single();
+    const { data } = await supabase.from('public_settings').select('*').eq('key', 'default_commission_rate').maybeSingle();
     if (data) {
         defaultCommission = parseFloat(data.value) || 15;
         document.getElementById('defaultCommission').value = defaultCommission;
@@ -843,11 +908,9 @@ async function saveDefaultCommission() {
         showToast('Enter a valid percentage between 0 and 100', 'error');
         return;
     }
-    const { error } = await supabase.from('settings')
-        .update({ value: val.toString(), updated_at: new Date().toISOString() })
-        .eq('key', 'default_commission_rate');
-    if (error) {
-        document.getElementById('settingsMsg').innerHTML = '<span style="color:var(--poor)">Error: ' + error.message + '</span>';
+    const result = await adminRpc('admin_upsert_setting', { _key: 'default_commission_rate', _value: val.toString() });
+    if (!result || !result.ok) {
+        document.getElementById('settingsMsg').innerHTML = '<span style="color:var(--poor)">Error saving</span>';
     } else {
         defaultCommission = val;
         document.getElementById('settingsMsg').innerHTML = '<span style="color:var(--good)">✓ Saved</span>';
@@ -1278,8 +1341,8 @@ async function updateBookingStatus(id, status) {
     const updates = { status };
     if (status === 'confirmed') updates.confirmed_at = new Date().toISOString();
     if (status === 'completed') updates.completed_at = new Date().toISOString();
-    const { error } = await supabase.from('bookings').update(updates).eq('id', id);
-    if (error) { showToast(error.message, 'error'); return; }
+    const result = await adminRpc('admin_update_booking', { _booking_id: id, _patch: updates });
+    if (!result || !result.ok) { showToast('Status update failed', 'error'); return; }
 
     showToast('Status updated to ' + status);
 
@@ -1306,8 +1369,8 @@ async function assignInspector(bookingId, inspectorId) {
         updates.inspector_payout = fees.inspector_payout;
     }
 
-    const { error } = await supabase.from('bookings').update(updates).eq('id', bookingId);
-    if (error) { showToast(error.message, 'error'); return; }
+    const result = await adminRpc('admin_update_booking', { _booking_id: bookingId, _patch: updates });
+    if (!result || !result.ok) { showToast('Inspector assignment failed', 'error'); return; }
 
     showToast('Inspector assigned');
 
@@ -1367,8 +1430,8 @@ function offerClientNotification(booking) {
 
 async function deleteBooking(id) {
     if (!confirm('Delete this booking?')) return;
-    const { error } = await supabase.from('bookings').delete().eq('id', id);
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_delete_booking', { _booking_id: id });
+    if (!result || !result.ok) showToast('Delete failed', 'error');
     else { showToast('Booking deleted'); loadBookings(); }
 }
 
@@ -1555,14 +1618,16 @@ async function savePrice() {
     const booking = allBookings.find(b => b.id === bookingId);
     const fees = computePayout(price, booking ? booking.assigned_inspector : null, booking ? (booking.services || []) : []);
 
-    const { error } = await supabase.from('bookings').update({
-        price: price,
-        commission_rate: fees.commission_rate,
-        platform_fee: fees.platform_fee,
-        inspector_payout: fees.inspector_payout
-    }).eq('id', bookingId);
-
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_update_booking', {
+        _booking_id: bookingId,
+        _patch: {
+            price: price,
+            commission_rate: fees.commission_rate,
+            platform_fee: fees.platform_fee,
+            inspector_payout: fees.inspector_payout
+        }
+    });
+    if (!result || !result.ok) showToast('Save failed', 'error');
     else { closePriceModal(); showToast('Price saved'); loadBookings(); }
 }
 
@@ -1589,7 +1654,7 @@ function exportCSV() {
 // =====================
 async function loadInspectors() {
     if (!supabase) return;
-    const { data, error } = await supabase.from('inspectors').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('inspectors_public').select('*').order('created_at', { ascending: false });
     if (error) { console.error(error); return; }
     allInspectors = data || [];
     renderInspectors();
@@ -1712,15 +1777,15 @@ function renderInspectors() {
 }
 
 async function updateInspectorStatus(id, status) {
-    const { error } = await supabase.from('inspectors').update({ status }).eq('id', id);
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_update_inspector', { _inspector_id: id, _patch: { status } });
+    if (!result || !result.ok) showToast('Update failed', 'error');
     else loadInspectors();
 }
 
 async function deleteInspector(id) {
     if (!confirm('Delete this inspector?')) return;
-    const { error } = await supabase.from('inspectors').delete().eq('id', id);
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_delete_inspector', { _inspector_id: id });
+    if (!result || !result.ok) showToast('Delete failed', 'error');
     else { showToast('Inspector deleted'); loadInspectors(); }
 }
 
@@ -1920,19 +1985,19 @@ document.getElementById('addInspectorForm').addEventListener('submit', async (e)
         brand_expertise: getSelectedBrands(),
     };
 
-    // Only update PIN if user entered a new one (hash it)
-    if (pinValue) {
-        data.pin_hash = await sha256Hex(pinValue);
-    }
-
-    let error;
+    let result;
     if (id) {
-        ({ error } = await supabase.from('inspectors').update(data).eq('id', id));
+        result = await adminRpc('admin_update_inspector', { _inspector_id: id, _patch: data });
+        if (result && result.ok && pinValue) {
+            await adminRpc('admin_set_inspector_pin', { _inspector_id: id, _new_pin: pinValue });
+        }
     } else {
-        ({ error } = await supabase.from('inspectors').insert(data));
+        // Creation requires a PIN; default to last 4 of phone if blank
+        const initialPin = pinValue || (data.phone || '').replace(/\D/g, '').slice(-4) || '0000';
+        result = await adminRpc('admin_create_inspector', { _payload: { ...data, pin: initialPin } });
     }
 
-    if (error) { showToast(error.message, 'error'); return; }
+    if (!result || !result.ok) { showToast('Save failed', 'error'); return; }
     closeAddInspector();
     showToast(id ? 'Inspector updated' : 'Inspector added');
     loadInspectors();
@@ -2003,11 +2068,11 @@ function renderPayouts() {
 
 async function markPaid(bookingId) {
     if (!confirm('Mark this payout as paid? Make sure you have transferred the money.')) return;
-    const { error } = await supabase.from('bookings').update({
-        paid_to_inspector: true,
-        paid_to_inspector_at: new Date().toISOString()
-    }).eq('id', bookingId);
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_update_booking', {
+        _booking_id: bookingId,
+        _patch: { paid_to_inspector: true, paid_to_inspector_at: new Date().toISOString() }
+    });
+    if (!result || !result.ok) showToast('Save failed', 'error');
     else { showToast('Inspector marked as paid'); loadBookings(); }
 }
 
@@ -2022,11 +2087,11 @@ function copyReviewLink(ref) {
 
 async function markClientPaid(bookingId) {
     if (!confirm('Mark this booking as paid by the client?')) return;
-    const { error } = await supabase.from('bookings').update({
-        payment_status: 'paid',
-        paid_at: new Date().toISOString()
-    }).eq('id', bookingId);
-    if (error) showToast(error.message, 'error');
+    const result = await adminRpc('admin_update_booking', {
+        _booking_id: bookingId,
+        _patch: { payment_status: 'paid', paid_at: new Date().toISOString() }
+    });
+    if (!result || !result.ok) showToast('Save failed', 'error');
     else { showToast('Client payment confirmed'); loadBookings(); }
 }
 
@@ -2160,7 +2225,7 @@ function renderReviews() {
 // =====================
 async function loadBankDetails() {
     if (!supabase) return;
-    const { data } = await supabase.from('settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
+    const { data } = await supabase.from('public_settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
     if (!data) return;
     const get = k => data.find(d => d.key === k)?.value || '';
     document.getElementById('bankName').value = get('bank_name');
@@ -2178,10 +2243,8 @@ async function saveBankDetails() {
     ];
     let hasError = false;
     for (const item of items) {
-        const { error } = await supabase.from('settings')
-            .update({ value: item.value, updated_at: new Date().toISOString() })
-            .eq('key', item.key);
-        if (error) { hasError = true; break; }
+        const result = await adminRpc('admin_upsert_setting', { _key: item.key, _value: item.value });
+        if (!result || !result.ok) { hasError = true; break; }
     }
     const msg = document.getElementById('bankMsg');
     if (hasError) {

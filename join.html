@@ -158,22 +158,21 @@ document.getElementById('inspectorForm').addEventListener('submit', async functi
     const data = {};
     fd.forEach((v,k) => data[k] = v);
 
-    // Save to Supabase
+    // Save via inspector_apply RPC (creates a 'pending' inspector for admin review)
     if (supabase) {
         try {
-            const { error } = await supabase.from('inspectors').insert({
-                name: data.name,
-                phone: data.phone,
-                email: data.email || null,
-                town: data.town,
-                region: data.region,
-                experience: data.experience,
-                has_obd: data.obd,
-                has_transport: data.transport,
-                notes: data.notes || null,
-                status: 'pending',
+            const { data: result, error } = await supabase.rpc('inspector_apply', {
+                _payload: {
+                    name: data.name,
+                    phone: data.phone,
+                    email: data.email || null,
+                    town: data.town,
+                    region: data.region,
+                    experience: data.experience,
+                    pin: (data.phone || '').replace(/\D/g, '').slice(-4) || '0000',
+                }
             });
-            if (error) console.error('Supabase error:', error);
+            if (error || !result || !result.ok) console.error('Application failed:', error || result);
         } catch (e) { console.error('Save failed:', e); }
     }
 

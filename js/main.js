@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     (async function loadBankDetails() {
         if (typeof supabase === 'undefined' || !supabase) return;
         try {
-            const { data } = await supabase.from('settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
+            const { data } = await supabase.from('public_settings').select('*').in('key', ['bank_name','bank_account_name','bank_account_number','bank_branch_code']);
             if (!data) return;
             const get = (key) => data.find(d => d.key === key)?.value || '';
             const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };

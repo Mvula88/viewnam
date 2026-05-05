@@ -2,43 +2,61 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://www.viewnam.com/</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>https://www.viewnam.com/sample-report.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://www.viewnam.com/contact.html</loc>
+        <lastmod>2026-05-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://www.viewnam.com/join.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://www.viewnam.com/track.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
+        <loc>https://www.viewnam.com/review.html</loc>
+        <lastmod>2026-05-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://www.viewnam.com/inspection-checklist.html</loc>
+        <lastmod>2026-05-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
         <loc>https://www.viewnam.com/terms.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
         <loc>https://www.viewnam.com/privacy.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
         <loc>https://www.viewnam.com/disclaimer.html</loc>
-        <lastmod>2026-04-02</lastmod>
+        <lastmod>2026-05-05</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>

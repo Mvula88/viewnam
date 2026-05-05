@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <script>
+    (function() {
+        var tok = sessionStorage.getItem('viewnam_inspector_token');
+        var exp = parseInt(sessionStorage.getItem('viewnam_inspector_token_exp') || '0', 10);
+        if (!tok || !exp || exp < Date.now()) {
+            location.replace('../inspector-login.html');
+        }
+    })();
+    </script>
     <link rel="icon" type="image/png" href="../images/favicon.png">
 <link rel="apple-touch-icon" href="../images/favicon.png">
 <title>ViewNam Inspector</title>

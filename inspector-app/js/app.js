@@ -878,12 +878,22 @@
                 },
             };
 
-            // Upsert on booking_id so re-submits overwrite
-            const { error: reportErr } = await supabase
-                .from('reports')
-                .upsert(reportPayload, { onConflict: 'booking_id' });
+            // Submit via inspector_save_report RPC (validates session token, upserts report,
+            // and marks the booking completed atomically server-side).
+            const token = sessionStorage.getItem('viewnam_inspector_token');
+            if (!token) {
+                showToast('Your session expired. Please sign in again.');
+                location.href = '../inspector-login.html';
+                return;
+            }
+            const { booking_id, ...rpcPayload } = reportPayload;
+            const { data: rpcResult, error: reportErr } = await supabase.rpc('inspector_save_report', {
+                _token: token,
+                _booking_id: booking_id,
+                _payload: rpcPayload,
+            });
 
-            if (reportErr) {
+            if (reportErr || !rpcResult || !rpcResult.ok) {
                 console.error('Report submit failed:', reportErr);
                 showToast('Could not send report. Saved locally — try again.');
                 btn.disabled = false;
@@ -891,12 +901,6 @@
                 btn.style.opacity = '';
                 return;
             }
-
-            // Mark booking completed
-            await supabase
-                .from('bookings')
-                .update({ status: 'completed', completed_at: new Date().toISOString() })
-                .eq('id', bookingRow.id);
 
             btn.innerHTML = 'Sent to ViewNam';
             btn.style.background = '#27AE60';
@@ -1016,22 +1020,32 @@
     loadSavedList();
     progressPill.style.display = 'none';
 
-    // --- Auto-fill from URL params (when opened from inspector dashboard) ---
+    // --- Auto-fill from URL params + sessionStorage (when opened from inspector dashboard) ---
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('ref')) {
+    let urlJob = null;
+    try {
+        const id = urlParams.get('id');
+        const jobs = JSON.parse(sessionStorage.getItem('viewnam_jobs') || '{}');
+        if (id && jobs[id]) urlJob = jobs[id];
+    } catch (_) {}
+    if (urlParams.get('ref') || urlJob) {
+        // Prefer the rich job stashed in sessionStorage; fall back to URL ref + services if absent
+        const j = urlJob || {};
         const servicesParam = urlParams.get('services') || '';
-        const servicesList = servicesParam ? servicesParam.split(',').filter(Boolean) : [];
+        const servicesList = (j.services && j.services.length) ? j.services
+                            : (servicesParam ? servicesParam.split(',').filter(Boolean) : []);
 
         // Pre-fill and go straight to booking screen
         state.booking = {
-            refNumber: urlParams.get('ref') || '',
-            vMake: urlParams.get('make') || '',
-            vModel: urlParams.get('model') || '',
-            vYear: urlParams.get('year') || '',
-            sellerLocation: urlParams.get('location') || '',
-            sellerPhone: urlParams.get('seller') || '',
-            askingPrice: urlParams.get('asking') || '',
-            clientNotes: urlParams.get('notes') || '',
+            refNumber: j.reference || urlParams.get('ref') || '',
+            vMake: j.vehicle_make || '',
+            vModel: j.vehicle_model || '',
+            vYear: j.vehicle_year || '',
+            sellerLocation: j.seller_location || '',
+            sellerPhone: j.seller_contact || '',
+            askingPrice: j.asking_price || '',
+            clientNotes: j.notes || '',
+            bookingId: j.id || null,
             services: servicesList,
         };
         state.startedAt = new Date().toISOString();

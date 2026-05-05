@@ -5,6 +5,51 @@
 
 const CHECKLIST_SECTIONS = [
     {
+        id: 'documents',
+        title: 'Documents & NaTIS',
+        shortTitle: 'Docs',
+        // All services verify paperwork — foundational check
+        service: ['visual', 'mechanical', 'testdrive', 'full'],
+        groups: [
+            {
+                title: 'NaTIS & Registration',
+                items: [
+                    {
+                        id: 'doc_natis_status',
+                        name: 'NaTIS Vehicle Status',
+                        desc: 'Status as shown on the NaTIS printout / screen',
+                        type: 'select',
+                        options: [
+                            'New',
+                            'Used',
+                            'Rebuilt (Code 2)',
+                            'Damaged / Recovered (Code 3)',
+                            'De-registered / Scrapped (Code 4)',
+                            'Imported used',
+                            'Not yet registered',
+                            'Unknown / Not shown'
+                        ]
+                    },
+                    { id: 'doc_reg_cert', name: 'Registration Certificate (NaTIS)', desc: 'Printout provided? Photograph all pages' },
+                    { id: 'doc_license_disc', name: 'License Disc', desc: 'Current and not expired — photograph it' },
+                    { id: 'doc_license_expiry', name: 'License Disc Expiry', desc: 'Enter expiry date from disc', type: 'date' },
+                    { id: 'doc_prev_owners', name: 'Previous Owners (count)', desc: 'As shown on NaTIS printout', type: 'number' },
+                    { id: 'doc_vin_match', name: 'VIN Match', desc: 'VIN on dashboard + engine matches registration document' },
+                ]
+            },
+            {
+                title: 'Additional Documents',
+                items: [
+                    { id: 'doc_finance_letter', name: 'Outstanding Finance Letter', desc: 'If car is financed, bank settlement letter should be provided' },
+                    { id: 'doc_police_clearance', name: 'Police Clearance', desc: 'Required for imported / cross-border vehicles' },
+                    { id: 'doc_service_book', name: 'Service Book', desc: 'Present and stamped — photograph all stamped pages' },
+                    { id: 'doc_seller_id', name: 'Seller ID / Power of Attorney', desc: 'Seller is the registered owner, or has written authority' },
+                    { id: 'doc_red_flags', name: 'Any Document Red Flags', desc: 'Tampered VIN, altered papers, inconsistent info' },
+                ]
+            }
+        ]
+    },
+    {
         id: 'exterior',
         title: 'Exterior',
         shortTitle: 'Exterior',

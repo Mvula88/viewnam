@@ -1,0 +1,36 @@
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+~$*
+
+# Word lockfiles + partial downloads
+*.crdownload
+*.tmp
+
+# Dependencies (in case Node tooling lands later)
+node_modules/
+
+# Studio-only marketing assets — NOT shipped to production
+images/Background Images/
+images/Ad Inspiration/
+
+# Working notes (not for production)
+*.docx
+
+# Local screenshots
+Screenshot*.png
+
+# Python generator artefacts
+__pycache__/
+*.pyc
+content_extract.json
+
+# Vercel local
+.vercel/
