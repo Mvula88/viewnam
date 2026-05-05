@@ -17,9 +17,13 @@ Thumbs.db
 # Dependencies (in case Node tooling lands later)
 node_modules/
 
-# Studio-only marketing assets — NOT shipped to production
-images/Background Images/
+# Ad Inspiration is reference-only screenshots (subagent has already used them);
+# kept locally but not deployed.
 images/Ad Inspiration/
+
+# Background Images IS tracked — they're needed for the deployed Design Studio.
+# Source files are pre-compressed to ~1920px / 80% JPEG (~34 MB total) before
+# committing so Vercel deploys stay well under tier limits.
 
 # Working notes (not for production)
 *.docx
