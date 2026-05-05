@@ -172,17 +172,13 @@ DECLARE
   _token TEXT;
   _expires TIMESTAMPTZ;
 BEGIN
+  -- Settings is key/value: the admin pin hash is the row keyed 'admin_pin_hash'.
   SELECT * INTO _row FROM settings WHERE key = 'admin_pin_hash' LIMIT 1;
   IF NOT FOUND THEN
-    -- Fallback: some installs may keep admin pin in a single settings row keyed differently
-    SELECT * INTO _row FROM settings LIMIT 1;
-    IF NOT FOUND THEN
-      RETURN jsonb_build_object('ok', false, 'reason', 'no_admin');
-    END IF;
+    RETURN jsonb_build_object('ok', false, 'reason', 'no_admin');
   END IF;
 
-  -- Read hash from either `value` (key/value style) or `admin_pin_hash` column (legacy)
-  _hash := COALESCE(_row.value, NULLIF(_row.admin_pin_hash, ''));
+  _hash := _row.value;
 
   IF _row.admin_locked_until IS NOT NULL AND _row.admin_locked_until > _now THEN
     RETURN jsonb_build_object('ok', false, 'reason', 'locked', 'until', _row.admin_locked_until);
@@ -193,8 +189,7 @@ BEGIN
     UPDATE settings
        SET admin_failed_attempts = 0,
            admin_locked_until = NULL,
-           value = CASE WHEN length(_hash) = 64 THEN _hash_pin_bcrypt(_pin) ELSE value END,
-           admin_pin_hash = CASE WHEN length(_hash) = 64 AND admin_pin_hash IS NOT NULL THEN _hash_pin_bcrypt(_pin) ELSE admin_pin_hash END
+           value = CASE WHEN length(_hash) = 64 THEN _hash_pin_bcrypt(_pin) ELSE value END
      WHERE id = _row.id;
 
     _token := gen_random_uuid()::text;
@@ -418,17 +413,15 @@ END $$;
 
 CREATE OR REPLACE FUNCTION admin_set_admin_pin(_token TEXT, _new_pin TEXT)
 RETURNS JSONB LANGUAGE plpgsql SECURITY DEFINER AS $$
-DECLARE _new_hash TEXT;
 BEGIN
   PERFORM _auth_validate(_token, 'admin');
   IF length(_new_pin) < 4 THEN
     RETURN jsonb_build_object('ok', false, 'reason', 'pin_too_short');
   END IF;
-  _new_hash := _hash_pin_bcrypt(_new_pin);
   UPDATE settings
-     SET value = _new_hash,
-         admin_pin_hash = CASE WHEN admin_pin_hash IS NOT NULL THEN _new_hash ELSE admin_pin_hash END
-   WHERE key = 'admin_pin_hash' OR key IS NULL;
+     SET value = _hash_pin_bcrypt(_new_pin),
+         updated_at = NOW()
+   WHERE key = 'admin_pin_hash';
   RETURN jsonb_build_object('ok', true);
 END $$;
 
