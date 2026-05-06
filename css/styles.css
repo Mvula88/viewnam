@@ -237,51 +237,95 @@ h3 { font-size: 1.25rem; }
     padding-top: 72px; /* offset for fixed navbar */
 }
 
-/* Layer 1: full-bleed photo with cinematic grade */
+/* Layer 1: full-bleed photo, lifted with a brighter cinematic grade */
 .hero-photo {
     position: absolute;
     inset: 0;
     background: url('../images/Background%20Images/pexels-gustavo-fring-6870298.jpg') 62% center / cover no-repeat;
-    filter: saturate(0.96) contrast(1.06) brightness(1.06);
+    filter: saturate(1.08) contrast(1.08) brightness(1.12);
     z-index: 0;
 }
 
-/* Layer 2: soft radial vignette */
+/* Layer 2: lighter radial vignette so the photo edges breathe */
 .hero-vignette {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 95% 95% at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 78%, rgba(0,0,0,0.38) 100%);
+    background: radial-gradient(ellipse 95% 95% at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.10) 78%, rgba(0,0,0,0.22) 100%);
     z-index: 1;
     pointer-events: none;
 }
 
-/* Layer 3: deep-green anchor — left side dark, right fades to clear */
+/* Layer 3: deep-green anchor — slimmer, fades out earlier on the right so the photo dominates that half */
 .hero-anchor {
     position: absolute;
     inset: 0;
     background:
         linear-gradient(0deg,
-            rgba(6,42,31,0.94) 0%,
-            rgba(11,61,44,0.78) 18%,
-            rgba(11,61,44,0.38) 32%,
-            rgba(11,61,44,0) 46%),
-        linear-gradient(110deg,
-            rgba(11,61,44,0.94) 0%,
-            rgba(11,61,44,0.86) 22%,
-            rgba(11,61,44,0.55) 45%,
-            rgba(11,61,44,0.18) 65%,
-            rgba(11,61,44,0) 82%);
+            rgba(6,42,31,0.78) 0%,
+            rgba(11,61,44,0.45) 14%,
+            rgba(11,61,44,0.10) 28%,
+            rgba(11,61,44,0) 40%),
+        linear-gradient(95deg,
+            rgba(6,42,31,0.92) 0%,
+            rgba(11,61,44,0.78) 22%,
+            rgba(11,61,44,0.38) 42%,
+            rgba(11,61,44,0.08) 60%,
+            rgba(11,61,44,0) 74%);
     z-index: 2;
     pointer-events: none;
 }
 
-/* Layer 4: polished shine */
+/* Layer 4: brighter shine — more luminous emerald punch in the dark zone */
 .hero-shine {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 55% 50% at 22% 60%, rgba(46,168,118,0.40) 0%, rgba(46,168,118,0.18) 32%, rgba(46,168,118,0) 70%);
+    background: radial-gradient(ellipse 55% 55% at 18% 58%, rgba(56,200,140,0.62) 0%, rgba(56,200,140,0.28) 32%, rgba(56,200,140,0) 70%);
     z-index: 3;
     pointer-events: none;
+}
+
+/* Editorial seal — small gold badge in the bottom-right corner, like a magazine watermark */
+.hero-seal {
+    position: absolute;
+    bottom: 60px;
+    right: 60px;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 24px;
+    border: 1px solid rgba(212,168,67,0.55);
+    border-radius: 4px;
+    background: rgba(6,42,31,0.20);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+.hero-seal .num {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--secondary);
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+.hero-seal .lbl {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: rgba(245,239,222,0.85);
+    text-align: center;
+    line-height: 1.4;
+}
+.hero-seal .lbl strong {
+    color: var(--secondary);
+    font-weight: 700;
+}
+@media (max-width: 1100px) {
+    .hero-seal { display: none; }
 }
 
 /* Layer 5: editorial film-grain dot pattern */
