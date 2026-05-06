@@ -328,9 +328,9 @@ h3 { font-size: 1.25rem; }
     color: #fff;
     margin-bottom: 0;
     font-weight: 700;
-    font-size: clamp(2.4rem, 5vw, 4.8rem);
-    line-height: 0.96;
-    letter-spacing: -2px;
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    line-height: 1.0;
+    letter-spacing: -1.6px;
     text-shadow: 0 2px 24px rgba(0,0,0,0.45);
 }
 
@@ -1830,10 +1830,10 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero h1 {
-        font-size: 2.4rem;
-        line-height: 1.0;
+        font-size: 2rem;
+        line-height: 1.05;
         margin-bottom: 0;
-        letter-spacing: -1.2px;
+        letter-spacing: -1px;
     }
 
     .hero-badge {
@@ -2236,9 +2236,9 @@ h3 { font-size: 1.25rem; }
     }
 
     .hero h1 {
-        font-size: 2rem;
-        line-height: 1.0;
-        letter-spacing: -1px;
+        font-size: 1.7rem;
+        line-height: 1.08;
+        letter-spacing: -0.8px;
     }
 
     .hero-badge {
